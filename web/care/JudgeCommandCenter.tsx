@@ -29,6 +29,7 @@ import type {
 import Brand from '../shared/Brand';
 import './care.css';
 import './themes.css';
+import './refresh.css';
 
 type ScenarioId = 1 | 2 | 3 | 4;
 type RightTab = 'trace' | 'family' | 'aac';
@@ -280,7 +281,7 @@ export default function JudgeCommandCenter() {
   };
 
   return (
-    <div className="care theme-centre" style={{ minHeight: '100vh', background: '#f6f5f2', paddingBottom: '2.5rem' }}>
+    <div className="care theme-centre" style={{ minHeight: '100vh', background: '#f2f7f6', paddingBottom: '2.5rem' }}>
       {/* Top Command Bar & Qloo Telemetry Pill */}
       <header
         style={{

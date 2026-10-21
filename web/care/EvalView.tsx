@@ -6,6 +6,7 @@ import type { TasteBenchmarkPersonaRow, TasteEvalBenchmark } from '../shared/con
 import Brand from '../shared/Brand';
 import './care.css';
 import './themes.css';
+import './refresh.css';
 
 export default function EvalView() {
   const [data, setData] = useState<TasteEvalBenchmark | null>(null);
