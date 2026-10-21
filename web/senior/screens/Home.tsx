@@ -80,6 +80,28 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
               </li>
             ))}
           </ul>
+          {today.taste_plan && (
+            <details className="sa-taste-trace" style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(0,0,0,0.08)', fontSize: '0.92rem' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: 600 }}>{t('suggest.howPicked')}</summary>
+              <div style={{ marginTop: 8, display: 'grid', gap: 6 }}>
+                {today.taste_plan.recommendations.music.map((m) => (
+                  <p key={m.entity_id} className="sa-why" style={{ margin: 0 }}>
+                    <strong>{t('suggest.music')}</strong> {m.name} — {m.why}
+                  </p>
+                ))}
+                {today.taste_plan.recommendations.movies.map((mv) => (
+                  <p key={mv.entity_id} className="sa-why" style={{ margin: 0 }}>
+                    <strong>{t('suggest.film')}</strong> {mv.name} — {mv.why}
+                  </p>
+                ))}
+                {today.taste_plan.filtered_out.length > 0 && (
+                  <p className="sa-why" style={{ margin: 0 }}>
+                    <strong>{t('suggest.filtered')}</strong> {today.taste_plan.filtered_out.map((f) => `${f.name} (${f.reason})`).join('; ')}
+                  </p>
+                )}
+              </div>
+            </details>
+          )}
         </div>
       )}
 

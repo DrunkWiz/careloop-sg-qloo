@@ -19,7 +19,23 @@ and when it wakes the demo starts again from 24 Oct.
 
 **How it's built:** [architecture, trust boundaries and design trade-offs](docs/architecture.md).
 
-### How CareLoop uses AI
+### What makes Fondly Qloo-powered
+
+Qloo's core rule for the Agentic Hackathon is: **if it would work the same without Qloo, it's the wrong thing.**
+
+Fondly adds a 4-step Qloo Taste Agent (`backend/taste/`) that plans culturally specific, health-safe days around what each senior is fond of:
+1. **`qloo_search` (`GET /search`):** Resolves the senior's personal taste seeds (e.g. *Teresa Teng*, *P. Ramlee*, *Teochew steamed fish porridge*, *The Love Eterne*) and any favourites added by family or centre staff (`GET /taste/search`, `POST /senior/{id}/taste`) into Qloo entity IDs.
+2. **`qloo_insights` (`GET /v2/insights`):** Queries Qloo's cross-domain taste graph across three domains (`urn:entity:place`, `urn:entity:artist`, `urn:entity:movie`) in Singapore (`filter.location.query="Singapore"`) to connect a senior's favourite 1960s–70s singers and films to nearby kopitiams, hawker stalls, tea corners, companion music artists, and classic films.
+3. **`check_health_constraints` (`backend/taste/constraints.py`):** Filters every Qloo candidate through deterministic, reviewable tables (marked `PLACEHOLDER` pending clinical sign-off) and live NEA weather/haze data:
+   - **Hypertension (`cond_hypertension`):** Filters out high-sodium preserved dishes (e.g. *Old Street Salted Fish Claypot Rice*) and highlights lower-salt steamed/clear-soup options.
+   - **Medicine leaflet checks (`med_amlodipine`, `med_losartan`, `med_metformin`):** Blocks grapefruit/pomelo dishes (e.g. *Ah Chew Desserts — Mango Pomelo Sago*) when the senior takes **amlodipine**.
+   - **Type 2 diabetes (`cond_diabetes`):** Filters out heavy syrup drinks (e.g. *Kampung Syrup Bandung*).
+   - **Rain & Haze (`weather_indoor_only`):** Filters out outdoor parks when PSI > 100 or rain >= 5 mm.
+4. **`guardrail_check` (`backend/language/guardrail.py`):** Checks every outgoing "why it fits" explanation string (English and Chinese) through Fondly's language safety guardrail.
+- **Strictly at the suggestion layer:** The Qloo agent never picks an escalation rung (`0`–`4` or `R`), never decides whom to contact, and never touches red-flag emergency handling.
+- **Side-by-side comparison:** See [docs/qloo-comparison.md](docs/qloo-comparison.md) and the in-app **"Why Qloo? (LLM-only baseline vs Fondly + Qloo)"** panel on the Activities page.
+
+### How Fondly uses language models
 
 - **Reading check-ins.** Rules read every check-in first, in English, Singlish and Mandarin (BP, doses, symptoms, red flags). Tencent Hunyuan then adds what rules miss: a symptom said in a roundabout way, the mood, an English gloss. It can add meaning but never remove a finding or invent a number.
 - **Writing messages.** The model drafts each message in the senior's language and tone, inside the step the rules already chose, keeping everything the fixed message says. Every draft passes a guardrail (no diagnosis, no dose change, no stopping a medicine, no invented number), or the fixed template goes out. **Red flags always use the fixed, signed-off wording**, sent at once, never reworded by a model.
@@ -133,6 +149,7 @@ backend/
   reports/     GP brief PDF, patterns, activities, timetable import,
                medicines explained, staying well                            (Nathan)
   healthsync/  Apple Health / Health Connect records -> readings; phone simulator (Nathan)
+  taste/       Qloo Taste AI client, Singapore fixtures, health constraints, 4-step taste agent (Nathan)
   api/         HTTP endpoints, demo seed; serve.py for the deploy            (Vibu; serve.py Nathan)
 web/           React + Vite, one build: / home, /senior, /care
   shared/      design tokens, API client, i18n strings   (Nathan tokens, Mingyu i18n)
@@ -174,7 +191,7 @@ pip install -r backend/requirements.txt && cd web && npm ci --include=dev && npm
 uvicorn backend.api.serve:site --host 0.0.0.0 --port $PORT                                       # start
 ```
 
-Environment: `CARELOOP_SEED=demo`, `CARELOOP_DEMO_DAYS=11` (plays the fortnight on a fresh store), `VITE_API_URL=/api`, `PYTHON_VERSION=3.11.9`, `NODE_VERSION=20.18.0`. The store is SQLite on the service's own disk, which is wiped when it restarts or sleeps; for the demo that means it starts again from 24 Oct. Postgres (`DATABASE_URL`) is supported by the store but not run yet.
+Environment: `CARELOOP_SEED=demo`, `CARELOOP_DEMO_DAYS=11` (plays the fortnight on a fresh store), `VITE_API_URL=/api`, `QLOO_API_KEY=<your-qloo-hackathon-key>`, `PYTHON_VERSION=3.11.9`, `NODE_VERSION=20.18.0`. When `QLOO_API_KEY` is set, Fondly calls `https://hackathon.api.qloo.com`; when unset or unreachable, it falls back automatically to recorded Singapore Qloo fixtures (`backend/taste/fixtures/qloo_fixtures.json`). The store is SQLite on the service's own disk, which is wiped when it restarts or sleeps; for the demo that means it starts again from 24 Oct. Postgres (`DATABASE_URL`) is supported by the store but not run yet.
 
 ### On a phone, as an app
 
@@ -193,7 +210,7 @@ cd web && npx vite build --mode live && npm run preview -- --port 4173     # the
 Offline, with no keys and no network.
 
 ```
-for s in language engine api synth reports healthsync; do .venv/Scripts/python -m unittest discover -s backend/$s/tests -t .; done
+for s in language engine api synth reports healthsync taste; do .venv/Scripts/python -m unittest discover -s backend/$s/tests -t .; done
 python -m backend.synth.evaluate --heldout     # docs/evaluation.md; read docs/evaluation-notes.md too
 ```
 

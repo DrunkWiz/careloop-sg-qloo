@@ -30,6 +30,7 @@ from backend.healthsync.ingest import recent as healthsync_recent
 from backend.language import describe as model_chain
 from backend.language import understand, write
 from backend.language.facts import Facts
+from backend.taste import build_taste_plan, describe_qloo, get_qloo_client, taste_knows_entries
 
 from . import demo
 from .store import Store
@@ -140,7 +141,9 @@ def meta():
     return {"version": VERSION, **model_chain(), "today": today().isoformat(),
             "data_sources": {"psi": "NEA 24-hour PSI via data.gov.sg", "rain": "NEA rainfall via data.gov.sg",
                              "aac": "MOH Eldercare Services via data.gov.sg", "cc": "PA Community Clubs via data.gov.sg",
+                             "taste": "Qloo Taste AI (/search, /v2/insights) with offline fixture fallback",
                              "people": "synthetic"},
+            "qloo": describe_qloo(),
             "thresholds": "PLACEHOLDER until clinical sign-off"}
 
 
@@ -203,7 +206,76 @@ def senior_today(sid: str, lang: Optional[Lang] = None):
         "feel_logged": feel_logged,
         "checkin_due": due, "prompt": prompt, "haze": haze,
         "suggestions": todays_suggestions(store, senior, t, d),
+        "taste_plan": build_taste_plan(
+            {**senior, "language": lang},
+            t,
+            indoor_only=bool((d.rain_mm or 0) >= 5.0 or (d.psi or 0) > 100),
+            rain_mm=d.rain_mm,
+            psi=d.psi,
+            erased_keys=_erased_taste(sid),
+        ),
     }
+
+
+def _erased_taste(sid: str) -> set[str]:
+    raw = store.setting(f"erased_taste:{sid}") or ""
+    return {x for x in raw.split("||") if x}
+
+
+@app.get("/senior/{sid}/taste")
+def senior_taste(sid: str, lang: Optional[Lang] = None):
+    """Qloo Taste AI plan, health-constraint filter log, 4-step agent trace, and LLM-only comparison."""
+    senior = senior_or_404(sid)
+    lang = lang or senior["language"]
+    t = today()
+    d = build(store, senior, t, days=2)[t]
+    return build_taste_plan(
+        {**senior, "language": lang},
+        t,
+        indoor_only=bool((d.rain_mm or 0) >= 5.0 or (d.psi or 0) > 100),
+        rain_mm=d.rain_mm,
+        psi=d.psi,
+        erased_keys=_erased_taste(sid),
+    )
+
+
+class TasteSeedIn(BaseModel):
+    seed: str = Field(..., min_length=1, max_length=120)
+
+
+@app.get("/taste/search")
+def taste_search(q: str = ""):
+    """Search Qloo entities by query string so family or AAC staff can add a senior's favourite."""
+    qloo = get_qloo_client()
+    query = q.strip()
+    if not query:
+        return {"query": "", "mode": "live" if qloo.is_live else "fixture", "results": []}
+    res = qloo.search(query, location="Singapore", limit=5)
+    return {
+        "query": query,
+        "mode": "live" if qloo.is_live else "fixture",
+        "results": res.get("results", []),
+    }
+
+
+@app.post("/senior/{sid}/taste")
+def add_senior_taste(sid: str, body: TasteSeedIn):
+    """Add a favourite singer, dish, film, or place seed to a senior's likes and return the updated Qloo taste plan."""
+    senior = senior_or_404(sid)
+    seed = body.seed.strip()
+    if not seed:
+        raise HTTPException(400, "Empty taste seed")
+    likes = list(senior.get("likes") or [])
+    if seed not in likes:
+        likes.append(seed)
+        senior["likes"] = likes
+        store.put("senior", senior)
+    erased = _erased_taste(sid)
+    if seed in erased or f"like:{seed}" in erased:
+        erased.discard(seed)
+        erased.discard(f"like:{seed}")
+        store.set_setting(f"erased_taste:{sid}", "||".join(sorted(erased)))
+    return senior_taste(sid)
 
 
 @app.get("/senior/{sid}/knows")
@@ -225,6 +297,7 @@ def knows(sid: str):
                     "text": (f"{c['name']}是{role_label}" if zh else f"{c['name']} is {role_label}")})
     for k in store.list("knows", senior_id=sid):
         out.append({"id": f"learned:{k['id']}", "kind": "other", "text": k["text"]})
+    out += taste_knows_entries(s, erased_keys=_erased_taste(sid))
     return out
 
 
@@ -238,6 +311,12 @@ def forget(sid: str, fact: str):
         s["medicines"] = [m for m in s.get("medicines", []) if m["name"] != key]
     elif kind == "like":
         s["likes"] = [l for l in s.get("likes", []) if l != key]
+    elif kind == "taste":
+        cur = _erased_taste(sid)
+        if key not in cur and not any(x["id"] == f"taste:{key}" for x in taste_knows_entries(s, erased_keys=cur)):
+            raise HTTPException(404, fact)
+        cur.add(key)
+        store.set_setting(f"erased_taste:{sid}", "||".join(sorted(cur)))
     elif kind == "routine":
         s["usual_checkin_time"] = "08:00"
     elif kind == "contact":

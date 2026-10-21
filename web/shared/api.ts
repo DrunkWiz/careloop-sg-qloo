@@ -24,6 +24,7 @@ import type {
   Programme,
   ProgrammeIn,
   RotaView,
+  TastePlan,
   VentPost,
 } from './contract';
 import * as mock from '../care/mock';
@@ -232,4 +233,33 @@ export function getMedicines(seniorId: string, contactId?: string, lang = 'en'):
 
 export function getPrevention(seniorId: string, contactId?: string, lang = 'en'): Promise<PreventionView> {
   return BASE ? http(`/senior/${seniorId}/prevention?${q(contactId, lang)}`) : mock.getPrevention();
+}
+
+export interface TasteSearchResult {
+  entity_id: string;
+  name: string;
+  type: string;
+  tags: string[];
+}
+
+export function searchTaste(query: string): Promise<{ query: string; mode: string; results: TasteSearchResult[] }> {
+  if (!BASE) {
+    return Promise.resolve({
+      query,
+      mode: 'fixture',
+      results: [
+        { entity_id: 'urn:entity:artist:teresa-teng', name: 'Teresa Teng (邓丽君)', type: 'urn:entity:artist', tags: ['mandopop', '1970s'] },
+        { entity_id: 'urn:entity:artist:frances-yip', name: 'Frances Yip (叶丽仪)', type: 'urn:entity:artist', tags: ['cantopop', '1980s'] },
+        { entity_id: 'urn:entity:artist:p-ramlee', name: 'P. Ramlee', type: 'urn:entity:artist', tags: ['malay_classics', 'jalan_ampas'] },
+        { entity_id: 'urn:entity:place:teochew-fish-soup', name: 'Teochew Steamed Fish Porridge', type: 'urn:entity:place', tags: ['low_sodium_available', 'easy_to_chew'] },
+      ].filter((r) => !query.trim() || r.name.toLowerCase().includes(query.toLowerCase()) || r.tags.some((t) => t.includes(query.toLowerCase()))),
+    });
+  }
+  return http(`/taste/search?q=${encodeURIComponent(query)}`);
+}
+
+export function addSeniorTaste(seniorId: string, seed: string): Promise<TastePlan> {
+  if (!BASE) return mockInsights.getActivities(seniorId).then((a) => a.taste_plan!);
+  return http(`/senior/${seniorId}/taste`, { method: 'POST', body: JSON.stringify({ seed }) });
+
 }

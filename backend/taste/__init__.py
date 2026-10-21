@@ -1,0 +1,22 @@
+"""Fondly's Qloo Taste AI package: cross-domain taste discovery with deterministic health & weather guardrails."""
+from backend.taste.agent import build_taste_plan, get_qloo_client
+from backend.taste.baseline_llm import llm_only_baseline
+from backend.taste.client import FixtureQlooClient, QlooClient, describe_qloo
+from backend.taste.constraints import CONDITION_RULES, MEDICINE_FOOD_RULES, active_constraints, filter_qloo_candidates
+from backend.taste.profiles import SENIOR_TASTE_PROFILES, build_taste_profile, taste_knows_entries
+
+__all__ = [
+    "CONDITION_RULES",
+    "FixtureQlooClient",
+    "MEDICINE_FOOD_RULES",
+    "QlooClient",
+    "SENIOR_TASTE_PROFILES",
+    "active_constraints",
+    "build_taste_plan",
+    "build_taste_profile",
+    "describe_qloo",
+    "filter_qloo_candidates",
+    "get_qloo_client",
+    "llm_only_baseline",
+    "taste_knows_entries",
+]

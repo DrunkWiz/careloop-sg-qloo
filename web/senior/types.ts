@@ -2,6 +2,7 @@
 // until then these are our best reading of the shared contract table. Facts and Message match
 // backend/language/facts.example.json and message.example.json.
 import type { Lang } from '../shared/i18n';
+import type { TastePlan } from '../shared/contract';
 
 export type Rung = '0' | '1' | '2' | '3' | '4' | 'R';
 
@@ -81,6 +82,7 @@ export interface Today {
   /** The engine's MOH-based text for today's PSI band. Shown as-is, never invented here. */
   haze: { psi: number; band: string; text: string } | null;
   suggestions: Suggestion[];
+  taste_plan?: TastePlan;
 }
 
 export interface KnownFact {

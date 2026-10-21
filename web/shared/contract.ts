@@ -317,6 +317,76 @@ export interface Place {
   lon: number;
 }
 
+export interface TastePlacePick {
+  entity_id: string;
+  name: string;
+  category: string;
+  indoor: boolean;
+  free: boolean;
+  affinity: number;
+  matched_seeds: string[];
+  fit_badges: string[];
+  why: string;
+}
+
+export interface TasteMediaPick {
+  entity_id: string;
+  name: string;
+  affinity: number;
+  matched_seeds: string[];
+  why: string;
+}
+
+export interface TasteFilteredItem {
+  entity_id: string;
+  name: string;
+  rule_id: string;
+  reason: string;
+}
+
+export interface TasteTraceStep {
+  step: number;
+  tool: string;
+  title: string;
+  input_summary: string;
+  output_summary: string;
+  details: string[];
+}
+
+export interface TastePlan {
+  senior_id: string;
+  date: string;
+  qloo_mode: 'live' | 'fixture';
+  profile: {
+    neighbourhood: string;
+    likes: string[];
+    music_seeds: string[];
+    food_seeds: string[];
+    film_seeds: string[];
+    outings: string[];
+    summary: string;
+  };
+  constraints: {
+    indoor_only: boolean;
+    rain_mm: number | null;
+    psi: number | null;
+    badges: string[];
+    active_rules: { rule_id: string; kind: string; trigger: string; badge: string; explanation: string }[];
+  };
+  recommendations: {
+    places: TastePlacePick[];
+    music: TasteMediaPick[];
+    movies: TasteMediaPick[];
+  };
+  filtered_out: TasteFilteredItem[];
+  trace: TasteTraceStep[];
+  guardrail: { passed: boolean; checked_count: number; reasons: string[] };
+  comparison: {
+    llm_only: { mode: string; prompt_summary: string; generic_picks: string[]; limitations: string[] };
+    fondly_with_qloo: { mode: string; picks: string[]; filtered_count: number; filtered_examples: string[] };
+  };
+}
+
 export interface Activities {
   today: string;
   weekday: Weekday;
@@ -336,6 +406,7 @@ export interface Activities {
   nearby_ccs: Place[];
   suggested_today: { place: string; kind: string; why_it_fits: string; indoor: boolean; sample: boolean; as_told_to_senior?: string }[];
   suggestions: { id: string; date: string; place: string; kind: string; why_it_fits: string; indoor: boolean; sample: boolean; response: 'going' | 'not_for_me' | null }[];
+  taste_plan?: TastePlan;
   source: string;
 }
 

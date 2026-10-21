@@ -21,6 +21,7 @@ PNG copies for slides: [architecture.png](architecture/architecture.png), [trust
 | Reports | Patterns in their own data, activities nearby, timetable import, medicines explained, staying well, the GP brief PDF. Rules and statistics; no model | `backend/reports/` |
 | Health sync | Apple Health and Health Connect records (Fitbit, OMRON cuff) become readings | `backend/healthsync/` |
 | Context data | data.gov.sg PSI, rainfall, AAC and community club locations; offline fixtures in tests | `backend/env/` |
+| Qloo Taste Agent | 4-step suggestion agent (`qloo_search` -> `qloo_insights` -> `check_health_constraints` -> `guardrail_check`) across places, music and films; never touches clinical rungs or alerts | `backend/taste/` |
 | Store | SQLite for the demo, Postgres for a real deployment | `backend/api/store.py` |
 
 It runs as one service (`backend/api/serve.py`) on Render in Singapore: https://careloop-sg.onrender.com.

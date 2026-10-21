@@ -196,6 +196,37 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
         )
       )}
 
+      {acts.some((x) => x.a.taste_plan) && (
+        <section className="care-card">
+          <h2>Fondly + Qloo taste matches across your seniors</h2>
+          <p className="care-muted">
+            Cross-domain Qloo Taste AI recommendations (places, music and classic films) matched to each senior's cultural seeds and filtered for their health and medicine rules.
+          </p>
+          <ul className="act-list">
+            {acts.map(({ name, a }) => {
+              const tp = a.taste_plan;
+              if (!tp) return null;
+              const topPlace = tp.recommendations.places[0];
+              const topMusic = tp.recommendations.music[0];
+              return (
+                <li key={name} className="act-item">
+                  <span className="act-kind is-aac">Qloo</span>
+                  <span className="act-body">
+                    <strong>{name}</strong>
+                    <span className="care-muted">
+                      Seeds: {[...tp.profile.music_seeds, ...tp.profile.food_seeds].slice(0, 3).join(', ')}
+                      {topPlace ? ` · Place: ${topPlace.name}` : ''}
+                      {topMusic ? ` · Music: ${topMusic.name}` : ''}
+                      {tp.constraints.badges.length ? ` · Filters: ${tp.constraints.badges.join(', ')}` : ''}
+                    </span>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
       {ccs.length > 0 && (
         <section className="care-card">
           <h2>Community clubs nearby</h2>

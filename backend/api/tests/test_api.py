@@ -387,6 +387,29 @@ class Api(unittest.TestCase):
         self.assertNotIn("caregiver_id", stored)
         self.assertNotIn("senior_id", stored)
 
+    def test_qloo_taste_endpoint_and_knows_erase(self):
+        """GET /senior/{id}/taste returns Qloo recommendations, 4-step trace, and LLM comparison; taste seeds are erasable."""
+        meta = self.c.get("/meta").json()
+        self.assertEqual(meta["qloo"]["provider"], "Qloo Taste AI")
+        taste = self.c.get("/senior/tan/taste").json()
+        self.assertEqual(taste["senior_id"], "tan")
+        self.assertEqual(len(taste["trace"]), 4)
+        self.assertTrue(taste["guardrail"]["passed"])
+        self.assertIn("llm_only", taste["comparison"])
+        self.assertIn("fondly_with_qloo", taste["comparison"])
+        act = self.c.get("/senior/tan/activities").json()
+        self.assertIn("taste_plan", act)
+        # Senior can erase a Qloo taste seed from /knows
+        knows = self.c.get("/senior/tan/knows").json()
+        t_item = next(x for x in knows if x["id"].startswith("taste:"))
+        self.assertEqual(self.c.delete(f"/senior/tan/knows/{t_item['id']}").status_code, 204)
+        self.assertNotIn(t_item["id"], [x["id"] for x in self.c.get("/senior/tan/knows").json()])
+        # Family or AAC staff can search Qloo entities and add a favourite taste seed
+        sr = self.c.get("/taste/search?q=Teresa").json()
+        self.assertTrue(len(sr["results"]) >= 1)
+        added = self.c.post("/senior/tan/taste", json={"seed": "Frances Yip"}).json()
+        self.assertIn("Frances Yip", added["profile"]["likes"])
+
 
 if __name__ == "__main__":
     unittest.main()

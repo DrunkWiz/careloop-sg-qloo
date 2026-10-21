@@ -19,6 +19,8 @@ const state = {
     { id: 'k2', kind: 'medicine', text: 'Takes amlodipine 5 mg every morning' },
     { id: 'k3', kind: 'routine', text: 'Usually checks in around 8am' },
     { id: 'k4', kind: 'like', text: 'Likes mahjong and karaoke' },
+    { id: 'taste:music:Teresa Teng', kind: 'like', text: 'Fond of music: Teresa Teng' },
+    { id: 'taste:food:Clear fish soup', kind: 'like', text: 'Fond of food/drink: Clear fish soup' },
     { id: 'k5', kind: 'contact', text: 'Daughter Wei Ling is the main contact' },
   ] as KnownFact[],
 };
@@ -73,6 +75,48 @@ export const mock = {
         { id: 's2', place: zh ? 'Ang Mo Kio 民众俱乐部：椅子运动' : 'Ang Mo Kio CC: chair exercise', why_it_fits: zh ? '室内，适合今天' : 'Indoors, good for today', indoor: true, free: true, response: null },
         { id: 's3', place: zh ? '宏茂桥图书馆：健康讲座' : 'Ang Mo Kio Library: health talk', why_it_fits: zh ? '离家近' : 'Near your home', indoor: true, free: true, response: null },
       ].filter((s) => !state.hidden.has(s.id)),
+      taste_plan: {
+        senior_id: 'demo-senior',
+        date: '2026-10-21',
+        qloo_mode: 'fixture',
+        profile: {
+          neighbourhood: 'Ang Mo Kio / Kebun Baru',
+          likes: ['mahjong', 'karaoke'],
+          music_seeds: ['Teresa Teng', 'Fei Yu-ching'],
+          food_seeds: ['Clear fish soup', 'Teochew porridge'],
+          film_seeds: ['1960s Cathay Mandarin classics'],
+          outings: ['Kebun Baru kopitiam', 'Ang Mo Kio library'],
+          summary: 'Enjoys morning kopitiam chats, classic Mandarin songs, and light low-salt Teochew dishes.',
+        },
+        constraints: {
+          indoor_only: true,
+          rain_mm: null,
+          psi: 112,
+          badges: ['Low-sodium options', 'No grapefruit/pomelo (amlodipine)', 'Indoor-only (PSI 112)'],
+          active_rules: [],
+        },
+        recommendations: {
+          places: [
+            { entity_id: 'qloo-kebun-baru-kopitiam', name: 'Kebun Baru Kopitiam & Community Corner', category: 'food_and_social', indoor: true, free: false, affinity: 0.94, matched_seeds: ['Teresa Teng'], fit_badges: ['Indoor', 'Low-sodium available'], why: 'Because you enjoy Teresa Teng and Clear fish soup, Qloo matched this sheltered kopitiam in your area.' },
+          ],
+          music: [
+            { entity_id: 'qloo-artist-fei-yu-ching', name: 'Fei Yu-ching (费玉清)', affinity: 0.96, matched_seeds: ['Teresa Teng'], why: 'Because you enjoy Teresa Teng, Qloo matched this artist for your day.' },
+          ],
+          movies: [
+            { entity_id: 'qloo-movie-cathay-1960s', name: 'Mambo Girl (曼波女郎) — Cathay Classics', affinity: 0.91, matched_seeds: ['Teresa Teng'], why: 'Because you enjoy Teresa Teng, Qloo matched this classic film.' },
+          ],
+        },
+        filtered_out: [
+          { entity_id: 'qloo-pomelo-dessert', name: 'Ah Chew Desserts — Mango Pomelo Sago', rule_id: 'med_amlodipine', reason: 'Medicine leaflet check (amlodipine): avoid grapefruit and pomelo (PLACEHOLDER)' },
+          { entity_id: 'qloo-bishan-amk-park', name: 'Bishan-Ang Mo Kio Park Morning Stroll', rule_id: 'weather_indoor_only', reason: 'Weather/haze check (PSI 112): outdoor place filtered out; indoor-only active' },
+        ],
+        trace: [],
+        guardrail: { passed: true, checked_count: 3, reasons: [] },
+        comparison: {
+          llm_only: { mode: 'llm_only_baseline', prompt_summary: '', generic_picks: [], limitations: [] },
+          fondly_with_qloo: { mode: 'fondly_qloo_fixture', picks: [], filtered_count: 2, filtered_examples: [] },
+        },
+      },
     };
   },
 

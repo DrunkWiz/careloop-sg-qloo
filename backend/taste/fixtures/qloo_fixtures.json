@@ -1,0 +1,433 @@
+{
+  "version": "2026-10-21",
+  "source": "Qloo Taste AI (https://hackathon.api.qloo.com) — Singapore senior taste fixtures for offline tests and fallback",
+  "search_entities": {
+    "teresa teng": {
+      "entity_id": "urn:entity:artist:qloo-teresa-teng",
+      "name": "Teresa Teng (邓丽君)",
+      "type": "urn:entity:artist",
+      "tags": ["mandopop", "hokkien_classic", "1970s", "1980s", "nostalgia_sg"]
+    },
+    "fei yu-ching": {
+      "entity_id": "urn:entity:artist:qloo-fei-yu-ching",
+      "name": "Fei Yu-ching (费玉清)",
+      "type": "urn:entity:artist",
+      "tags": ["mandopop", "ballad", "1970s", "1980s", "nostalgia_sg"]
+    },
+    "fong fei-fei": {
+      "entity_id": "urn:entity:artist:qloo-fong-fei-fei",
+      "name": "Fong Fei-Fei (凤飞飞)",
+      "type": "urn:entity:artist",
+      "tags": ["mandopop", "taiwanese_hokkien", "1970s", "nostalgia_sg"]
+    },
+    "frances yip": {
+      "entity_id": "urn:entity:artist:qloo-frances-yip",
+      "name": "Frances Yip (叶丽仪)",
+      "type": "urn:entity:artist",
+      "tags": ["cantopop", "1970s", "1980s", "karaoke_classic"]
+    },
+    "p. ramlee": {
+      "entity_id": "urn:entity:artist:qloo-p-ramlee",
+      "name": "P. Ramlee",
+      "type": "urn:entity:artist",
+      "tags": ["malay_classic", "jalan_ampas", "1950s", "1960s", "nostalgia_sg"]
+    },
+    "saloma": {
+      "entity_id": "urn:entity:artist:qloo-saloma",
+      "name": "Biduanita Saloma",
+      "type": "urn:entity:artist",
+      "tags": ["malay_classic", "jalan_ampas", "1960s", "nostalgia_sg"]
+    },
+    "m. nasir": {
+      "entity_id": "urn:entity:artist:qloo-m-nasir",
+      "name": "M. Nasir",
+      "type": "urn:entity:artist",
+      "tags": ["malay_folk", "nusantara", "1980s", "nostalgia_sg"]
+    },
+    "t.m. soundararajan": {
+      "entity_id": "urn:entity:artist:qloo-tm-soundararajan",
+      "name": "T.M. Soundararajan",
+      "type": "urn:entity:artist",
+      "tags": ["tamil_classic", "carnatic_film", "1960s", "1970s"]
+    },
+    "p. susheela": {
+      "entity_id": "urn:entity:artist:qloo-p-susheela",
+      "name": "P. Susheela",
+      "type": "urn:entity:artist",
+      "tags": ["tamil_classic", "melody", "1960s", "1970s"]
+    },
+    "gurdas maan": {
+      "entity_id": "urn:entity:artist:qloo-gurdas-maan",
+      "name": "Gurdas Maan",
+      "type": "urn:entity:artist",
+      "tags": ["punjabi_folk", "1980s", "devotional_folk"]
+    },
+    "cliff richard": {
+      "entity_id": "urn:entity:artist:qloo-cliff-richard",
+      "name": "Cliff Richard & The Shadows",
+      "type": "urn:entity:artist",
+      "tags": ["1960s_pop", "english_oldies", "nostalgia_sg"]
+    },
+    "kopi": {
+      "entity_id": "urn:entity:place:qloo-seed-kopi",
+      "name": "Nanyang Kopi & Toast",
+      "type": "urn:entity:place",
+      "tags": ["kopitiam", "nanyang_breakfast", "social_chat"]
+    },
+    "mahjong": {
+      "entity_id": "urn:entity:place:qloo-seed-mahjong",
+      "name": "Community Mahjong & Tile Table",
+      "type": "urn:entity:place",
+      "tags": ["table_games", "teochew_hokkien_social", "indoor_social"]
+    },
+    "karaoke": {
+      "entity_id": "urn:entity:place:qloo-seed-karaoke",
+      "name": "Mandopop & Cantopop Sing-along",
+      "type": "urn:entity:place",
+      "tags": ["karaoke", "singing", "indoor_social"]
+    },
+    "singing": {
+      "entity_id": "urn:entity:place:qloo-seed-singing",
+      "name": "Evergreen Choir & Sing-along",
+      "type": "urn:entity:place",
+      "tags": ["singing", "karaoke", "indoor_social"]
+    },
+    "gardening": {
+      "entity_id": "urn:entity:place:qloo-seed-gardening",
+      "name": "Community Allotment & Herb Gardening",
+      "type": "urn:entity:place",
+      "tags": ["gardening", "horticulture", "morning_nature"]
+    },
+    "walking": {
+      "entity_id": "urn:entity:place:qloo-seed-walking",
+      "name": "Neighbourhood Park & Sheltered Stroll",
+      "type": "urn:entity:place",
+      "tags": ["walking", "gentle_exercise", "morning_stroll"]
+    },
+    "exercise": {
+      "entity_id": "urn:entity:place:qloo-seed-exercise",
+      "name": "Morning Tai Chi & Qigong",
+      "type": "urn:entity:place",
+      "tags": ["exercise", "tai_chi", "qigong"]
+    },
+    "crafts": {
+      "entity_id": "urn:entity:place:qloo-seed-crafts",
+      "name": "Handicrafts, Rattan & Patchwork Circle",
+      "type": "urn:entity:place",
+      "tags": ["crafts", "peranakan_crafts", "indoor_social"]
+    },
+    "chatting": {
+      "entity_id": "urn:entity:place:qloo-seed-chatting",
+      "name": "Kopitiam & Void Deck Kakis Corner",
+      "type": "urn:entity:place",
+      "tags": ["chatting", "kopitiam", "indoor_social"]
+    },
+    "health": {
+      "entity_id": "urn:entity:place:qloo-seed-health",
+      "name": "Active Ageing & Community Wellness",
+      "type": "urn:entity:place",
+      "tags": ["health", "exercise", "indoor_social"]
+    }
+  },
+  "places": [
+    {
+      "entity_id": "urn:entity:place:qloo-tp-porridge",
+      "name": "Toa Payoh Lorong 8 Teochew Steamed Fish & Kopi O Corner",
+      "name_zh": "大巴窑8巷潮州清蒸鱼与咖啡乌角",
+      "region": "central",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.94,
+      "matched_seeds": ["kopi", "mahjong", "teresa teng", "fong fei-fei"],
+      "dietary_tags": ["steamed_fish", "clear_soup", "kopi_o_kosong_option", "low_sodium_friendly"],
+      "why_en": "Qloo links Nanyang kopi, mahjong kakis and 1970s Hokkien/Teochew classics with traditional Teochew steamed fish and kopi-O kosong stalls.",
+      "why_zh": "Qloo 品味图谱将南洋咖啡、麻将老友与70年代闽南金曲，关联到清淡少盐的潮州清蒸鱼和咖啡乌少糖档口。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-bishan-pavilion",
+      "name": "Bishan-Ang Mo Kio Sheltered Tea Pavilion & Chess Corner",
+      "name_zh": "碧山-宏茂桥有盖茶亭与棋友角",
+      "region": "central",
+      "category": "social_spot",
+      "indoor": true,
+      "free": true,
+      "affinity": 0.91,
+      "matched_seeds": ["mahjong", "kopi", "chatting", "crafts", "singing"],
+      "dietary_tags": ["unsweetened_tea", "low_sodium_friendly"],
+      "why_en": "Sheltered community pavilion popular with central-heartland seniors who enjoy tile games, Chinese tea and unhurried morning chats.",
+      "why_zh": "有盖社区茶亭，适合喜欢牌友聚会、清茶与邻里闲聊的长者。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-tp-garden-walk",
+      "name": "Toa Payoh Town Park Fragrant Herb & Pond Walk",
+      "name_zh": "大巴窑市镇公园香草与池畔步道",
+      "region": "central",
+      "category": "outdoor_walk",
+      "indoor": false,
+      "free": true,
+      "affinity": 0.88,
+      "matched_seeds": ["gardening", "walking", "kopi"],
+      "dietary_tags": [],
+      "why_en": "Flat, shaded lakeside path with pandan and lemongrass plots; a gentle morning stroll when the air is clear.",
+      "why_zh": "平坦阴凉的池畔步道，种有斑兰与香茅，空气好时适合晨间慢走。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-yuhua-tea-song",
+      "name": "Yuhua Market Heritage Chinese Tea & Nanyang Song Corner",
+      "name_zh": "裕华巴刹传统茶座与南洋老歌角",
+      "region": "west",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": true,
+      "affinity": 0.95,
+      "matched_seeds": ["karaoke", "singing", "teresa teng", "frances yip", "fei yu-ching"],
+      "dietary_tags": ["unsweetened_tea", "steamed_dim_sum_light", "low_sodium_friendly"],
+      "why_en": "Qloo connects Teresa Teng and Frances Yip fans in Jurong with heritage tea stalls where regulars hum 1970s Mandopop and Cantopop classics.",
+      "why_zh": "Qloo 将邓丽君、叶丽仪的歌迷与裕华巴刹传统茶座关联，街坊常在此哼唱70年代华语与粤语经典。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-taman-jurong-warung",
+      "name": "Taman Jurong Warung Kopi O Kosong & Ikan Bakar",
+      "name_zh": "达曼裕廊传统无糖咖啡乌与烤鱼档",
+      "region": "west",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.93,
+      "matched_seeds": ["kopi", "exercise", "p. ramlee", "saloma", "m. nasir"],
+      "dietary_tags": ["halal", "kopi_o_kosong_option", "grilled_fish", "less_sugar_friendly", "low_sodium_friendly"],
+      "why_en": "Qloo pairs P. Ramlee and Nusantara folk taste profiles with traditional Malay warungs serving plain kopi-O kosong and lightly spiced grilled fish without heavy sweet gravy.",
+      "why_zh": "Qloo 将比·南利经典音乐品味与传统马来咖啡档关联，提供无糖咖啡乌与清淡烤鱼。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-marsiling-orchid",
+      "name": "Woodlands-Marsiling Sheltered Orchid Conservatory & Kopi Corner",
+      "name_zh": "兀兰-马西岭有盖胡姬花温室与咖啡角",
+      "region": "west",
+      "category": "social_spot",
+      "indoor": true,
+      "free": true,
+      "affinity": 0.91,
+      "matched_seeds": ["gardening", "kopi", "cliff richard"],
+      "dietary_tags": ["kopi_o_kosong_option", "low_sodium_friendly"],
+      "why_en": "Qloo links orchid and herb gardening enthusiasts with sheltered community glasshouses and quiet morning kopi corners.",
+      "why_zh": "Qloo 将喜爱园艺与60年代怀旧金曲的长者，关联到有盖胡姬花温室与晨间咖啡角。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-jurong-lake-walk",
+      "name": "Jurong Lake Gardens Therapeutic HortPark Walk",
+      "name_zh": "裕廊湖花园疗愈园艺步道",
+      "region": "west",
+      "category": "outdoor_walk",
+      "indoor": false,
+      "free": true,
+      "affinity": 0.89,
+      "matched_seeds": ["gardening", "walking", "exercise"],
+      "dietary_tags": [],
+      "why_en": "Wheelchair- and senior-friendly garden loop with raised herb beds along Jurong Lake.",
+      "why_zh": "裕廊湖畔平坦无障碍的园艺步道，设有高架香草花圃。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-tampines-thosai",
+      "name": "Tampines Round Market Fresh Thosai & Masala Ginger Tea Stall",
+      "name_zh": "淡滨尼圆巴刹现烙印度薄饼与姜茶档",
+      "region": "east",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.94,
+      "matched_seeds": ["walking", "gardening", "exercise", "health", "t.m. soundararajan", "gurdas maan"],
+      "dietary_tags": ["vegetarian_friendly", "fermented_flatbread", "less_sugar_friendly", "low_sodium_friendly"],
+      "why_en": "Qloo connects South Asian classical and folk music profiles with Tampines Round Market's morning thosai and unsweetened ginger tea circle.",
+      "why_zh": "Qloo 将南亚经典音乐与养生品味，关联到淡滨尼圆巴刹清晨的少盐薄饼与无糖姜茶聚脚处。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-bedok-kopi",
+      "name": "Bedok Interchange Traditional Kopi O & Soft-Boiled Eggs Corner",
+      "name_zh": "勿洛转换站传统咖啡乌与半熟蛋角",
+      "region": "east",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.92,
+      "matched_seeds": ["kopi", "chatting", "walking", "crafts"],
+      "dietary_tags": ["kopi_o_kosong_option", "low_sodium_friendly"],
+      "why_en": "Qloo links East-side kopi and craft-circle tastes with Bedok's breezy indoor hawker tables where regulars chat over kopi-O siew dai.",
+      "why_zh": "Qloo 将东部长者的咖啡与手工聚会偏好，关联到勿洛室内熟食中心的少糖咖啡乌茶座。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-oth-atrium",
+      "name": "Our Tampines Hub Sheltered Sky Terrace & Evergreen Lounge",
+      "name_zh": "淡滨尼天地有盖空中花园与常青音乐廊",
+      "region": "east",
+      "category": "social_spot",
+      "indoor": true,
+      "free": true,
+      "affinity": 0.90,
+      "matched_seeds": ["walking", "exercise", "crafts", "chatting", "health"],
+      "dietary_tags": [],
+      "why_en": "All-weather indoor walking track and community craft/music lounge right in the heart of Tampines.",
+      "why_zh": "全天候室内步道与社区手工音乐交谊廊，雨天或烟霾天也能安心活动。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-bedok-park-loop",
+      "name": "Bedok Reservoir & Town Park Morning Brisk-Walk Loop",
+      "name_zh": "勿洛蓄水池公园晨运步道",
+      "region": "east",
+      "category": "outdoor_walk",
+      "indoor": false,
+      "free": true,
+      "affinity": 0.87,
+      "matched_seeds": ["walking", "exercise", "gardening"],
+      "dietary_tags": [],
+      "why_en": "Waterside morning walking loop popular with East-side qigong and brisk-walking groups.",
+      "why_zh": "勿洛水畔晨运步道，适合晴朗空气好时与街坊散步晨运。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-pomelo-dessert",
+      "name": "Bugis & Heartland Mango Pomelo & Grapefruit Sago Dessert House",
+      "name_zh": "杨枝甘露与西柚西米露甜品铺",
+      "region": "all",
+      "category": "dessert_stall",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.86,
+      "matched_seeds": ["kopi", "chatting", "karaoke", "mahjong"],
+      "dietary_tags": ["contains_grapefruit_pomelo", "high_sugar_syrup"],
+      "why_en": "High Qloo taste affinity with traditional Nanyang café goers, but uses fresh grapefruit/pomelo pulp and heavy rock-sugar syrup.",
+      "why_zh": "虽在品味图谱上与传统茶座高度相关，但含新鲜西柚/柚子果肉及浓糖水。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-salted-fish-claypot",
+      "name": "Heritage Salted Fish & Heavy Soy Braised Claypot Rice Stall",
+      "name_zh": "传统咸鱼腊味重酱油砂煲饭档",
+      "region": "all",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.85,
+      "matched_seeds": ["kopi", "mahjong", "walking", "exercise"],
+      "dietary_tags": ["high_sodium_preserved", "heavy_gravies"],
+      "why_en": "Matched by Qloo's nostalgic hawker cluster, but relies on salted cured fish and high-sodium dark soy gravy.",
+      "why_zh": "虽属怀旧小贩美食聚类，但含高盐分咸鱼腊味及浓酱油卤汁。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-syrup-bandung",
+      "name": "Classic Extra-Sweet Rose Syrup Bandung & Condensed Milk Stall",
+      "name_zh": "传统特甜玫瑰露万隆冰与炼乳茶档",
+      "region": "all",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.84,
+      "matched_seeds": ["kopi", "exercise", "p. ramlee", "chatting"],
+      "dietary_tags": ["high_sugar_syrup", "sweetened_condensed_milk"],
+      "why_en": "Matched by Qloo's heritage drink cluster, but prepared with heavy rose cordial syrup and sweetened condensed milk.",
+      "why_zh": "虽属传统饮品聚类，但使用大量玫瑰糖浆与甜炼乳。"
+    }
+  ],
+  "artists": [
+    {
+      "entity_id": "urn:entity:artist:qloo-teresa-teng",
+      "name": "Teresa Teng (邓丽君) — 'The Moon Represents My Heart'",
+      "name_zh": "邓丽君 —《月亮代表我的心》《甜蜜蜜》",
+      "affinity": 0.97,
+      "matched_seeds": ["teresa teng", "karaoke", "singing", "mahjong", "kopi"],
+      "why_en": "Top Qloo musical bridge across Singapore's Mandarin, Hokkien and Teochew senior communities.",
+      "why_zh": "Qloo 华语与闽潮长者群体中关联度最高的经典歌手。"
+    },
+    {
+      "entity_id": "urn:entity:artist:qloo-fong-fei-fei",
+      "name": "Fong Fei-Fei (凤飞飞) — 'Applause (掌声响起)'",
+      "name_zh": "凤飞飞 —《掌声响起》《爱拼才会赢》时代金曲",
+      "affinity": 0.93,
+      "matched_seeds": ["fong fei-fei", "teresa teng", "mahjong", "kopi", "singing"],
+      "why_en": "Strong Qloo cross-affinity with Hokkien/Teochew kopitiam culture and community sing-alongs.",
+      "why_zh": "与本地咖啡店文化及社区歌唱班高度共鸣的闽台华语金曲。"
+    },
+    {
+      "entity_id": "urn:entity:artist:qloo-frances-yip",
+      "name": "Frances Yip (叶丽仪) & Fei Yu-ching (费玉清)",
+      "name_zh": "叶丽仪《上海滩》与费玉清《一剪梅》",
+      "affinity": 0.92,
+      "matched_seeds": ["frances yip", "fei yu-ching", "karaoke", "singing"],
+      "why_en": "Favourite karaoke duet and solo repertoire at Active Ageing Centres across Singapore.",
+      "why_zh": "活跃乐龄中心卡拉OK最受欢迎的粤语及华语长青金曲。"
+    },
+    {
+      "entity_id": "urn:entity:artist:qloo-p-ramlee",
+      "name": "Tan Sri P. Ramlee & Biduanita Saloma — 'Getaran Jiwa'",
+      "name_zh": "比·南利与莎萝玛 —《Getaran Jiwa》马来黄金年代经典",
+      "affinity": 0.96,
+      "matched_seeds": ["p. ramlee", "saloma", "m. nasir", "kopi", "exercise"],
+      "why_en": "Qloo anchors Jalan Ampas golden-era Malay melodies directly to Nusantara warung and community radio tastes.",
+      "why_zh": "Qloo 将惹兰安拔士黄金年代马来金曲与本地传统咖啡店品味紧密相连。"
+    },
+    {
+      "entity_id": "urn:entity:artist:qloo-tm-soundararajan",
+      "name": "T.M. Soundararajan & P. Susheela — Golden Tamil Melodies",
+      "name_zh": "T.M. Soundararajan 与 P. Susheela — 泰米尔经典旋律",
+      "affinity": 0.95,
+      "matched_seeds": ["t.m. soundararajan", "p. susheela", "exercise", "health", "walking"],
+      "why_en": "High Qloo affinity with classic Tamil cinema music and morning brisk-walk radio listeners.",
+      "why_zh": "与泰米尔经典电影音乐及晨运听众群体高度契合。"
+    },
+    {
+      "entity_id": "urn:entity:artist:qloo-gurdas-maan",
+      "name": "Gurdas Maan & Surinder Kaur — Punjabi Folk Classics",
+      "name_zh": "Gurdas Maan 与 Surinder Kaur — 旁遮普民谣经典",
+      "affinity": 0.94,
+      "matched_seeds": ["gurdas maan", "walking", "gardening", "chatting"],
+      "why_en": "Qloo connects Punjabi folk and devotional melodies with community garden and family tea gatherings.",
+      "why_zh": "Qloo 将旁遮普传统民谣与社区园艺及茶叙品味相连。"
+    },
+    {
+      "entity_id": "urn:entity:artist:qloo-cliff-richard",
+      "name": "Cliff Richard & The Shadows — 1960s Rediffusion Oldies",
+      "name_zh": "Cliff Richard & The Shadows — 60年代丽的呼声英文怀旧金曲",
+      "affinity": 0.91,
+      "matched_seeds": ["cliff richard", "gardening", "crafts", "chatting", "kopi"],
+      "why_en": "Loved by English-speaking Singapore seniors who grew up with 1960s Rediffusion and vinyl tea dances.",
+      "why_zh": "深受听60年代丽的呼声长大的英语系长者喜爱。"
+    }
+  ],
+  "movies": [
+    {
+      "entity_id": "urn:entity:movie:qloo-love-eterne",
+      "name": "The Love Eterne (梁山伯与祝英台, 1963 Shaw Brothers)",
+      "name_zh": "邵氏黄梅调经典《梁山伯与祝英台》(1963)",
+      "affinity": 0.94,
+      "matched_seeds": ["teresa teng", "fong fei-fei", "frances yip", "karaoke", "singing", "mahjong"],
+      "why_en": "Qloo cross-domain link: fans of 1970s Mandopop and community singing strongly favour Shaw Brothers Huangmei opera films.",
+      "why_zh": "Qloo 跨领域洞察：喜爱70年代华语金曲与歌唱的长者，对邵氏黄梅调电影有极高共鸣。"
+    },
+    {
+      "entity_id": "urn:entity:movie:qloo-bujang-lapok",
+      "name": "Bujang Lapok (1957 Jalan Ampas Studio, Singapore)",
+      "name_zh": "新加坡惹兰安拔士经典喜剧《Bujang Lapok》(1957)",
+      "affinity": 0.95,
+      "matched_seeds": ["p. ramlee", "saloma", "m. nasir", "kopi"],
+      "why_en": "Filmed in Singapore's Jalan Ampas; Qloo's top nostalgia film match for P. Ramlee and Nusantara kopi culture.",
+      "why_zh": "摄于新加坡惹兰安拔士，是 Qloo 为比·南利乐迷匹配的头号怀旧电影。"
+    },
+    {
+      "entity_id": "urn:entity:movie:qloo-pasamalar",
+      "name": "Pasamalar (1961) & Karnan (1964) — Sivaji Ganesan Classics",
+      "name_zh": "泰米尔影史经典《Pasamalar》(1961) 与《Karnan》(1964)",
+      "affinity": 0.93,
+      "matched_seeds": ["t.m. soundararajan", "p. susheela", "gurdas maan", "exercise", "health"],
+      "why_en": "Iconic 1960s Tamil cinema featuring T.M. Soundararajan and P. Susheela playback vocals.",
+      "why_zh": "由 T.M. Soundararajan 与 P. Susheela 幕后献唱的60年代经典泰米尔电影。"
+    },
+    {
+      "entity_id": "urn:entity:movie:qloo-young-ones",
+      "name": "The Young Ones (1961) & Cathay-Keris Singapore Matinee Classics",
+      "name_zh": "《The Young Ones》(1961) 与国泰克里斯怀旧早场电影",
+      "affinity": 0.90,
+      "matched_seeds": ["cliff richard", "gardening", "crafts", "chatting", "walking"],
+      "why_en": "Qloo connects 1960s English oldies and community craft circles with classic Cathay and Capitol cinema matinees.",
+      "why_zh": "Qloo 将60年代英文金曲与国泰戏院怀旧早场电影品味相连接。"
+    }
+  ]
+}

@@ -17,6 +17,7 @@ from backend.engine.config import T
 from backend.engine.history import build
 from backend.env.data import _km
 from backend.env.places import WEEKDAYS, _fits, home_point, place, places, sample_programmes, suggest
+from backend.taste.agent import build_taste_plan
 
 
 def activities(store, senior: dict, today: date, *, responses: bool = True) -> dict:
@@ -56,6 +57,8 @@ def activities(store, senior: dict, today: date, *, responses: bool = True) -> d
     def for_family(s: dict) -> str:
         """The engine words why_it_fits to the senior ("You said you like…", in their language). The family
         app needs it about them, in English: rebuilt here from the same facts."""
+        if s["place_id"].startswith("urn:entity:"):
+            return s["why_it_fits"]
         if s["kind"] == "programme":
             like = (by_id.get(s["place_id"]) or {}).get("fits")
             return f"They like {like}" if like else "At their own centre"
@@ -92,6 +95,7 @@ def activities(store, senior: dict, today: date, *, responses: bool = True) -> d
         "suggestions": [{"id": s["id"], "date": s["date"], "place": s["place"], "kind": s["kind"], "why_it_fits": s["why_it_fits"],
                          "indoor": s["indoor"], "sample": s.get("sample", False),
                          "response": s.get("response") if responses else None} for s in sugs],
+        "taste_plan": build_taste_plan(senior, today, indoor_only=rainy or hazy, rain_mm=d.rain_mm, psi=d.psi),
         "source": "AAC and CC locations: MOH Eldercare Services and PA Community Clubs on data.gov.sg (fetched 13 Oct 2026). "
                   "Programmes: entered by centre staff, or samples where none are entered.",
     }

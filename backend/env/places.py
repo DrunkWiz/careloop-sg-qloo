@@ -84,7 +84,29 @@ def suggest(senior: dict, day: date, *, indoor_only: bool, programmes: list[dict
                 "why_it_fits": (f"您喜欢{like}" if zh else f"You said you like {like}") if like else ("在您的活动中心" if zh else "At your own centre"),
                 "indoor": p["indoor"], "free": p["free"], "sample": p.get("sample", False),
             })
-            if len(out) >= limit - 1:
+            if len(out) >= 1:
+                break
+
+    # Include the top health-safe Qloo Taste AI recommendation so the senior's daily card
+    # combines their own AAC timetable with Qloo cross-domain discovery.
+    from backend.taste.agent import build_taste_plan
+    plan = build_taste_plan(senior, day, indoor_only=indoor_only)
+    for qp in plan["recommendations"]["places"]:
+        if qp["entity_id"] in hidden:
+            continue
+        badge_note = f" ({', '.join(qp['fit_badges'][:2])})" if qp.get("fit_badges") else ""
+        out.append({
+            "place_id": qp["entity_id"],
+            "place": qp["name"],
+            "kind": "programme",
+            "why_it_fits": f"{qp['why']}{badge_note}",
+            "indoor": qp["indoor"],
+            "free": qp["free"],
+            "sample": False,
+        })
+        break
+        pass
+        if False:
                 break
 
     near = home_point(senior)
