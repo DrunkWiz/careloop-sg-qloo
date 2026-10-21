@@ -244,13 +244,24 @@ export function RespiteShieldCard({ seniorId, name }: { seniorId: string; name: 
     getSeniorRespite(seniorId).then(setRespite, () => setRespite(null));
   }, [seniorId]);
 
-  if (!respite) return null;
+  if (!respite || !respite.matched_programme) return null;
 
-  const waUrl = `https://wa.me/?text=${encodeURIComponent(respite.whatsapp_text)}`;
+  const waText = respite.whatsapp_text ?? '';
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(waText)}`;
+  const streakDays = respite.burnout_shield?.streak_days ?? 4;
+  const triggerReason = respite.burnout_shield?.trigger_reason ?? '';
+  const fitPct = respite.matched_programme?.qloo_fit_pct ?? 92;
+  const slot = respite.recommended_slot ?? 'Saturday 2:00 PM – 5:00 PM';
+  const progWhen = respite.matched_programme?.when ?? 'Sat 2:30pm';
+  const progWhere = respite.matched_programme?.where ?? 'Active Ageing Centre';
+  const progWhy = respite.matched_programme?.why_safe_and_loved ?? '';
+  const backupName = respite.backup_contact?.name ?? 'Family Backup';
+  const primaryName = respite.primary_caregiver?.name ?? 'Primary Caregiver';
+  const treat = respite.companion_picks?.post_session_treat ?? 'Warm tau huay (less sweet)';
 
   const onCopy = async () => {
     try {
-      await navigator.clipboard.writeText(respite.whatsapp_text);
+      await navigator.clipboard.writeText(waText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
@@ -263,12 +274,14 @@ export function RespiteShieldCard({ seniorId, name }: { seniorId: string; name: 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
         <h2 style={{ margin: 0 }}>Caregiver Respite & Burnout Shield (3-Hour Plan)</h2>
         <span className="care-pill" style={{ background: 'rgba(15, 118, 110, 0.12)', color: '#0f766e', fontWeight: 600 }}>
-          {respite.burnout_shield.streak_days}-day duty streak · {respite.matched_programme.qloo_fit_pct}% Qloo fit
+          {streakDays}-day duty streak · {fitPct}% Qloo fit
         </span>
       </div>
-      <p className="care-muted" style={{ marginTop: '0.35rem' }}>
-        {respite.burnout_shield.trigger_reason}
-      </p>
+      {triggerReason && (
+        <p className="care-muted" style={{ marginTop: '0.35rem' }}>
+          {triggerReason}
+        </p>
+      )}
       <div
         style={{
           margin: '0.5rem 0',
@@ -279,18 +292,19 @@ export function RespiteShieldCard({ seniorId, name }: { seniorId: string; name: 
         }}
       >
         <p style={{ margin: '0 0 0.25rem' }}>
-          <strong>Guilt-Free {respite.window_hours}-Hour Slot:</strong> {respite.recommended_slot}
+          <strong>Guilt-Free {respite.window_hours ?? 3}-Hour Slot:</strong> {slot}
         </p>
         <p className="care-muted" style={{ margin: '0 0 0.25rem' }}>
-          <strong>Matched AAC Programme for {name}:</strong> {respite.matched_programme.title} ({respite.matched_programme.when} ·{' '}
-          {respite.matched_programme.where})
+          <strong>Matched AAC Programme for {name}:</strong> {respite.matched_programme.title} ({progWhen} · {progWhere})
         </p>
-        <p className="care-muted" style={{ margin: '0 0 0.25rem' }}>
-          <strong>Why {name} will enjoy it safely:</strong> {respite.matched_programme.why_safe_and_loved}
-        </p>
+        {progWhy && (
+          <p className="care-muted" style={{ margin: '0 0 0.25rem' }}>
+            <strong>Why {name} will enjoy it safely:</strong> {progWhy}
+          </p>
+        )}
         <p className="care-muted" style={{ margin: 0 }}>
-          <strong>Family Rota Cover:</strong> {respite.backup_contact.name} covers for {respite.primary_caregiver.name} ·{' '}
-          <strong>Treat after session:</strong> {respite.companion_picks.post_session_treat}
+          <strong>Family Rota Cover:</strong> {backupName} covers for {primaryName} ·{' '}
+          <strong>Treat after session:</strong> {treat}
         </p>
       </div>
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>

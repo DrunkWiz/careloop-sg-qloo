@@ -79,7 +79,7 @@ def _build_demo_seniors() -> list[dict[str, Any]]:
         out.append({
             "id": sid,
             "name": name,
-            "cohort": "demo_13",
+            "cohort": "demo_senior",
             "language": lang_overrides.get(sid, lang),
             "home_postal": postal,
             "region": region,
@@ -121,7 +121,7 @@ def _load_synth_personas() -> list[dict[str, Any]]:
                 "id": s["id"],
                 "name": s["name"],
                 "display_name": f"{s['name']} ({s['id']})",
-                "cohort": "synth_25",
+                "cohort": "synthetic_persona",
                 "subcohort": tag,
                 "language": enrich["lang"],
                 "home_postal": s.get("home_postal", "560000"),
@@ -152,7 +152,7 @@ def _load_synth_personas() -> list[dict[str, Any]]:
             "id": sid,
             "name": sname,
             "display_name": f"{sname} ({sid})",
-            "cohort": "synth_25",
+            "cohort": "synthetic_persona",
             "subcohort": "multilingual_stress",
             "language": slang,
             "home_postal": "560000",
@@ -245,23 +245,39 @@ def _rule_filtered_llm_simulation(senior: dict[str, Any]) -> dict[str, Any]:
     psi = int(senior.get("psi") or 55)
     rain_mm = float(senior.get("rain_mm") or 0.0)
 
-    violations: list[str] = []
+    violations: list[dict[str, str]] = []
     # Rule-filtered LLM picks a generic low-salt meal, but often adds pomelo/citrus salad or organ soup or outdoor walk
     if any(m in meds for m in ("atorvastatin", "simvastatin")):
         food_pick = "Steamed Chicken with Pomelo & Grapefruit Citrus Salad"
-        violations.append("med.statin_grapefruit (Missed pharmacist leaflet interaction: statin + pomelo/grapefruit CYP3A4)")
+        violations.append({
+            "rule_code": "med.statin_grapefruit",
+            "item": "Pomelo & Grapefruit Citrus Salad",
+            "reason": "Missed pharmacist leaflet interaction: statin + pomelo/grapefruit CYP3A4",
+        })
     elif "gout" in conds and "halal" in conds:
         food_pick = "Low-Salt Sardine & Legume Soup (Generic Health Prompt)"
-        violations.append("cond.gout (Missed high-purine sardine trigger in generic low-salt prompt)")
+        violations.append({
+            "rule_code": "cond.gout",
+            "item": "Sardine & Legume Soup",
+            "reason": "Missed high-purine sardine trigger in generic low-salt prompt",
+        })
     else:
         food_pick = "Plain Low-Sodium Boiled Vegetable Soup (Generic)"
 
     if psi > 100 or rain_mm >= 5.0:
         activity_pick = "Neighbourhood Park Brisk Walk (30 mins)"
-        violations.append(f"env.indoor_only (Recommended outdoor park walk during PSI {psi} / rain {rain_mm}mm)")
+        violations.append({
+            "rule_code": "env.indoor_only",
+            "item": "Neighbourhood Park Brisk Walk",
+            "reason": f"Recommended outdoor park walk during PSI {psi} / rain {rain_mm}mm",
+        })
     elif "wheelchair" in conds:
         activity_pick = "Heritage Shophouse Upstairs Tea Room"
-        violations.append("cond.mobility_aid (Venue not verified wheelchair step-free)")
+        violations.append({
+            "rule_code": "cond.mobility_aid",
+            "item": "Upstairs Tea Room",
+            "reason": "Venue not verified wheelchair step-free",
+        })
     else:
         activity_pick = "Local Community Centre Stretching Class"
 
@@ -276,6 +292,7 @@ def _rule_filtered_llm_simulation(senior: dict[str, Any]) -> dict[str, Any]:
         has_qloo_urns=False,
     )
     return {
+        "picks": [food_pick, activity_pick, music_pick],
         "food_pick": food_pick,
         "activity_pick": activity_pick,
         "music_pick": music_pick,
@@ -353,17 +370,37 @@ def run_taste_benchmark() -> dict[str, Any]:
         gen_act = gen_picks[1] if len(gen_picks) > 1 else "Take a relaxing morning walk at a nearby neighbourhood park"
         p_conds = {c.lower() for c in p.get("conditions", [])}
         p_meds = {m.get("name", "").lower() for m in p.get("medicines", [])}
-        gen_violations: list[str] = []
+        gen_violations: list[dict[str, str]] = []
         if any(m in p_meds for m in ("amlodipine", "atorvastatin", "simvastatin")):
-            gen_violations.append("med.statin_grapefruit: Suggests mango pomelo sago despite amlodipine/statin CYP3A4 leaflet restriction")
+            gen_violations.append({
+                "rule_code": "med.statin_grapefruit",
+                "item": "Mango Pomelo Sago",
+                "reason": "Suggests mango pomelo sago despite amlodipine/statin CYP3A4 leaflet restriction",
+            })
         if "type 2 diabetes" in p_conds or "diabetes" in p_conds:
-            gen_violations.append("cond.diabetes: Suggests sugary dessert & sweet kueh for type 2 diabetes")
+            gen_violations.append({
+                "rule_code": "cond.diabetes",
+                "item": "Sweet Kueh & Sugary Dessert",
+                "reason": "Suggests sugary dessert & sweet kueh for type 2 diabetes",
+            })
         if "hypertension" in p_conds:
-            gen_violations.append("cond.hypertension: Unscreened hawker/café sodium without Healthier Dining filter")
+            gen_violations.append({
+                "rule_code": "cond.hypertension",
+                "item": "Unscreened Hawker/Café Gravy",
+                "reason": "Unscreened hawker/café sodium without Healthier Dining filter",
+            })
         if indoor_only:
-            gen_violations.append(f"env.indoor_only: Suggests outdoor neighbourhood park walk during PSI {psi} / rain {rain_mm}mm")
+            gen_violations.append({
+                "rule_code": "env.indoor_only",
+                "item": "Outdoor Neighbourhood Park Walk",
+                "reason": f"Suggests outdoor neighbourhood park walk during PSI {psi} / rain {rain_mm}mm",
+            })
         if "wheelchair" in p_conds:
-            gen_violations.append("cond.mobility_aid: Unverified step-free accessibility")
+            gen_violations.append({
+                "rule_code": "cond.mobility_aid",
+                "item": "Unverified Venue",
+                "reason": "Unverified step-free accessibility",
+            })
         gen_spec = _score_cultural_specificity(
             food_title="Local café coffee and sweet treat",
             activity_title="Nearby neighbourhood park walk",
@@ -418,12 +455,20 @@ def run_taste_benchmark() -> dict[str, Any]:
         q_urns = qplan.get("telemetry", {}).get("resolved_urns", [])
 
         # Verify zero clinical/leaflet/weather violations in CareLoop + Qloo recommendations
-        q_violations: list[str] = []
+        q_violations: list[dict[str, str]] = []
         for pl in places_list:
             if indoor_only and not pl.get("indoor", True):
-                q_violations.append(f"activity: {pl.get('name')} (outdoor during haze/rain)")
+                q_violations.append({
+                    "rule_code": "env.indoor_only",
+                    "item": str(pl.get("name") or ""),
+                    "reason": "Outdoor during haze/rain",
+                })
             if not pl.get("guardrail", {}).get("passed", True):
-                q_violations.append(f"guardrail: {pl.get('name')}")
+                q_violations.append({
+                    "rule_code": "guardrail",
+                    "item": str(pl.get("name") or ""),
+                    "reason": "Failed guardrail check",
+                })
 
         # Verify guardrail pass on localized low-day comfort nudge
         nudge_text = qplan["low_day_nudge"]["text"]
@@ -466,16 +511,21 @@ def run_taste_benchmark() -> dict[str, Any]:
             if not lang_stats[lang_key]["sample_nudge"]:
                 lang_stats[lang_key]["sample_nudge"] = nudge_text
 
+        dietary_prefs = [c for c in p.get("conditions", []) if c in ("halal", "vegetarian", "no_beef", "wheelchair")]
         rows.append({
             "id": p["id"],
+            "persona_id": p["id"],
             "name": p["name"],
             "cohort": p["cohort"],
             "language": lang_key,
             "conditions": p["conditions"],
             "medicines": [m["name"] for m in p.get("medicines", [])],
+            "dietary_prefs": dietary_prefs,
+            "likes": list(p.get("likes") or []),
             "psi": psi,
             "rain_mm": rain_mm,
             "generic_llm": {
+                "picks": [gen_food, gen_act, "Listen to old songs on the radio"],
                 "food_pick": gen_food,
                 "activity_pick": gen_act,
                 "music_pick": "Listen to old songs on the radio",
@@ -486,15 +536,20 @@ def run_taste_benchmark() -> dict[str, Any]:
             },
             "rule_filtered_llm": rf,
             "careloop_qloo": {
+                "picks": [q_food, q_act],
                 "food_pick": q_food,
                 "food_entity_id": top_place.get("entity_id"),
                 "activity_pick": q_act,
                 "activity_entity_id": second_place.get("entity_id") or top_place.get("entity_id"),
                 "music_pick": q_music,
                 "film_pick": q_film,
+                "movie_pick": q_film,
                 "resolved_urn_count": len(q_urns),
+                "qloo_urns_resolved": len(q_urns),
                 "blocked_rules": blocked_rules,
+                "filtered_out_rules": blocked_rules,
                 "blocked_count": len(qplan.get("filtered_out", [])),
+                "filtered_out_count": len(qplan.get("filtered_out", [])),
                 "violated": len(q_violations) > 0,
                 "violation_count": len(q_violations),
                 "violations": q_violations,
@@ -517,9 +572,11 @@ def run_taste_benchmark() -> dict[str, Any]:
             "id": st["id"],
             "name": st["name"],
             "subtitle": st["subtitle"],
+            "description": st["subtitle"],
             "personas_evaluated": n,
             "clinical_violation_rate_pct": viol_rate,
             "violated_personas": st["violated_personas"],
+            "personas_with_violation": st["violated_personas"],
             "total_violations": st["total_violations"],
             "cultural_specificity_score": spec_avg,
             "multilingual_coverage_pct": ml_rate,
@@ -527,22 +584,28 @@ def run_taste_benchmark() -> dict[str, Any]:
             "resolved_qloo_urns_avg": urn_avg,
         })
 
-    multilingual_out = []
+    multilingual_out: dict[str, dict[str, Any]] = {}
     for lk in ("en", "zh", "ms", "ta"):
         ls = lang_stats[lk]
         cnt = max(1, ls["personas"])
-        multilingual_out.append({
+        pass_pct = round(100.0 * ls["qloo_pass"] / cnt, 1)
+        spec_avg_lk = round(ls["specificity_sum"] / cnt, 1)
+        multilingual_out[lk] = {
             "language": ls["language"],
             "label": ls["label"],
             "personas": ls["personas"],
-            "pass_rate_pct": round(100.0 * ls["qloo_pass"] / cnt, 1),
-            "avg_specificity": round(ls["specificity_sum"] / cnt, 1),
+            "tested_personas": ls["personas"],
+            "pass_rate_pct": pass_pct,
+            "guardrail_pass_rate_pct": pass_pct,
+            "avg_specificity": spec_avg_lk,
+            "cultural_specificity_avg": spec_avg_lk,
             "sample_nudge": ls["sample_nudge"],
-        })
+        }
 
     return {
         "benchmark_version": "2.0.0",
         "generated_at": EVAL_DATE.isoformat(),
+        "evaluated_on": EVAL_DATE.isoformat(),
         "qloo_mode": "live" if qloo.is_live else "fixture",
         "total_personas": n,
         "cohorts": {
@@ -565,4 +628,5 @@ def run_taste_benchmark() -> dict[str, Any]:
             for k, v in sorted(rule_interception_counts.items(), key=lambda x: (-x[1], x[0]))
         ],
         "personas": rows,
+        "per_persona": rows,
     }

@@ -1042,6 +1042,7 @@ def build_kopi_kakis(
                     "name": name_a,
                     "zh": sa.get("zh", ""),
                     "language": lang_a,
+                    "likes": list(sa.get("likes") or []),
                     "neighbourhood": ea["profile"]["neighbourhood"],
                     "conditions": list(sa.get("conditions") or []),
                     "dietary_prefs": list(sa.get("dietary_prefs") or []),
@@ -1051,6 +1052,7 @@ def build_kopi_kakis(
                     "name": name_b,
                     "zh": sb.get("zh", ""),
                     "language": lang_b,
+                    "likes": list(sb.get("likes") or []),
                     "neighbourhood": eb["profile"]["neighbourhood"],
                     "conditions": list(sb.get("conditions") or []),
                     "dietary_prefs": list(sb.get("dietary_prefs") or []),
@@ -1058,7 +1060,10 @@ def build_kopi_kakis(
                 "affinity_score": affinity_score,
                 "affinity_pct": int(round(affinity_score * 100)),
                 "shared_languages": shared_langs,
+                "shared_language_label": " & ".join(shared_langs).upper() if shared_langs else "EN / ZH",
                 "shared_seeds": shared_seeds[:5],
+                "shared_tags": shared_seeds[:5],
+                "shared_urns": [e.get("entity_id", "") for e in shared_entities[:4]],
                 "shared_entities": [
                     {
                         "entity_id": e.get("entity_id", ""),
@@ -1067,7 +1072,9 @@ def build_kopi_kakis(
                     }
                     for e in shared_entities[:4]
                 ],
-                "shared_hooks": hooks_summary,
+                "shared_hooks": [music_hook, food_hook, activity_hook],
+                "shared_hooks_summary": hooks_summary,
+                "union_badges": union_badges,
                 "union_constraints": {
                     "indoor_only": pair_indoor,
                     "badges": union_badges,
@@ -1077,10 +1084,12 @@ def build_kopi_kakis(
                 "safe_meeting_spot": {
                     "entity_id": top_spot["entity_id"],
                     "name": spot_name,
+                    "category": top_spot.get("category", "kopitiam"),
                     "indoor": bool(top_spot.get("indoor", True)),
                     "fit_badges": top_spot.get("fit_badges", []),
                     "why_safe": f"Filtered by union of both seniors' constraints ({safety_note}).",
                 },
+                "companion_music": music_hook,
                 "icebreaker_script": safe_script_en,
                 "icebreaker_script_zh": safe_script_zh,
                 "befriender_script": {
@@ -1095,6 +1104,7 @@ def build_kopi_kakis(
         "aac_id": aac_id,
         "aac_name": aac_name,
         "date": day.isoformat(),
+        "focus_senior_id": focus_senior_id,
         "qloo_mode": qloo_mode,
         "cohort_size": len(seniors),
         "pairs": pairs,
@@ -1250,7 +1260,9 @@ def build_memory_lane(
         "prompt_id": f"prompt-{sid}-{day.isoformat()}",
         "date": day.isoformat(),
         "qloo_seed": music_ent["name"],
+        "qloo_urn": music_ent["entity_id"],
         "entity_id": music_ent["entity_id"],
+        "music_companion": music_ent["name"],
         "film_companion": movie_ent.get("name", film_seed),
         "film_entity_id": movie_ent.get("entity_id", "urn:entity:movie:qloo-love-eterne"),
         "food_companion": food_seed,
@@ -1290,13 +1302,17 @@ def build_memory_lane(
             str(cap.get("story_text") or ""),
             "A cherished family memory of classic melodies and morning kopi with old friends.",
         )
+        cap_urn = cap.get("qloo_urn") or cap.get("entity_id") or music_ent["entity_id"]
+        cap_era = cap.get("era_tag") or cap.get("era") or "1970s"
         merged_capsules.append({
             "id": cid,
             "senior_id": sid,
             "date": cap.get("date") or day.isoformat(),
             "qloo_seed": cap.get("qloo_seed") or music_ent["name"],
-            "entity_id": cap.get("entity_id") or music_ent["entity_id"],
-            "era": cap.get("era") or "1970s",
+            "qloo_urn": cap_urn,
+            "entity_id": cap_urn,
+            "era": cap_era,
+            "era_tag": cap_era,
             "prompt": cap.get("prompt") or safe_prompt,
             "story_text": safe_story,
             "language": cap.get("language") or lang,
@@ -1307,6 +1323,7 @@ def build_memory_lane(
     return {
         "senior_id": sid,
         "senior_name": sname,
+        "language": lang,
         "date": day.isoformat(),
         "qloo_mode": qloo_mode,
         "daily_prompt": daily_prompt,
@@ -1373,9 +1390,11 @@ def create_memory_capsule(
         "senior_id": sid,
         "date": day.isoformat(),
         "qloo_seed": seed,
+        "qloo_urn": eid,
         "entity_id": eid,
         "qloo_domain": qloo_domain or ("urn:entity:movie" if ":movie:" in eid else "urn:entity:artist"),
         "era": "1960s–1980s",
+        "era_tag": "1960s–1980s",
         "prompt": safe_prompt,
         "story_text": safe_story,
         "language": lang,
@@ -1419,8 +1438,10 @@ def build_respite_plan(
     aac_name = senior.get("aac_name") or "CareActive Toa Payoh Hub"
 
     contacts_list = list(contacts or [])
+    primary_id = contacts_list[0].get("id", f"{sid}-primary") if contacts_list else f"{sid}-primary"
     primary_name = contacts_list[0]["name"] if contacts_list else "Wei Ling"
     primary_rel = contacts_list[0].get("relation", "Daughter") if contacts_list else "Primary family caregiver"
+    cover_id = contacts_list[1].get("id", f"{sid}-backup") if len(contacts_list) > 1 else f"{sid}-backup"
     cover_name = contacts_list[1]["name"] if len(contacts_list) > 1 else "Kelvin"
     cover_rel = contacts_list[1].get("relation", "Son / Sibling") if len(contacts_list) > 1 else "Family Rota Backup"
     cover_phone = contacts_list[1].get("phone", "+6591234568") if len(contacts_list) > 1 else "+6591234568"
@@ -1468,6 +1489,7 @@ def build_respite_plan(
     prog_title = (best_prog or {}).get("title") or f"Afternoon Sing-Along & Kopi O Kosong Kakis ({music_label.split('—')[0].strip()})"
     prog_time = (best_prog or {}).get("time") or "Wed Afternoon Session"
     prog_id = (best_prog or {}).get("id") or f"respite-prog-{sid}"
+    prog_kind = (best_prog or {}).get("kind") or "programme"
 
     all_seeds_list = [
         *plan["profile"].get("music_seeds", []),
@@ -1504,6 +1526,11 @@ def build_respite_plan(
         if eff_vent_count > 0
         else f"{primary_name} has an active multi-day primary care streak on the Family Rota"
     )
+    affinity_val = float(top_music["affinity"] if top_music else 0.95)
+    qloo_fit_pct = int(round(affinity_val * 100))
+    summary_text = (
+        f"{sname} is matched to '{prog_title}' at {aac_name} ({prog_time}) while {cover_name} covers on the Family Rota so {primary_name} can take a guilt-free 3-hour breather."
+    )
 
     return {
         "senior_id": sid,
@@ -1511,16 +1538,25 @@ def build_respite_plan(
         "date": day.isoformat(),
         "qloo_mode": qloo_mode,
         "window_hours": 3,
+        "recommended_slot": f"{prog_time} (3-Hour Respite Window)",
         "primary_caregiver": {
+            "id": primary_id,
             "name": primary_name,
             "relation": primary_rel,
             "streak_days": eff_streak_days,
         },
         "backup_contact": {
+            "id": cover_id,
             "name": cover_name,
             "relation": cover_rel,
             "phone": cover_phone,
             "rota_action": f"Assign {cover_name} to cover {prog_time}",
+        },
+        "burnout_shield": {
+            "active": bool(eff_streak_days >= 3 or eff_vent_count > 0),
+            "streak_days": eff_streak_days,
+            "has_recent_vent": bool(eff_vent_count > 0),
+            "trigger_reason": trigger_reason,
         },
         "burnout_status": {
             "primary_caregiver": primary_name,
@@ -1541,18 +1577,30 @@ def build_respite_plan(
         "matched_programme": {
             "id": prog_id,
             "title": prog_title,
+            "when": prog_time,
             "time": prog_time,
+            "where": aac_name,
+            "kind": prog_kind,
             "aac_id": aac_id,
             "aac_name": aac_name,
             "qloo_entity_id": top_music["entity_id"] if top_music else "urn:entity:artist:qloo-teresa-teng",
             "companion_place": place_label,
-            "affinity": top_music["affinity"] if top_music else 0.95,
+            "affinity": affinity_val,
+            "qloo_fit_pct": qloo_fit_pct,
             "indoor": True,
             "fit_badges": safety_badges,
+            "safety_badges": safety_badges,
+            "why_safe_and_loved": f"{safe_why_taste} {safe_why_safe}",
             "why_taste_fit": safe_why_taste,
             "why_medical_safe": safe_why_safe,
         },
+        "companion_picks": {
+            "post_session_treat": place_label,
+            "music_on_way": music_label,
+        },
+        "summary": summary_text,
         "cover_contact": {
+            "id": cover_id,
             "name": cover_name,
             "relation": cover_rel,
             "phone": cover_phone,

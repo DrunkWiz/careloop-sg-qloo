@@ -1,7 +1,7 @@
 // CareLoop's service worker. It keeps the app itself (pages, scripts, styles, icons) so the app opens
 // without a connection. It never caches API answers: health data always comes fresh from the API, which
 // lives on another origin and is left alone here.
-const VERSION = 'careloop-v2';
+const VERSION = 'careloop-v3';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(['/index.html'])).then(() => self.skipWaiting()));
