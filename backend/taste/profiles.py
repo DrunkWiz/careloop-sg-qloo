@@ -240,14 +240,17 @@ def extract_taste_seeds_from_text(text: str, client=None) -> list[dict]:
         client = QlooClient()
 
     for triggers, canonical_seed, category in CHECKIN_TASTE_KEYWORDS:
-        if any(t in lowered for t in triggers) and canonical_seed.lower() not in seen_seeds:
+        matched_trigger = next((t for t in triggers if t in lowered), None)
+        if matched_trigger and canonical_seed.lower() not in seen_seeds:
             seen_seeds.add(canonical_seed.lower())
             sr = client.search(canonical_seed, location="Singapore", limit=1)
             top = (sr.get("results") or [{}])[0]
             extracted.append({
                 "seed": canonical_seed,
                 "canonical": canonical_seed,
+                "phrase": matched_trigger,
                 "category": category,
+                "domain": category,
                 "entity_id": top.get("entity_id", f"urn:entity:place:qloo-{canonical_seed.lower().replace(' ', '-')}"),
                 "entity_name": top.get("name", canonical_seed),
             })

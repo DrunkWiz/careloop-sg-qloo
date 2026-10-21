@@ -90,7 +90,7 @@ TasteLang = Literal["en", "en-SG", "zh", "ms", "ta"]
 class CheckInIn(BaseModel):
     senior_id: str
     text: str = Field(min_length=1, max_length=2000)
-    language: Optional[Lang] = None
+    language: Optional[TasteLang] = None
     source: Literal["voice", "typed", "button"] = "typed"
     time: Optional[datetime] = None
 
@@ -166,7 +166,8 @@ def meta():
 @app.post("/checkin")
 def post_checkin(body: CheckInIn):
     senior = senior_or_404(body.senior_id)
-    lang = body.language or senior["language"]
+    req_lang = body.language or senior["language"]
+    lang: Lang = "en" if req_lang in ("ms", "ta") else req_lang  # type: ignore[assignment]
     t = body.time or now()
     facts = understand(body.text, lang)
     cid = f"ck-{body.senior_id}-{t.strftime('%Y%m%d%H%M%S')}-{random.randrange(10**6):06d}"
@@ -189,7 +190,25 @@ def post_checkin(body: CheckInIn):
         if changed:
             senior["likes"] = likes
             store.put("senior", senior)
-    return {"checkin_id": cid, "facts": facts.to_dict(), "message": reply, "rung": decision["rung"], "extracted_tastes": extracted}
+    reply_text = reply["text"] if reply else ""
+    if not reply_text and (extracted or decision.get("rung") == "2"):
+        nudge = build_taste_plan(
+            {**senior, "language": req_lang},
+            t.date(),
+            erased_keys=_erased_taste(body.senior_id),
+        ).get("low_day_nudge") or {}
+        reply_text = nudge.get("text", "Thank you for checking in.")
+    elif not reply_text:
+        reply_text = "Thank you for checking in."
+    return {
+        "checkin_id": cid,
+        "facts": facts.to_dict(),
+        "message": reply,
+        "reply_text": reply_text,
+        "rung": decision["rung"],
+        "rule_id": decision.get("rule_id", ""),
+        "extracted_tastes": extracted,
+    }
 
 
 @app.post("/reading")
@@ -371,7 +390,7 @@ def post_senior_memory(sid: str, body: MemoryIn):
 
 
 @app.get("/senior/{sid}/respite")
-def get_senior_respite(sid: str):
+def get_senior_respite(sid: str, streak_days: Optional[int] = None):
     """Caregiver Respite & Burnout Shield: 3-hour guilt-free respite plan matched with a safe Qloo AAC programme."""
     senior = senior_or_404(sid)
     t = today()
@@ -380,7 +399,7 @@ def get_senior_respite(sid: str):
     aac_id = senior.get("aac_id") or "aac-100"
     progs = _programmes(aac_id)
     rota = store.get("rota", f"rota-{sid}")
-    streak_days = 6 if rota else 5
+    eff_streak = streak_days if streak_days is not None else (6 if rota else 5)
     cutoff = (now() - timedelta(days=7)).isoformat()
     recent_vents = [p for p in store.list("ventpost") if not p.get("hidden") and p["time"] >= cutoff]
     return build_respite_plan(
@@ -388,7 +407,7 @@ def get_senior_respite(sid: str):
         t,
         contacts=contacts,
         programmes=progs,
-        streak_days=streak_days,
+        streak_days=eff_streak,
         has_recent_vent=len(recent_vents) > 0,
         indoor_only=bool((d.rain_mm or 0) >= 5.0 or (d.psi or 0) > 100),
         psi=d.psi,
