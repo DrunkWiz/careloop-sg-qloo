@@ -281,35 +281,25 @@ export default function JudgeCommandCenter() {
   };
 
   return (
-    <div className="care theme-centre" style={{ minHeight: '100vh', background: '#f2f7f6', paddingBottom: '2.5rem' }}>
+    <div className="care theme-centre" style={{ minHeight: '100vh', background: 'var(--cl-bg)', paddingBottom: '2.5rem' }}>
       {/* Top Command Bar & Qloo Telemetry Pill */}
       <header
         style={{
-          background: '#111827',
-          color: '#f9fafb',
-          padding: '0.75rem 1.25rem',
+          background: 'var(--cl-card)',
+          color: 'var(--cl-text)',
+          padding: '0.85rem 1.25rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '0.75rem',
-          borderBottom: '2px solid #0f766e',
+          borderBottom: '1px solid var(--cl-border)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Brand />
-          <span
-            style={{
-              background: '#0f766e',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: '0.76rem',
-              padding: '0.22rem 0.6rem',
-              borderRadius: 999,
-              letterSpacing: '0.04em',
-            }}
-          >
-            SYNCHRONIZED JUDGE COMMAND CENTER
+          <span className="care-pill">
+            Synchronized Walkthrough Studio
           </span>
         </div>
 
@@ -321,15 +311,15 @@ export default function JudgeCommandCenter() {
             alignItems: 'center',
             gap: '0.65rem',
             flexWrap: 'wrap',
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.16)',
+            background: 'var(--cl-surface)',
+            border: '1px solid var(--cl-border)',
             borderRadius: 999,
             padding: '0.3rem 0.85rem',
             fontSize: '0.78rem',
           }}
         >
           <span>
-            <strong style={{ color: '#34d399' }}>● Qloo Mode:</strong> <code>{telemetry.mode}</code>
+            <strong style={{ color: 'var(--cl-accent)' }}>Qloo Mode:</strong> <code>{telemetry.mode}</code>
           </span>
           <span>·</span>
           <span title={telemetry.resolved_urns.join(', ')}>
@@ -339,7 +329,7 @@ export default function JudgeCommandCenter() {
           <span>·</span>
           <span>
             <strong>Guardrail Pass:</strong>{' '}
-            <strong style={{ color: '#34d399' }}>{telemetry.guardrail_pass_rate.toFixed(0)}%</strong>
+            <strong style={{ color: 'var(--cl-accent)' }}>{telemetry.guardrail_pass_rate.toFixed(0)}%</strong>
           </span>
           <span>·</span>
           <span>
@@ -349,29 +339,16 @@ export default function JudgeCommandCenter() {
 
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <a
+            className="care-secondary"
             href="/eval/taste"
-            style={{
-              color: '#f9fafb',
-              background: 'rgba(255,255,255,0.12)',
-              padding: '0.35rem 0.7rem',
-              borderRadius: 6,
-              textDecoration: 'none',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-            }}
+            style={{ textDecoration: 'none', width: 'auto', padding: '0 0.85rem', minHeight: 36, fontSize: '0.82rem' }}
           >
-            📊 Qloo Ablation Benchmark (/eval/taste)
+            Qloo Ablation Benchmark (/eval/taste)
           </a>
           <a
+            className="care-secondary"
             href="/care?demo=1"
-            style={{
-              color: '#f9fafb',
-              background: 'rgba(255,255,255,0.12)',
-              padding: '0.35rem 0.7rem',
-              borderRadius: 6,
-              textDecoration: 'none',
-              fontSize: '0.8rem',
-            }}
+            style={{ textDecoration: 'none', width: 'auto', padding: '0 0.85rem', minHeight: 36, fontSize: '0.82rem' }}
           >
             Full /care App ↗
           </a>
@@ -402,20 +379,19 @@ export default function JudgeCommandCenter() {
                 }}
                 style={{
                   textAlign: 'left',
-                  padding: '0.7rem 0.85rem',
-                  borderRadius: 10,
-                  border: isActive ? '2px solid #0f766e' : '1px solid rgba(0,0,0,0.12)',
-                  background: isActive ? '#ffffff' : 'rgba(255,255,255,0.78)',
-                  boxShadow: isActive ? '0 4px 14px rgba(15, 118, 110, 0.14)' : 'none',
+                  padding: '0.75rem 0.9rem',
+                  borderRadius: 14,
+                  border: isActive ? '2px solid var(--cl-accent)' : '1px solid var(--cl-border)',
+                  background: isActive ? 'var(--cl-card)' : 'var(--cl-surface)',
                   cursor: 'pointer',
                   display: 'grid',
                   gap: '0.2rem',
                 }}
               >
-                <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#0f766e', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--cl-accent)', textTransform: 'uppercase' }}>
                   {sc.badge}
                 </span>
-                <strong style={{ fontSize: '0.96rem', color: '#111827' }}>▶ {sc.title}</strong>
+                <strong style={{ fontSize: '0.96rem', color: 'var(--cl-text)' }}>{sc.title}</strong>
                 <span className="care-muted" style={{ fontSize: '0.78rem', lineHeight: 1.35 }}>
                   {sc.subtitle}
                 </span>
@@ -430,10 +406,10 @@ export default function JudgeCommandCenter() {
           style={{
             marginTop: '0.65rem',
             padding: '0.55rem 0.85rem',
-            borderRadius: 8,
-            background: '#ecfdf5',
-            border: '1px solid #a7f3d0',
-            color: '#065f46',
+            borderRadius: 10,
+            background: 'var(--cl-accent-soft)',
+            border: '1px solid var(--cl-border)',
+            color: 'var(--cl-accent)',
             fontSize: '0.86rem',
             display: 'flex',
             justifyContent: 'space-between',
@@ -468,11 +444,11 @@ export default function JudgeCommandCenter() {
         <section
           aria-label="Senior Phone Live View"
           style={{
-            background: '#fffdf9',
-            border: '3px solid #1f2937',
-            borderRadius: 28,
-            padding: '1rem',
-            boxShadow: '0 10px 28px rgba(0,0,0,0.1)',
+            background: 'var(--cl-card)',
+            border: '2px solid var(--cl-border)',
+            borderRadius: 24,
+            padding: '1.1rem',
+            boxShadow: 'var(--cl-shadow)',
           }}
         >
           <div
@@ -482,11 +458,11 @@ export default function JudgeCommandCenter() {
               alignItems: 'center',
               paddingBottom: '0.6rem',
               marginBottom: '0.65rem',
-              borderBottom: '1px solid rgba(0,0,0,0.08)',
+              borderBottom: '1px solid var(--cl-border)',
             }}
           >
             <div>
-              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#0f766e', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--cl-accent)', textTransform: 'uppercase' }}>
                 SENIOR PHONE · /senior?senior=tan
               </span>
               <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Mr Tan Ah Kow (74 · Ang Mo Kio)</h2>
@@ -501,9 +477,9 @@ export default function JudgeCommandCenter() {
                     fontSize: '0.72rem',
                     padding: '0.18rem 0.42rem',
                     borderRadius: 6,
-                    border: '1px solid rgba(0,0,0,0.15)',
-                    background: seniorLang === l ? '#0b6e4f' : '#fff',
-                    color: seniorLang === l ? '#fff' : '#111827',
+                    border: '1px solid var(--cl-border)',
+                    background: seniorLang === l ? 'var(--cl-accent)' : 'var(--cl-surface)',
+                    color: seniorLang === l ? '#fff' : 'var(--cl-text)',
                     fontWeight: 600,
                     cursor: 'pointer',
                   }}
@@ -517,14 +493,15 @@ export default function JudgeCommandCenter() {
           {/* Conversational Voice/Text Check-In Box */}
           <div
             style={{
-              background: '#f3f4f6',
+              background: 'var(--cl-surface)',
               borderRadius: 14,
               padding: '0.75rem',
               marginBottom: '0.75rem',
+              border: '1px solid var(--cl-border)',
             }}
           >
-            <div style={{ fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.35rem', color: '#374151' }}>
-              🎙 Morning Voice / Text Check-In (Singlish / Mandarin / Malay)
+            <div style={{ fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.35rem', color: 'var(--cl-text)' }}>
+              Morning Voice / Text Check-In (Singlish / Mandarin / Malay)
             </div>
             <textarea
               rows={2}
@@ -533,7 +510,7 @@ export default function JudgeCommandCenter() {
               style={{
                 width: '100%',
                 borderRadius: 8,
-                border: '1px solid rgba(0,0,0,0.18)',
+                border: '1px solid var(--cl-border)',
                 padding: '0.45rem 0.55rem',
                 fontSize: '0.88rem',
                 boxSizing: 'border-box',
@@ -565,22 +542,12 @@ export default function JudgeCommandCenter() {
 
           {/* Extracted Qloo Seeds */}
           <div style={{ marginBottom: '0.75rem' }}>
-            <div style={{ fontSize: '0.76rem', fontWeight: 700, color: '#4b5563', marginBottom: '0.25rem' }}>
+            <div style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--cl-muted)', marginBottom: '0.25rem' }}>
               EXTRACTED QLOO CULTURAL SEEDS FROM CHECK-IN:
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
               {extractedSeeds.map((s, i) => (
-                <span
-                  key={i}
-                  style={{
-                    fontSize: '0.76rem',
-                    background: '#e0f2fe',
-                    color: '#0369a1',
-                    padding: '0.2rem 0.55rem',
-                    borderRadius: 999,
-                    fontWeight: 600,
-                  }}
-                >
+                <span key={i} className="care-pill">
                   ✓ {s.canonical} ({s.domain})
                 </span>
               ))}
@@ -590,20 +557,20 @@ export default function JudgeCommandCenter() {
           {/* Rung-2 (2.low_day) Comfort Nudge Card */}
           <div
             style={{
-              background: '#ecfdf5',
-              border: '1px solid #6ee7b7',
+              background: 'var(--cl-accent-soft)',
+              border: '1px solid var(--cl-border)',
               borderRadius: 14,
               padding: '0.75rem',
               marginBottom: '0.75rem',
             }}
           >
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#047857', marginBottom: '0.2rem' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--cl-accent)', marginBottom: '0.2rem' }}>
               RUNG-2 COMFORT NUDGE (RULE: 2.low_day · SENIOR-ONLY)
             </div>
             <p style={{ margin: '0 0 0.4rem', fontSize: '0.88rem', lineHeight: 1.4 }}>
               {tastePlan?.low_day_nudge?.nudge_text || tastePlan?.low_day_nudge?.text || checkinReply}
             </p>
-            <div style={{ fontSize: '0.78rem', color: '#065f46' }}>
+            <div style={{ fontSize: '0.78rem', color: 'var(--cl-accent)' }}>
               <strong>Safe Place Pick:</strong> {tastePlan?.recommendations.places[0]?.name ?? 'Kebun Baru Kopitiam'} ·{' '}
               <strong>Music:</strong> {tastePlan?.recommendations.music[0]?.name ?? 'Teresa Teng (邓丽君)'}
             </div>
@@ -613,14 +580,14 @@ export default function JudgeCommandCenter() {
           {memories && (
             <div
               style={{
-                background: '#fefce8',
-                border: '1px solid #fde047',
+                background: 'var(--cl-surface)',
+                border: '1px solid var(--cl-border)',
                 borderRadius: 14,
                 padding: '0.75rem',
               }}
             >
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#854d0e', marginBottom: '0.2rem' }}>
-                📖 MEMORY LANE REMINISCENCE PROMPT ({memories.daily_prompt.qloo_seed})
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--cl-accent)', marginBottom: '0.2rem' }}>
+                MEMORY LANE REMINISCENCE PROMPT ({memories.daily_prompt.qloo_seed})
               </div>
               <p style={{ margin: '0 0 0.35rem', fontSize: '0.86rem', fontWeight: 600 }}>
                 “{memories.daily_prompt.prompt}”
@@ -667,7 +634,7 @@ export default function JudgeCommandCenter() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <h2 style={{ margin: 0 }}>Live 4-Step Qloo Agent Trace & Clinical Guardrail Inspector</h2>
                 <button type="button" className="care-secondary" disabled={busy} onClick={() => void runScenario2()}>
-                  ⚡ Toggle Atorvastatin + Gout + PSI 135 Haze
+                  Toggle Atorvastatin + Gout + PSI 135 Haze
                 </button>
               </div>
               <p className="care-muted" style={{ margin: '0.35rem 0 0.75rem' }}>
@@ -682,9 +649,9 @@ export default function JudgeCommandCenter() {
                     key={st.step}
                     style={{
                       padding: '0.65rem 0.8rem',
-                      borderRadius: 8,
-                      background: st.step === 3 ? 'rgba(220, 38, 38, 0.04)' : 'var(--bg-soft, #faf8f5)',
-                      border: st.step === 3 ? '1px solid rgba(220, 38, 38, 0.25)' : '1px solid rgba(0,0,0,0.08)',
+                      borderRadius: 10,
+                      background: 'var(--cl-surface)',
+                      border: '1px solid var(--cl-border)',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem' }}>
@@ -713,7 +680,7 @@ export default function JudgeCommandCenter() {
               <ul className="act-list">
                 {tastePlan.filtered_out.map((f, idx) => (
                   <li key={idx} className="act-item">
-                    <span className="act-kind" style={{ background: '#fee2e2', color: '#991b1b' }}>
+                    <span className="act-kind">
                       <code>{f.rule_code || f.rule_id}</code>
                     </span>
                     <span className="act-body">
@@ -768,9 +735,9 @@ export default function JudgeCommandCenter() {
                 <div
                   style={{
                     padding: '0.65rem 0.8rem',
-                    borderRadius: 8,
-                    background: 'var(--bg-soft, #faf8f5)',
-                    border: '1px solid rgba(0,0,0,0.08)',
+                    borderRadius: 10,
+                    background: 'var(--cl-surface)',
+                    border: '1px solid var(--cl-border)',
                     marginBottom: '0.75rem',
                   }}
                 >
@@ -783,7 +750,7 @@ export default function JudgeCommandCenter() {
                       whiteSpace: 'pre-wrap',
                       fontSize: '0.8rem',
                       fontFamily: 'inherit',
-                      color: '#374151',
+                      color: 'var(--cl-text)',
                     }}
                   >
                     {groupPlan.catering_matrix.caterer_sheet_text}
@@ -838,15 +805,15 @@ export default function JudgeCommandCenter() {
               <div
                 style={{
                   padding: '0.65rem 0.8rem',
-                  borderRadius: 8,
-                  background: '#fffbeb',
-                  border: '1px solid #fde68a',
+                  borderRadius: 10,
+                  background: 'var(--cl-surface)',
+                  border: '1px solid var(--cl-border)',
                 }}
               >
-                <strong style={{ color: '#92400e' }}>
+                <strong>
                   Rung 3 · Blood Pressure Drift Handover (Rule: <code>3.bp_drift</code>)
                 </strong>
-                <p className="care-muted" style={{ margin: '0.25rem 0 0', color: '#78350f' }}>
+                <p className="care-muted" style={{ margin: '0.25rem 0 0' }}>
                   Mr Tan's systolic blood pressure averaged 148/90 mmHg over the last 3 mornings (above his personal baseline of 128/78
                   mmHg). CareLoop has stopped nudging Mr Tan and handed over to the on-duty family contact on the Rota.
                 </p>
@@ -857,15 +824,15 @@ export default function JudgeCommandCenter() {
                 <div
                   style={{
                     padding: '0.65rem 0.8rem',
-                    borderRadius: 8,
-                    background: 'var(--bg-soft, #faf8f5)',
-                    borderLeft: '3px solid #0f766e',
+                    borderRadius: 10,
+                    background: 'var(--cl-surface)',
+                    borderLeft: '3px solid var(--cl-accent)',
                   }}
                 >
                   <strong>Qloo Doorstep / Call Icebreaker (So the call doesn’t start with an interrogation):</strong>
                   <p style={{ margin: '0.25rem 0', fontSize: '0.88rem' }}>{tastePlan.doorstep_icebreaker.opener}</p>
                   <span className="care-muted" style={{ fontSize: '0.8rem' }}>
-                    🎵 {tastePlan.doorstep_icebreaker.music_icebreaker} · 🍲 {tastePlan.doorstep_icebreaker.treat_icebreaker} · 🎬{' '}
+                    Music: {tastePlan.doorstep_icebreaker.music_icebreaker} · Treat: {tastePlan.doorstep_icebreaker.treat_icebreaker} · Film:{' '}
                     {tastePlan.doorstep_icebreaker.film_icebreaker}
                   </span>
                 </div>
@@ -873,7 +840,7 @@ export default function JudgeCommandCenter() {
 
               {/* 1-Page GP Brief + WhatsApp Visit Kit Actions */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.65rem' }}>
-                <div style={{ padding: '0.65rem 0.8rem', borderRadius: 8, background: 'var(--bg-soft, #faf8f5)' }}>
+                <div style={{ padding: '0.65rem 0.8rem', borderRadius: 10, background: 'var(--cl-surface)' }}>
                   <strong>1-Page GP Brief (Doctor Visit Handout)</strong>
                   <p className="care-muted" style={{ fontSize: '0.82rem', margin: '0.25rem 0 0.5rem' }}>
                     Includes 30-day BP series, adherence, active medicines ({brief?.senior.medicines.map((m) => m.name).join(', ') || 'Amlodipine'}), and Qloo dietary rules.
@@ -881,18 +848,18 @@ export default function JudgeCommandCenter() {
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {briefPdfUrl('tan') ? (
                       <a className="care-secondary" href={briefPdfUrl('tan')!} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                        📄 Open 1-Page GP Brief PDF ↗
+                        Open 1-Page GP Brief PDF ↗
                       </a>
                     ) : (
                       <button type="button" className="care-secondary" onClick={() => window.print()}>
-                        🖨 Print 1-Page GP Brief
+                        Print 1-Page GP Brief
                       </button>
                     )}
                   </div>
                 </div>
 
                 {tastePlan?.visit_kit && (
-                  <div style={{ padding: '0.65rem 0.8rem', borderRadius: 8, background: 'var(--bg-soft, #faf8f5)' }}>
+                  <div style={{ padding: '0.65rem 0.8rem', borderRadius: 10, background: 'var(--cl-surface)' }}>
                     <strong>WhatsApp Family Visit Kit</strong>
                     <p className="care-muted" style={{ fontSize: '0.82rem', margin: '0.25rem 0 0.5rem' }}>
                       {tastePlan.visit_kit.summary}
@@ -929,11 +896,11 @@ export default function JudgeCommandCenter() {
 
               {/* Caregiver Respite Summary */}
               {respite && (
-                <div style={{ padding: '0.65rem 0.8rem', borderRadius: 8, background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-                  <strong style={{ color: '#166534' }}>
+                <div style={{ padding: '0.65rem 0.8rem', borderRadius: 10, background: 'var(--cl-accent-soft)', border: '1px solid var(--cl-border)' }}>
+                  <strong style={{ color: 'var(--cl-accent)' }}>
                     Guilt-Free 3-Hour Respite Shield ({respite.matched_programme.qloo_fit_pct}% Qloo Match):
                   </strong>
-                  <p className="care-muted" style={{ margin: '0.2rem 0 0', fontSize: '0.83rem', color: '#14532d' }}>
+                  <p className="care-muted" style={{ margin: '0.2rem 0 0', fontSize: '0.83rem' }}>
                     {respite.summary}
                   </p>
                 </div>

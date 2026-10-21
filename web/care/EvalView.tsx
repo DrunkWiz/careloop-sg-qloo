@@ -92,25 +92,22 @@ export default function EvalView() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
           <Brand />
-          <span
-            className="care-pill"
-            style={{ background: '#0f766e', color: '#fff', fontWeight: 700, padding: '0.25rem 0.65rem' }}
-          >
-            EVAL & QLOO ABLATION SUITE v{data.benchmark_version}
+          <span className="care-pill">
+            Eval & Qloo Ablation Suite v{data.benchmark_version}
           </span>
           <span className="care-muted" style={{ fontSize: '0.88rem' }}>
             {data.total_personas} Personas ({data.cohorts.demo_seniors} Demo Seniors + {data.cohorts.synthetic_personas} Synthetic Cohort)
           </span>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <a className="care-secondary" href="/pitch" style={{ textDecoration: 'none' }}>
-            ⚡ Judge Command Center (/pitch)
+          <a className="care-secondary" href="/pitch" style={{ textDecoration: 'none', width: 'auto', padding: '0 0.9rem' }}>
+            Walkthrough Studio (/pitch)
           </a>
-          <a className="care-secondary" href="/care?demo=1" style={{ textDecoration: 'none' }}>
+          <a className="care-secondary" href="/care?demo=1" style={{ textDecoration: 'none', width: 'auto', padding: '0 0.9rem' }}>
             Caregiver App (/care)
           </a>
-          <button type="button" className="care-primary" onClick={downloadReport}>
-            ⬇ Download JSON Benchmark Report
+          <button type="button" className="care-primary" style={{ width: 'auto', padding: '0 0.9rem' }} onClick={downloadReport}>
+            Download JSON Benchmark Report
           </button>
         </div>
       </header>
@@ -282,7 +279,7 @@ export default function EvalView() {
 
       {/* Selected Persona Side-by-Side Diff Drawer */}
       {selectedPersona && (
-        <section className="care-card" style={{ marginBottom: '1.25rem', borderLeft: '4px solid #0f766e' }}>
+        <section className="care-card" style={{ marginBottom: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
             <h2 style={{ margin: 0, fontSize: '1.08rem' }}>
               Per-Persona Architecture Diff Inspector: {selectedPersona.name} (<code>{selectedPersona.persona_id}</code>)
@@ -299,8 +296,8 @@ export default function EvalView() {
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '0.75rem' }}>
-            <div style={{ padding: '0.65rem', borderRadius: 8, background: 'rgba(220, 38, 38, 0.05)', border: '1px solid rgba(220,38,38,0.2)' }}>
-              <strong style={{ color: '#b91c1c', fontSize: '0.9rem' }}>
+            <div style={{ padding: '0.75rem', borderRadius: 10, background: 'var(--cl-surface)', border: '1px solid var(--cl-border)' }}>
+              <strong style={{ color: '#9c2d1f', fontSize: '0.9rem' }}>
                 1. Generic LLM ({selectedPersona.generic_llm.violation_count} violations · Specificity {selectedPersona.generic_llm.specificity_score})
               </strong>
               <ul className="care-muted" style={{ margin: '0.35rem 0', paddingLeft: '1.1rem', fontSize: '0.84rem' }}>
@@ -309,14 +306,14 @@ export default function EvalView() {
                 ))}
               </ul>
               {selectedPersona.generic_llm.violations.map((v, i) => (
-                <div key={i} style={{ fontSize: '0.78rem', color: '#b91c1c', marginTop: 2 }}>
+                <div key={i} style={{ fontSize: '0.78rem', color: '#9c2d1f', marginTop: 2 }}>
                   ✗ <code>{v.rule_code}</code>: {v.item}
                 </div>
               ))}
             </div>
 
-            <div style={{ padding: '0.65rem', borderRadius: 8, background: 'rgba(217, 119, 6, 0.06)', border: '1px solid rgba(217,119,6,0.25)' }}>
-              <strong style={{ color: '#b45309', fontSize: '0.9rem' }}>
+            <div style={{ padding: '0.75rem', borderRadius: 10, background: 'var(--cl-surface)', border: '1px solid var(--cl-border)' }}>
+              <strong style={{ color: '#8a5a00', fontSize: '0.9rem' }}>
                 2. Rule-Filtered LLM ({selectedPersona.rule_filtered_llm.violation_count} violations · Specificity{' '}
                 {selectedPersona.rule_filtered_llm.specificity_score})
               </strong>
@@ -326,14 +323,14 @@ export default function EvalView() {
                 ))}
               </ul>
               {selectedPersona.rule_filtered_llm.violations.map((v, i) => (
-                <div key={i} style={{ fontSize: '0.78rem', color: '#b45309', marginTop: 2 }}>
-                  ⚠ <code>{v.rule_code}</code>: {v.item}
+                <div key={i} style={{ fontSize: '0.78rem', color: '#8a5a00', marginTop: 2 }}>
+                  ! <code>{v.rule_code}</code>: {v.item}
                 </div>
               ))}
             </div>
 
-            <div style={{ padding: '0.65rem', borderRadius: 8, background: 'rgba(15, 118, 110, 0.06)', border: '1px solid rgba(15,118,110,0.3)' }}>
-              <strong style={{ color: '#0f766e', fontSize: '0.9rem' }}>
+            <div style={{ padding: '0.75rem', borderRadius: 10, background: 'var(--cl-accent-soft)', border: '1px solid var(--cl-border)' }}>
+              <strong style={{ color: 'var(--cl-accent)', fontSize: '0.9rem' }}>
                 3. CareLoop + Qloo ({selectedPersona.careloop_qloo.violation_count} violations · Specificity{' '}
                 {selectedPersona.careloop_qloo.specificity_score})
               </strong>
@@ -341,10 +338,10 @@ export default function EvalView() {
                 {selectedPersona.careloop_qloo.picks.map((p, i) => (
                   <li key={i}>{p}</li>
                 ))}
-                <li>🎵 {selectedPersona.careloop_qloo.music_pick}</li>
-                <li>🎬 {selectedPersona.careloop_qloo.movie_pick}</li>
+                <li>Music: {selectedPersona.careloop_qloo.music_pick}</li>
+                <li>Film: {selectedPersona.careloop_qloo.movie_pick}</li>
               </ul>
-              <div style={{ fontSize: '0.78rem', color: '#0f766e' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--cl-accent)' }}>
                 ✓ Intercepted {selectedPersona.careloop_qloo.filtered_out_count} unsafe candidates (
                 {selectedPersona.careloop_qloo.filtered_out_rules.join(', ') || 'standard'})
               </div>

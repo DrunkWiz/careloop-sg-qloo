@@ -404,12 +404,12 @@ function DemoBar() {
       <button disabled={busy} onClick={() => run(() => demoAdvance(11))}>
         +11 days
       </button>
-      <a href="/pitch" style={{ color: '#fff', fontWeight: 700, textDecoration: 'none', padding: '0.2rem 0.55rem', borderRadius: 6, background: '#0f766e', fontSize: '0.8rem' }}>
-        ⚡ Judge Studio (/pitch)
-      </a>
-      <a href="/eval/taste" style={{ color: '#fff', fontWeight: 600, textDecoration: 'none', padding: '0.2rem 0.55rem', borderRadius: 6, background: 'rgba(255,255,255,0.16)', fontSize: '0.8rem' }}>
-        📊 Qloo Benchmark (/eval/taste)
-      </a>
+      <button onClick={() => navigate('/pitch')}>
+        Judge studio
+      </button>
+      <button onClick={() => navigate('/eval/taste')}>
+        Qloo benchmark
+      </button>
       <button disabled={busy} onClick={() => run(demoReset)}>
         Reset
       </button>

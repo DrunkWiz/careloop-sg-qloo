@@ -74,23 +74,23 @@ export default function RoleChooser() {
         </div>
       </section>
 
-      <section className="chooser-card" style={{ borderLeft: '4px solid #0f766e' }}>
+      <section className="chooser-card">
         <div className="chooser-card-head">
-          <span className="chooser-icon" aria-hidden="true">⚡</span>
+          <span className="chooser-icon" aria-hidden="true">↗</span>
           <div>
-            <h2>Hackathon Judge &amp; Benchmark Tools</h2>
-            <p>Synchronized split-screen Judge Command Center (Senior Phone + Caregiver + AAC + Qloo Trace) and Quantitative 38-Persona Ablation Benchmark.</p>
+            <h2>Evaluation &amp; demo studio</h2>
+            <p>Split-screen walkthrough of the senior phone, caregiver view and Qloo taste trace, plus the 38-persona benchmark.</p>
           </div>
         </div>
         <div className="chooser-people">
-          <a className="chooser-person" href="/pitch" style={{ textDecoration: 'none' }}>
-            <strong>⚡ Judge Command Center (/pitch)</strong>
-            <span>Split-screen live demo studio with 4 one-click story scenarios &amp; Qloo telemetry pill</span>
-          </a>
-          <a className="chooser-person" href="/eval/taste" style={{ textDecoration: 'none' }}>
-            <strong>📊 Qloo Ablation Benchmark (/eval/taste)</strong>
-            <span>3-architecture comparison across 38 personas (0.0% clinical violations vs 41.2% baseline)</span>
-          </a>
+          <button className="chooser-person" onClick={() => { window.location.href = '/pitch'; }}>
+            <strong>Walkthrough studio</strong>
+            <span>Senior check-in, caregiver view, AAC cohort and Qloo trace side by side</span>
+          </button>
+          <button className="chooser-person" onClick={() => { window.location.href = '/eval/taste'; }}>
+            <strong>Qloo taste benchmark</strong>
+            <span>3-architecture comparison across 38 personas</span>
+          </button>
         </div>
       </section>
 

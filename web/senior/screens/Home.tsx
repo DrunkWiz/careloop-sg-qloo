@@ -108,7 +108,7 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
                     className="sa-notforme"
                     onClick={() => speakText(`${s.place}. ${s.why_it_fits}`)}
                   >
-                    🔊 {t('suggest.readAloud')}
+                    {t('suggest.readAloud')}
                   </button>
                   <a
                     className="sa-notforme"
@@ -117,7 +117,7 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
                     target="_blank"
                     rel="noreferrer"
                   >
-                    📍 {t('suggest.map')}
+                    {t('suggest.map')} ↗
                   </a>
                 </div>
               </li>
@@ -137,7 +137,7 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
                       rel="noreferrer"
                       style={{ color: '#0b6e4f', fontWeight: 600, marginLeft: 4 }}
                     >
-                      ▶ {t('suggest.listen')}
+                      {t('suggest.listen')} ↗
                     </a>
                   </p>
                 ))}
@@ -151,7 +151,7 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
                       rel="noreferrer"
                       style={{ color: '#0b6e4f', fontWeight: 600, marginLeft: 4 }}
                     >
-                      🎬 {t('suggest.watch')}
+                      {t('suggest.watch')} ↗
                     </a>
                   </p>
                 ))}
@@ -236,12 +236,12 @@ function SeniorReminiscenceCard({
 
   return (
     <div className="sa-card" style={{ marginTop: 12 }}>
-      <p className="sa-card-label">📖 {titleLabel}</p>
+      <p className="sa-card-label">{titleLabel}</p>
       <p className="sa-place" style={{ fontSize: '1.02rem', marginBottom: 6 }}>
         {lane.daily_prompt.prompt}
       </p>
       <p className="sa-why" style={{ marginBottom: 8 }}>
-        🎵 {lane.daily_prompt.qloo_seed} · 🎬 {lane.daily_prompt.film_companion}
+        {lane.daily_prompt.qloo_seed} · {lane.daily_prompt.film_companion}
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
         <button
@@ -249,7 +249,7 @@ function SeniorReminiscenceCard({
           className="sa-notforme"
           onClick={() => onSpeak(lane.daily_prompt.prompt)}
         >
-          🔊 {lang === 'zh' ? '朗读问题' : 'Read Prompt Aloud'}
+          {lang === 'zh' ? '朗读问题' : 'Read prompt aloud'}
         </button>
         {lane.daily_prompt.starter_chips.map((chip, idx) => (
           <button
