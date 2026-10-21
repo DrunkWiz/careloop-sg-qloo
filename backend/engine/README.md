@@ -2,7 +2,7 @@
 
 Trust check → personal baseline → context → rule table → ladder → decision log. Rules pick the rung; the model only understands and writes words (through `backend.language`).
 
-Owner: Vibu. Standard library only.
+Standard library only.
 
 | File | What |
 | --- | --- |

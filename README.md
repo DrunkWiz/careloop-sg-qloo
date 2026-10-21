@@ -140,21 +140,21 @@ Programmes: the centre types in its timetable once; CareLoop shows which seniors
 ## Layout
 
 ```
-contracts/     schemas + example JSON for every object      (Vibu)
+contracts/     schemas + example JSON for every object
 backend/
-  engine/      trust check, baseline, context, rules, ladder, decision log   (Vibu)
-  env/         data.gov.sg PSI + rainfall, with offline fixtures            (Vibu)
-  synth/       persona generator, tuning set, frozen held-out set          (Vibu)
-  language/    transcription, extraction, writer, guardrail, model chain    (Mingyu)
+  engine/      trust check, baseline, context, rules, ladder, decision log
+  env/         data.gov.sg PSI + rainfall, with offline fixtures
+  synth/       persona generator, tuning set, frozen held-out set
+  language/    transcription, extraction, writer, guardrail, model chain
   reports/     GP brief PDF, patterns, activities, timetable import,
-               medicines explained, staying well                            (Nathan)
-  healthsync/  Apple Health / Health Connect records -> readings; phone simulator (Nathan)
-  taste/       Qloo Taste AI client, Singapore fixtures, health constraints, 4-step taste agent (Nathan)
-  api/         HTTP endpoints, demo seed; serve.py for the deploy            (Vibu; serve.py Nathan)
+               medicines explained, staying well
+  healthsync/  Apple Health / Health Connect records -> readings; phone simulator
+  taste/       Qloo Taste AI client, Singapore fixtures, health constraints, 4-step taste agent
+  api/         HTTP endpoints, demo seed; serve.py for the deploy
 web/           React + Vite, one build: / home, /senior, /care
-  shared/      design tokens, API client, i18n strings   (Nathan tokens, Mingyu i18n)
-  senior/      the /senior app                           (Mingyu)
-  care/        /care chooser, family app, centre console (Nathan)
+  shared/      design tokens, API client, i18n strings
+  senior/      the /senior app
+  care/        /care chooser, family app, centre console
 docs/          architecture, evaluation, build log, user research, Tencent tools log, screenshots
 ```
 

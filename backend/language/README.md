@@ -9,7 +9,7 @@ facts = understand("I'm fine lah, BP 186/112 this morning")   # -> Facts
 msg = write("R", facts, "en-SG", to="senior", context={"contact": "Wei Ling"})  # -> Message
 ```
 
-Owner: Mingyu. Standard library only; Python 3.10+.
+Standard library only; Python 3.10+.
 
 ## understand(text, lang=None) -> Facts
 

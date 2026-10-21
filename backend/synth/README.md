@@ -1,6 +1,6 @@
 # backend/synth
 
-Synthetic personas with planted events. No real patient data. Owner: Vibu.
+Synthetic personas with planted events. No real patient data.
 
 - `generator.py`: 90 days of BP, steps, check-in replies (English, Singlish, Mandarin) and weather. Planted events carry dates and the expected outcome (`R`, `4` or `none`).
 - `tuning.json`: 8 personas, seed 20261013. Look at it, tune on it.

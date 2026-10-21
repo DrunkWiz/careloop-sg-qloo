@@ -82,4 +82,4 @@ Each persona's main task was replayed in the browser against the live API after 
 | Mr Rajan | Centre picture | Report tab: seniors, check-ins answered (100% this week), quiet days logged (14), handovers and red flags, a per-senior table with "worth watching". |
 | Any caregiver | Their own strain | You tab: a private "How are you doing?" (kept on the phone), AIC hotline, respite options, grants, SOS 1767 ([findahelpline](https://findahelpline.com/organizations/samaritans-of-singapore)). |
 
-**Found for other owners:** the senior-facing Chinese suggestion reads "您喜欢singing" because the senior's likes are stored in English and dropped into the Chinese template (Vibu owns the wording in `backend/env/places.suggest()`; translating likes may sit with Mingyu's language layer).
+**Note on multilingual likes:** the senior-facing Chinese suggestion reads "您喜欢singing" when the senior's likes are stored in English and dropped into the Chinese template (handled between `backend/env/places.suggest()` and `backend/language/`).

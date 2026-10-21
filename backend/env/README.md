@@ -2,7 +2,7 @@
 
 Haze (NEA 24-hour PSI by region), rain (NEA rainfall, nearest station), AAC and CC locations, all from data.gov.sg, with **offline fixtures**. Tests never hit the network.
 
-Owner: Vibu.
+Standard library only.
 
 - `fixtures/psi_2026-10-13.json`, `rainfall_2026-10-13.json`: real API responses from 13 Oct 2026, 17:00.
 - `fixtures/places.json`:

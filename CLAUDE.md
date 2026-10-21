@@ -6,12 +6,12 @@ Read this before changing anything. Then read [docs/build-log.md](docs/build-log
 
 Fondly (built on CareLoop SG) supports Singapore seniors with hypertension between doctor visits, and plans good days around what each senior is fond of using Qloo's taste graph while keeping their health, medicine and weather limits in force. It stays quiet until something is actually wrong for *this* senior, then hands over to their family, or to their Active Ageing Centre (AAC) if they have no family, with the evidence.
 
-- **Event:** Tencent Cloud Hackathon SG 2026, Healthcare track, NTU LKCMedicine Challenge 2.
-- **Deadlines:** submission Fri 16 Oct 2026 23:59 SGT; team target 18:00; code freeze Thu 15 Oct 18:00.
-- **Team (each owns a slice):**
-  - Vibu: engine, contracts, API, data, evaluation.
-  - Mingyu: senior app, language layer.
-  - Nathan: caregiver app, design, reports, pitch.
+- **Event:** Qloo Agentic Hackathon 2026.
+- **Deadline:** Sat 31 Oct 2026, 11:45am SGT.
+- **Author:** Nathan (Solo).
+
+
+
 - **Project brief:** a shared Claude Doc, "CareLoop SG — project brief". The main tab is the product; the "Build split" tab has each person's brief. Read it through a browser: the Docs connector cannot see it, because it was shared from another org.
 
 ## Rules that must not break
@@ -34,17 +34,19 @@ Fondly (built on CareLoop SG) supports Singapore seniors with hypertension betwe
 ```
 contracts/          JSON Schema + example per object, endpoint table (frozen; changes need all three)
 backend/
-  language/         understand(), write(), guardrail, templates, model chain, speech-to-text   (Mingyu)
-  engine/           trust, baseline, history, rules, ladder (run_day, claim), thresholds.json  (Vibu)
-  env/              data.gov.sg PSI / rainfall / AAC + CC places, offline fixtures, suggest()  (Vibu)
-  synth/            persona generator, tuning set, frozen held-out set, evaluate.py            (Vibu)
-  api/              FastAPI app, store (SQLite or Postgres), demo seed + clock                 (Vibu)
-  reports/          GP brief PDF (needs reportlab), insights, activities nearby, timetable import (Nathan)
-  healthsync/       Apple Health and Health Connect records -> readings; phone simulator (Nathan)
+  language/         understand(), write(), guardrail, templates, model chain, speech-to-text
+  engine/           trust, baseline, history, rules, ladder (run_day, claim), thresholds.json
+  env/              data.gov.sg PSI / rainfall / AAC + CC places, offline fixtures, suggest()
+  synth/            persona generator, tuning set, frozen held-out set, evaluate.py
+  api/              FastAPI app, store (SQLite or Postgres), demo seed + clock
+  reports/          GP brief PDF (needs reportlab), insights, activities nearby, timetable import
+  healthsync/       Apple Health and Health Connect records -> readings; phone simulator
+  taste/            Qloo Taste AI client, Singapore fixtures, health constraints, 4-step taste agent
+
 web/                React + Vite, one build, two front doors
-  senior/           /senior: big buttons, hold-to-talk, check-in, red flag, pairing           (Mingyu)
-  care/             /care chooser, /care/family app, /care/aac centre console; ?demo clock   (Nathan)
-  shared/           tokens.css (Nathan), i18n.ts (Mingyu), api.ts + contract.ts (Nathan)
+  senior/           /senior: big buttons, hold-to-talk, check-in, red flag, pairing
+  care/             /care chooser, /care/family app, /care/aac centre console; ?demo clock
+  shared/           tokens.css, i18n.ts, api.ts + contract.ts
 docs/               architecture.md (+ diagrams), evaluation.md (blind, generated), evaluation-notes.md, build-log.md, tencent-tools.md
 ```
 

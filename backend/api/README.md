@@ -1,6 +1,6 @@
 # backend/api
 
-HTTP endpoints from the shared contract (`contracts/README.md`). FastAPI. Owner: Vibu.
+HTTP endpoints from the shared contract (`contracts/README.md`). FastAPI.
 
 ```
 python -m venv .venv && .venv/Scripts/pip install -r backend/requirements.txt   # (bin/ on macOS/Linux)

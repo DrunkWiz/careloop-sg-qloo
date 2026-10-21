@@ -1,8 +1,8 @@
 # contracts
 
-The shared contract: one JSON Schema and one example per object. The senior app (Mingyu), the caregiver app (Nathan) and the API (Vibu) all build against it.
+The shared contract: one JSON Schema and one example per object. The senior app, the caregiver app and the API all build against it.
 
-Owner: Vibu. Frozen Tue 13 Oct 23:00. **After the freeze, a change needs all three to agree in the group chat.**
+Frozen schema definitions for every stored object and API payload.
 
 - `schemas/<Object>.schema.json`: JSON Schema 2020-12.
 - `examples/<Object>.json`: real output of a demo run. Regenerate with `python -m backend.api.write_examples`. A test validates every example and every stored object against these schemas.
