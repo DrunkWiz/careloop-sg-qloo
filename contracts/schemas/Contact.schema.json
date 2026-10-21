@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Contact.schema.json",
+  "title": "Contact",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "caregiver_id": {
+      "type": "string",
+      "description": "the caregiver this link belongs to"
+    },
+    "senior_id": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "family",
+        "aac"
+      ]
+    },
+    "primary": {
+      "type": "boolean"
+    },
+    "name": {
+      "type": "string",
+      "description": "denormalized from the caregiver for convenience"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "en",
+        "en-SG",
+        "zh"
+      ]
+    },
+    "worker_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "AAC path: the staff member, shared across their caseload"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "consent": {
+      "type": "object",
+      "properties": {
+        "family_sees": {
+          "type": "string",
+          "enum": [
+            "nothing",
+            "digest",
+            "readings"
+          ]
+        },
+        "share_words": {
+          "type": "boolean"
+        },
+        "share_activity": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "family_sees",
+        "share_words",
+        "share_activity"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "caregiver_id",
+    "senior_id",
+    "role",
+    "primary",
+    "name",
+    "language"
+  ],
+  "additionalProperties": false
+}
