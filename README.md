@@ -217,3 +217,7 @@ python -m backend.synth.evaluate --heldout     # docs/evaluation.md; read docs/e
 ## Real vs synthetic
 
 All senior data in this repo is synthetic. Clinical thresholds, the red-flag wording, the medicine notes and the check-up intervals are placeholders until a clinician signs off.
+
+## Licence
+
+Licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE).

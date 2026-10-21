@@ -13,7 +13,7 @@ What has been built, the decisions behind it, and what is still open. Newest fir
 - **Still open before submission (Sat 31 Oct 2026, 11:45am SGT):**
   1. Add `QLOO_API_KEY` on the new Render service (`fondly`) and record a live verification log.
   2. Push to the public GitHub repository (`fondly`) once created.
-  3. Add MIT `LICENSE` once Mingyu and Vibu confirm open-sourcing their CareLoop contributions.
+  3. Added `LICENSE` (`AGPL-3.0`).
 
 ## 15 Oct 2026: sibling rota, pairing UX, relationship tests
 
