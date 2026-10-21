@@ -294,8 +294,10 @@ class Api(unittest.TestCase):
         self.assertNotRegex(en["haze"]["text"], r"[\u4e00-\u9fff]")
         if zh["prompt"]:
             self.assertEqual(zh["prompt"]["language"], "zh")
-        # Tamil and Malay are UI-only: the server never accepts them.
-        self.assertEqual(self.c.get("/senior/tan/today?lang=ta").status_code, 422)
+        # Tamil and Malay are supported for Qloo explanations; unknown languages are rejected.
+        self.assertEqual(self.c.get("/senior/tan/today?lang=ta").status_code, 200)
+        self.assertEqual(self.c.get("/senior/tan/today?lang=ms").status_code, 200)
+        self.assertEqual(self.c.get("/senior/tan/today?lang=fr").status_code, 422)
 
     def test_brief_pdf_is_nathans(self):
         self.assertIn(self.c.get("/senior/tan/brief.pdf").status_code, (200, 501))
@@ -428,6 +430,87 @@ class Api(unittest.TestCase):
         self.assertGreaterEqual(len(group["seniors"]), 1)
         self.assertGreaterEqual(len(group["cohort_constraints"]), 1)
         self.assertGreaterEqual(len(group["group_recommendations"]["refreshment_or_outing"]), 1)
+        self.assertIn("catering_matrix", group)
+        # What-If Weather & Haze Simulator query overrides
+        sunny = self.c.get("/senior/tan/taste?psi=45&rain_mm=0").json()
+        self.assertFalse(sunny["constraints"]["indoor_only"])
+        hazy = self.c.get("/senior/tan/taste?psi=138&rain_mm=14").json()
+        self.assertTrue(hazy["constraints"]["indoor_only"])
+        self.assertTrue(all(p["indoor"] for p in hazy["recommendations"]["places"]))
+        # PUT /senior/{sid}/dietary toggles gout / mobility_aid tags and keeps Senior schema valid
+        toggled = self.c.put("/senior/tan/dietary", json={"toggle": "gout"}).json()
+        self.assertIn("gout", toggled["profile"]["conditions"])
+        self.assertIn("kitchen_card", toggled)
+        self.assertIn("doorstep_icebreaker", toggled)
+        # Medicine leaflet food notes and GP brief dietary rules
+        meds = self.c.get("/senior/tan/medicines").json()["medicines"]
+        amlo = next(m for m in meds if m["name"].lower() == "amlodipine")
+        self.assertTrue(amlo.get("food_badge"))
+        self.assertTrue(amlo.get("food_note"))
+        # 4-language runtime switching (?lang=ms and ?lang=ta) on /today, /taste, and /medicines
+        today_ms = self.c.get("/senior/tan/today?lang=ms")
+        self.assertEqual(today_ms.status_code, 200)
+        ms_why = today_ms.json()["taste_plan"]["recommendations"]["places"][0]["why"]
+        self.assertTrue("menghubungkan" in ms_why or "Padanan" in ms_why)
+        today_ta = self.c.get("/senior/tan/today?lang=ta")
+        self.assertEqual(today_ta.status_code, 200)
+        self.assertIn("Qloo", today_ta.json()["taste_plan"]["recommendations"]["places"][0]["why"])
+        meds_ms = self.c.get("/senior/tan/medicines?lang=ms").json()["medicines"]
+        amlo_ms = next(m for m in meds_ms if m["name"].lower() == "amlodipine")
+        self.assertIn("limau gedang", amlo_ms["food_badge"].lower())
+        brief = self.c.get("/senior/tan/brief.json").json()
+        self.assertGreaterEqual(len(brief.get("dietary_rules", [])), 1)
+        self.assertIn("social_engagement", brief)
+
+    def test_flagship_kopi_kakis_memories_respite_and_eval_taste(self):
+        """Tests Kopi Kakis buddy matcher, Memory Lane capsules, Caregiver Respite Shield, and /eval/taste benchmark."""
+        # 1. Kopi Kakis Buddy Matcher (AAC & Senior level)
+        kk_aac = self.c.get("/aac/aac-ang-mo-kio/kopi-kakis").json()
+        self.assertEqual(kk_aac["aac_id"], "aac-ang-mo-kio")
+        self.assertTrue(kk_aac["guardrail"]["passed"])
+        self.assertGreaterEqual(len(kk_aac["matches"]), 1)
+        self.assertIn("befriender_script", kk_aac["matches"][0])
+        kk_sen = self.c.get("/senior/tan/kopi-kakis").json()
+        self.assertTrue(kk_sen["guardrail"]["passed"])
+        self.assertGreaterEqual(len(kk_sen["matches"]), 1)
+
+        # 2. Memory Lane Reminiscence Prompts & Family Keepsakes
+        mem0 = self.c.get("/senior/tan/memories").json()
+        self.assertEqual(mem0["senior_id"], "tan")
+        self.assertTrue(mem0["guardrail"]["passed"])
+        self.assertIn("daily_prompt", mem0)
+        self.assertGreaterEqual(len(mem0["capsules"]), 2)
+        created = self.c.post("/senior/tan/memories", json={
+            "story_text": "We used to listen to Teresa Teng after buying kaya toast at Tiong Bahru Market.",
+            "qloo_seed": "Teresa Teng",
+            "recorded_by": "Wei Ling (Daughter)",
+            "language": "en",
+        })
+        self.assertEqual(created.status_code, 200)
+        cap = created.json()
+        self.assertTrue(cap["guardrail"]["passed"])
+        self.assertIn("Tiong Bahru Market", cap["story_text"])
+        mem1 = self.c.get("/senior/tan/memories").json()
+        self.assertEqual(len(mem1["capsules"]), len(mem0["capsules"]) + 1)
+        # /knows also reflects saved memory capsules
+        knows = self.c.get("/senior/tan/knows").json()
+        self.assertTrue(any(k["id"].startswith("memory:") for k in knows))
+
+        # 3. Caregiver Respite & Burnout Shield
+        resp = self.c.get("/senior/tan/respite?streak_days=5").json()
+        self.assertEqual(resp["senior_id"], "tan")
+        self.assertEqual(resp["window_hours"], 3)
+        self.assertTrue(resp["guardrail"]["passed"])
+        self.assertIn("matched_programme", resp)
+        self.assertIn("whatsapp_text", resp)
+
+        # 4. Quantitative Qloo Ablation & Multi-Metric Benchmark Dashboard
+        bench = self.c.get("/eval/taste").json()
+        self.assertEqual(bench["total_personas"], 38)
+        self.assertEqual(len(bench["architectures"]), 3)
+        qloo_arch = next(a for a in bench["architectures"] if a["id"] == "careloop_qloo")
+        self.assertEqual(qloo_arch["clinical_violation_rate_pct"], 0.0)
+        self.assertEqual(qloo_arch["guardrail_pass_rate_pct"], 100.0)
 
 
 if __name__ == "__main__":

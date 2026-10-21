@@ -77,7 +77,7 @@ export default function SeniorApp() {
   const refresh = useCallback(async () => {
     if (!seniorId) return;
     try {
-      const t = await api.today(seniorId, apiLang(lang));
+      const t = await api.today(seniorId, lang);
       setToday(t);
       setLoadError(false);
       // Until the senior picks a language on this phone, use the one set up for them.
@@ -105,7 +105,12 @@ export default function SeniorApp() {
           setView({ name: 'confirm', bp: unsure });
         } else {
           setView({ name: 'home' });
-          toast(res.message?.text || t(thanks));
+          const baseToast = res.message?.text || t(thanks);
+          const extracted = (res.extracted_tastes || [])
+            .map((e) => (typeof e === 'string' ? e : e.canonical))
+            .filter(Boolean);
+          const extraToast = extracted.length > 0 ? ` · ${t('checkin.tasteSaved', { items: extracted.join(', ') })}` : '';
+          toast(baseToast + extraToast);
         }
       }
       await refresh();
@@ -183,9 +188,9 @@ export default function SeniorApp() {
             onYes={() => saveReading({ systolic: view.bp.systolic, diastolic: view.bp.diastolic, pulse: view.bp.pulse }, 'voice')}
             onNo={() => setView({ name: 'bp', initial: { systolic: view.bp.systolic, diastolic: view.bp.diastolic, pulse: view.bp.pulse } })} />
         ) : view.name === 'knows' ? (
-          <Knows seniorId={seniorId} onBack={() => setView({ name: 'home' })} toast={toast} />
+          <Knows seniorId={seniorId} onBack={() => { refresh(); setView({ name: 'home' }); }} toast={toast} />
         ) : view.name === 'meds' ? (
-          <MyHealth seniorId={seniorId} lang={apiLang(lang)} onBack={() => setView({ name: 'home' })} toast={toast} />
+          <MyHealth seniorId={seniorId} lang={lang} onBack={() => setView({ name: 'home' })} toast={toast} />
         ) : today ? (
           <Home
             today={today}
@@ -198,6 +203,18 @@ export default function SeniorApp() {
             onFeel={() => setView({ name: 'feel' })}
             onTalkStart={talk.supported ? talk.start : () => setView({ name: 'feel' })}
             onTalkStop={talk.stop}
+            onGoing={async (id) => {
+              try {
+                await api.going(seniorId, id);
+                setToday({
+                  ...today,
+                  suggestions: today.suggestions.map((s) => (s.id === id ? { ...s, response: 'going' } : s)),
+                });
+                toast(t('suggest.goingSaved'));
+              } catch {
+                toast(t('common.offline'));
+              }
+            }}
             onNotForMe={async (id) => {
               try {
                 await api.notForMe(seniorId, id);

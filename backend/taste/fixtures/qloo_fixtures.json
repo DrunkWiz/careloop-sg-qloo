@@ -140,9 +140,11 @@
       "free": false,
       "affinity": 0.94,
       "matched_seeds": ["kopi", "mahjong", "teresa teng", "fong fei-fei"],
-      "dietary_tags": ["steamed_fish", "clear_soup", "kopi_o_kosong_option", "low_sodium_friendly"],
+      "dietary_tags": ["steamed_fish", "clear_soup", "kopi_o_kosong_option", "low_sodium_friendly", "wheelchair_accessible", "seated_activity"],
       "why_en": "Qloo links Nanyang kopi, mahjong kakis and 1970s Hokkien/Teochew classics with traditional Teochew steamed fish and kopi-O kosong stalls.",
-      "why_zh": "Qloo 品味图谱将南洋咖啡、麻将老友与70年代闽南金曲，关联到清淡少盐的潮州清蒸鱼和咖啡乌少糖档口。"
+      "why_zh": "Qloo 品味图谱将南洋咖啡、麻将老友与70年代闽南金曲，关联到清淡少盐的潮州清蒸鱼和咖啡乌少糖档口。",
+      "why_ms": "Qloo menghubungkan kopi Nanyang, rakan mahjong dan lagu klasik 1970-an dengan gerai bubur ikan kukus Teochew kurang garam dan kopi-O kosong.",
+      "why_ta": "Qloo நன்யாங் கோப்பி மற்றும் 1970-களின் பாடல் விருப்பங்களை ஆவியில் வேகவைத்த மீன் கஞ்சி மற்றும் கோப்பி-ஓ கொசோங் கடைகளுடன் இணைக்கிறது."
     },
     {
       "entity_id": "urn:entity:place:qloo-bishan-pavilion",
@@ -154,9 +156,11 @@
       "free": true,
       "affinity": 0.91,
       "matched_seeds": ["mahjong", "kopi", "chatting", "crafts", "singing"],
-      "dietary_tags": ["unsweetened_tea", "low_sodium_friendly"],
+      "dietary_tags": ["unsweetened_tea", "low_sodium_friendly", "wheelchair_accessible", "seated_activity"],
       "why_en": "Sheltered community pavilion popular with central-heartland seniors who enjoy tile games, Chinese tea and unhurried morning chats.",
-      "why_zh": "有盖社区茶亭，适合喜欢牌友聚会、清茶与邻里闲聊的长者。"
+      "why_zh": "有盖社区茶亭，适合喜欢牌友聚会、清茶与邻里闲聊的长者。",
+      "why_ms": "Astaka komuniti berbumbung sesuai untuk warga emas yang gemar permainan papan, teh tanpa gula dan sembang pagi.",
+      "why_ta": "மத்திய பகுதி மூத்த குடிமக்கள் தேநீர் அருந்தவும் நண்பர்களுடன் உரையாடவும் ஏற்ற கூரையுள்ள மண்டபம்."
     },
     {
       "entity_id": "urn:entity:place:qloo-tp-garden-walk",
@@ -168,7 +172,7 @@
       "free": true,
       "affinity": 0.88,
       "matched_seeds": ["gardening", "walking", "kopi"],
-      "dietary_tags": [],
+      "dietary_tags": ["wheelchair_accessible"],
       "why_en": "Flat, shaded lakeside path with pandan and lemongrass plots; a gentle morning stroll when the air is clear.",
       "why_zh": "平坦阴凉的池畔步道，种有斑兰与香茅，空气好时适合晨间慢走。"
     },
@@ -182,7 +186,7 @@
       "free": true,
       "affinity": 0.95,
       "matched_seeds": ["karaoke", "singing", "teresa teng", "frances yip", "fei yu-ching"],
-      "dietary_tags": ["unsweetened_tea", "steamed_dim_sum_light", "low_sodium_friendly"],
+      "dietary_tags": ["unsweetened_tea", "steamed_dim_sum_light", "low_sodium_friendly", "wheelchair_accessible", "seated_activity"],
       "why_en": "Qloo connects Teresa Teng and Frances Yip fans in Jurong with heritage tea stalls where regulars hum 1970s Mandopop and Cantopop classics.",
       "why_zh": "Qloo 将邓丽君、叶丽仪的歌迷与裕华巴刹传统茶座关联，街坊常在此哼唱70年代华语与粤语经典。"
     },
@@ -196,9 +200,11 @@
       "free": false,
       "affinity": 0.93,
       "matched_seeds": ["kopi", "exercise", "p. ramlee", "saloma", "m. nasir"],
-      "dietary_tags": ["halal", "kopi_o_kosong_option", "grilled_fish", "less_sugar_friendly", "low_sodium_friendly"],
+      "dietary_tags": ["halal", "kopi_o_kosong_option", "grilled_fish", "less_sugar_friendly", "low_sodium_friendly", "wheelchair_accessible", "seated_activity"],
       "why_en": "Qloo pairs P. Ramlee and Nusantara folk taste profiles with traditional Malay warungs serving plain kopi-O kosong and lightly spiced grilled fish without heavy sweet gravy.",
-      "why_zh": "Qloo 将比·南利经典音乐品味与传统马来咖啡档关联，提供无糖咖啡乌与清淡烤鱼。"
+      "why_zh": "Qloo 将比·南利经典音乐品味与传统马来咖啡档关联，提供无糖咖啡乌与清淡烤鱼。",
+      "why_ms": "Qloo memadankan peminat lagu klasik P. Ramlee dan Saloma dengan warung tradisional di Taman Jurong yang menyajikan kopi-O kosong dan ikan bakar kurang garam.",
+      "why_ta": "Qloo பி. ராம்லீ இசை விருப்பங்களை தமன் ஜூரோங்கின் கோப்பி-ஓ கொசோங் மற்றும் சுட்ட மீன் உணவகத்துடன் இணைக்கிறது."
     },
     {
       "entity_id": "urn:entity:place:qloo-marsiling-orchid",
@@ -210,7 +216,7 @@
       "free": true,
       "affinity": 0.91,
       "matched_seeds": ["gardening", "kopi", "cliff richard"],
-      "dietary_tags": ["kopi_o_kosong_option", "low_sodium_friendly"],
+      "dietary_tags": ["kopi_o_kosong_option", "low_sodium_friendly", "wheelchair_accessible", "seated_activity"],
       "why_en": "Qloo links orchid and herb gardening enthusiasts with sheltered community glasshouses and quiet morning kopi corners.",
       "why_zh": "Qloo 将喜爱园艺与60年代怀旧金曲的长者，关联到有盖胡姬花温室与晨间咖啡角。"
     },
@@ -224,7 +230,7 @@
       "free": true,
       "affinity": 0.89,
       "matched_seeds": ["gardening", "walking", "exercise"],
-      "dietary_tags": [],
+      "dietary_tags": ["wheelchair_accessible"],
       "why_en": "Wheelchair- and senior-friendly garden loop with raised herb beds along Jurong Lake.",
       "why_zh": "裕廊湖畔平坦无障碍的园艺步道，设有高架香草花圃。"
     },
@@ -238,9 +244,11 @@
       "free": false,
       "affinity": 0.94,
       "matched_seeds": ["walking", "gardening", "exercise", "health", "t.m. soundararajan", "gurdas maan"],
-      "dietary_tags": ["vegetarian_friendly", "fermented_flatbread", "less_sugar_friendly", "low_sodium_friendly"],
+      "dietary_tags": ["vegetarian_friendly", "fermented_flatbread", "less_sugar_friendly", "low_sodium_friendly", "wheelchair_accessible", "seated_activity"],
       "why_en": "Qloo connects South Asian classical and folk music profiles with Tampines Round Market's morning thosai and unsweetened ginger tea circle.",
-      "why_zh": "Qloo 将南亚经典音乐与养生品味，关联到淡滨尼圆巴刹清晨的少盐薄饼与无糖姜茶聚脚处。"
+      "why_zh": "Qloo 将南亚经典音乐与养生品味，关联到淡滨尼圆巴刹清晨的少盐薄饼与无糖姜茶聚脚处。",
+      "why_ms": "Qloo menghubungkan profil muzik klasik Asia Selatan dengan bulatan pagi thosai segar dan teh halia kurang manis di Pasar Bulat Tampines.",
+      "why_ta": "Qloo டி.எம். சௌந்தரராஜன் இசை விருப்பங்களை தெம்பனிஸ் வட்டச் சந்தையின் சூடான தோசை மற்றும் சர்க்கரை குறைந்த சுக்கு மல்லி இஞ்சித் தேநீர் கடையுடன் இணைக்கிறது."
     },
     {
       "entity_id": "urn:entity:place:qloo-bedok-kopi",
@@ -252,7 +260,7 @@
       "free": false,
       "affinity": 0.92,
       "matched_seeds": ["kopi", "chatting", "walking", "crafts"],
-      "dietary_tags": ["kopi_o_kosong_option", "low_sodium_friendly"],
+      "dietary_tags": ["kopi_o_kosong_option", "low_sodium_friendly", "wheelchair_accessible", "seated_activity"],
       "why_en": "Qloo links East-side kopi and craft-circle tastes with Bedok's breezy indoor hawker tables where regulars chat over kopi-O siew dai.",
       "why_zh": "Qloo 将东部长者的咖啡与手工聚会偏好，关联到勿洛室内熟食中心的少糖咖啡乌茶座。"
     },
@@ -266,7 +274,7 @@
       "free": true,
       "affinity": 0.90,
       "matched_seeds": ["walking", "exercise", "crafts", "chatting", "health"],
-      "dietary_tags": [],
+      "dietary_tags": ["wheelchair_accessible", "seated_activity", "flat_sheltered"],
       "why_en": "All-weather indoor walking track and community craft/music lounge right in the heart of Tampines.",
       "why_zh": "全天候室内步道与社区手工音乐交谊廊，雨天或烟霾天也能安心活动。"
     },
@@ -325,6 +333,48 @@
       "dietary_tags": ["high_sugar_syrup", "sweetened_condensed_milk"],
       "why_en": "Matched by Qloo's heritage drink cluster, but prepared with heavy rose cordial syrup and sweetened condensed milk.",
       "why_zh": "虽属传统饮品聚类，但使用大量玫瑰糖浆与甜炼乳。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-organ-bak-kut-teh",
+      "name": "Old-School Organ Meat & Rich Anchovy Broth Stall",
+      "name_zh": "传统猪杂内脏与浓汤底肉骨茶档",
+      "region": "all",
+      "category": "hawker_food",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.83,
+      "matched_seeds": ["kopi", "mahjong", "walking", "exercise"],
+      "dietary_tags": ["high_purine_organ_shellfish", "anchovy_rich_broth", "non_halal_pork_lard", "meat_seafood_broth"],
+      "why_en": "High nostalgia affinity with morning kopitiam regulars, but rich in purines (organ meats), pork lard and heavy broth.",
+      "why_zh": "虽属传统早市怀旧美食，但含高嘌呤动物内脏、猪油及浓汤底。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-herbal-tonic-steep-walk",
+      "name": "Hilltop Herbal Tonic & Cranberry Tea House (Steep Steps)",
+      "name_zh": "山坡阶梯浓药材补汤与蔓越莓茶坊",
+      "region": "all",
+      "category": "social_spot",
+      "indoor": true,
+      "free": false,
+      "affinity": 0.82,
+      "matched_seeds": ["kopi", "gardening", "walking", "health", "chatting"],
+      "dietary_tags": ["cranberry_herbal_tonic", "herbal_tonic_broth", "strenuous_standing_walk", "uneven_stairs"],
+      "why_en": "Traditional herbal tea house on a stepped slope; uses concentrated herbal tonics and cranberry infusions and requires climbing stairs.",
+      "why_zh": "位于阶梯坡道的传统药材茶坊，含浓药材补汤与蔓越莓饮，且需攀爬台阶。"
+    },
+    {
+      "entity_id": "urn:entity:place:qloo-outdoor-taichi",
+      "name": "Botanic Gardens & Heartland Open-Air Morning Tai Chi Lawn",
+      "name_zh": "植物园与邻里露天晨间太极草坪",
+      "region": "all",
+      "category": "outdoor_walk",
+      "indoor": false,
+      "free": true,
+      "affinity": 0.85,
+      "matched_seeds": ["exercise", "walking", "health", "kopi", "teresa teng", "p. ramlee"],
+      "dietary_tags": ["wheelchair_accessible"],
+      "why_en": "Open-air lawn popular for morning Tai Chi and Qigong sets when air quality is good.",
+      "why_zh": "深受长者欢迎的露天晨间太极与气功草坪，仅限空气良好且无雨时开放。"
     }
   ],
   "artists": [

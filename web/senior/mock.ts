@@ -155,6 +155,18 @@ export const mock = {
     state.hidden.add(suggestionId);
   },
 
+  async going(_id: string, _suggestionId: string) {
+    await wait();
+  },
+
+  async addTaste(_id: string, seed: string) {
+    await wait();
+    const id = `like:${seed}`;
+    if (!state.knows.some((k) => k.id === id)) {
+      state.knows.push({ id, kind: 'like', text: `Likes ${seed}` });
+    }
+  },
+
   async pair(code: string, lang: Lang, _consent: Consent): Promise<PairResult> {
     await wait(500);
     if (!/^\d{6}$/.test(code)) throw new Error('bad code');

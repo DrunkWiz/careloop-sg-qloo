@@ -48,17 +48,23 @@ export interface Message {
   model: string | null;
 }
 
+export interface ExtractedTaste {
+  canonical: string;
+  matched_word?: string;
+  category?: string;
+}
+
 export interface CheckInResult {
   checkin_id: string;
   facts: Facts;
   /** The engine's reply to the senior, if any (rung 0 means none). */
   message: Message | null;
-  extracted_tastes?: string[];
+  extracted_tastes?: (ExtractedTaste | string)[];
 }
 
 export interface ReadingResult {
   message: Message | null;
-  extracted_tastes?: string[];
+  extracted_tastes?: (ExtractedTaste | string)[];
   rung: Rung;
 }
 

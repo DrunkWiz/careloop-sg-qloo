@@ -1,4 +1,6 @@
-import type { FamilyView, LogDay } from '../shared/contract';
+import { useEffect, useState } from 'react';
+import type { FamilyView, LogDay, RespitePlanResponse } from '../shared/contract';
+import { getSeniorRespite } from '../shared/api';
 import { digestLines } from './digest';
 import { KIND_TITLE } from './HandoverView';
 import Timeline from './Timeline';
@@ -6,7 +8,7 @@ import { plainSummary } from './plain';
 import { navigate } from './nav';
 import Findings from './Findings';
 import { useInsights } from './Health';
-import { useActivities } from './ActivitiesView';
+import { MemoryLaneKeepsakeCard, useActivities } from './ActivitiesView';
 import { useCareNotes } from './CarePlan';
 import type { FamilySees } from '../shared/contract';
 
@@ -99,6 +101,10 @@ export default function FamilyHome({ view, log }: { view: FamilyView; log: LogDa
       {log && log.length > 0 && <Timeline log={log} name={senior.name} />}
 
       <ActivityPreview seniorId={senior.id} contactId={contact.id} name={senior.name} />
+
+      <RespiteShieldCard seniorId={senior.id} name={senior.name} />
+
+      <MemoryLaneKeepsakeCard seniorId={senior.id} name={senior.name} />
 
       {digest && (
         <section className="care-card">
@@ -226,5 +232,75 @@ function PlanPreview({ seniorId, contactId, me, today }: { seniorId: string; con
       )}
       <span className="care-card-cta">Open the care plan →</span>
     </button>
+  );
+}
+
+
+export function RespiteShieldCard({ seniorId, name }: { seniorId: string; name: string }) {
+  const [respite, setRespite] = useState<RespitePlanResponse | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    getSeniorRespite(seniorId).then(setRespite, () => setRespite(null));
+  }, [seniorId]);
+
+  if (!respite) return null;
+
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(respite.whatsapp_text)}`;
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(respite.whatsapp_text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <section className="care-card" id="caregiver-respite-shield">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <h2 style={{ margin: 0 }}>Caregiver Respite & Burnout Shield (3-Hour Plan)</h2>
+        <span className="care-pill" style={{ background: 'rgba(15, 118, 110, 0.12)', color: '#0f766e', fontWeight: 600 }}>
+          {respite.burnout_shield.streak_days}-day duty streak · {respite.matched_programme.qloo_fit_pct}% Qloo fit
+        </span>
+      </div>
+      <p className="care-muted" style={{ marginTop: '0.35rem' }}>
+        {respite.burnout_shield.trigger_reason}
+      </p>
+      <div
+        style={{
+          margin: '0.5rem 0',
+          padding: '0.6rem 0.75rem',
+          borderRadius: '8px',
+          background: 'var(--bg-soft, #faf8f5)',
+          borderLeft: '3px solid var(--accent, #0f766e)',
+        }}
+      >
+        <p style={{ margin: '0 0 0.25rem' }}>
+          <strong>Guilt-Free {respite.window_hours}-Hour Slot:</strong> {respite.recommended_slot}
+        </p>
+        <p className="care-muted" style={{ margin: '0 0 0.25rem' }}>
+          <strong>Matched AAC Programme for {name}:</strong> {respite.matched_programme.title} ({respite.matched_programme.when} ·{' '}
+          {respite.matched_programme.where})
+        </p>
+        <p className="care-muted" style={{ margin: '0 0 0.25rem' }}>
+          <strong>Why {name} will enjoy it safely:</strong> {respite.matched_programme.why_safe_and_loved}
+        </p>
+        <p className="care-muted" style={{ margin: 0 }}>
+          <strong>Family Rota Cover:</strong> {respite.backup_contact.name} covers for {respite.primary_caregiver.name} ·{' '}
+          <strong>Treat after session:</strong> {respite.companion_picks.post_session_treat}
+        </p>
+      </div>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+        <button type="button" className="care-secondary" onClick={() => void onCopy()}>
+          {copied ? '✓ Copied Respite Handover!' : 'Copy WhatsApp Respite Handover'}
+        </button>
+        <a className="care-link" href={waUrl} target="_blank" rel="noreferrer" style={{ alignSelf: 'center' }}>
+          Send Respite Handover on WhatsApp ↗
+        </a>
+      </div>
+    </section>
   );
 }

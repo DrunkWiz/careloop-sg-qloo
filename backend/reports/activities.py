@@ -20,7 +20,15 @@ from backend.env.places import WEEKDAYS, _fits, home_point, place, places, sampl
 from backend.taste.agent import build_taste_plan
 
 
-def activities(store, senior: dict, today: date, *, responses: bool = True) -> dict:
+def activities(
+    store,
+    senior: dict,
+    today: date,
+    *,
+    responses: bool = True,
+    psi_override: int | None = None,
+    rain_override: float | None = None,
+) -> dict:
     """responses=False hides how the senior answered suggestions (share_activity is off)."""
     home = home_point(senior)
     likes = senior.get("likes", [])
@@ -45,9 +53,11 @@ def activities(store, senior: dict, today: date, *, responses: bool = True) -> d
     sugs = sorted(sugs, key=lambda s: (s["date"], s["id"]), reverse=True)
 
     d = build(store, senior, today, days=1)[today]
+    eff_psi = psi_override if psi_override is not None else d.psi
+    eff_rain = rain_override if rain_override is not None else d.rain_mm
     act = T["activity"]
-    rainy = d.rain_mm is not None and d.rain_mm >= act["rain_mm"]
-    hazy = (d.psi or 0) > act["haze_psi_above"]
+    rainy = eff_rain is not None and eff_rain >= act["rain_mm"]
+    hazy = (eff_psi or 0) > act["haze_psi_above"]
     weekday = WEEKDAYS[today.weekday()]
     # What CareLoop would suggest today, worked out the same way the senior app's card is, but not stored.
     stored = [p for p in store.list("programme") if p.get("place_id") == (own or {}).get("id")] or None
@@ -78,8 +88,8 @@ def activities(store, senior: dict, today: date, *, responses: bool = True) -> d
         "weekday": weekday,
         "indoor_only": rainy or hazy,
         "why_indoor": "rain" if rainy else "haze" if hazy else None,
-        "psi": d.psi,
-        "rain_mm": d.rain_mm,
+        "psi": eff_psi,
+        "rain_mm": eff_rain,
         "likes": likes,
         # The engine places home at the senior's own AAC when it has one (only the postal sector is known),
         # so distances are "from their centre" in that case.
@@ -95,7 +105,7 @@ def activities(store, senior: dict, today: date, *, responses: bool = True) -> d
         "suggestions": [{"id": s["id"], "date": s["date"], "place": s["place"], "kind": s["kind"], "why_it_fits": s["why_it_fits"],
                          "indoor": s["indoor"], "sample": s.get("sample", False),
                          "response": s.get("response") if responses else None} for s in sugs],
-        "taste_plan": build_taste_plan(senior, today, indoor_only=rainy or hazy, rain_mm=d.rain_mm, psi=d.psi),
+        "taste_plan": build_taste_plan(senior, today, indoor_only=rainy or hazy, rain_mm=eff_rain, psi=eff_psi),
         "source": "AAC and CC locations: MOH Eldercare Services and PA Community Clubs on data.gov.sg (fetched 13 Oct 2026). "
                   "Programmes: entered by centre staff, or samples where none are entered.",
     }

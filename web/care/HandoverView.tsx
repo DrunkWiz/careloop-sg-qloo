@@ -1,7 +1,7 @@
 // The handover pack (rung 4 or R), shared by the family view and the AAC view.
-import { useState } from 'react';
-import type { Handover, HandoverKind, LogDay, SeniorRef } from '../shared/contract';
-import { claimHandover, briefPdfUrl } from '../shared/api';
+import { useEffect, useState } from 'react';
+import type { Handover, HandoverKind, LogDay, SeniorRef, TastePlan } from '../shared/contract';
+import { claimHandover, briefPdfUrl, getSeniorTaste } from '../shared/api';
 import BpChart from './BpChart';
 import DecisionInfo from './DecisionInfo';
 import NextSteps from './NextSteps';
@@ -39,6 +39,11 @@ export default function HandoverView({ handover: h, senior, contactId, claimerNa
   const [choice, setChoice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tastePlan, setTastePlan] = useState<TastePlan | null>(null);
+
+  useEffect(() => {
+    getSeniorTaste(senior.id).then(setTastePlan, () => setTastePlan(null));
+  }, [senior.id]);
 
   if (!h) {
     return (
@@ -145,6 +150,23 @@ export default function HandoverView({ handover: h, senior, contactId, claimerNa
       </section>
 
       {h.claimed_by && mine && <NextSteps h={h} senior={senior} from={fromName} />}
+
+      {tastePlan?.doorstep_icebreaker && (
+        <section className="care-card" style={{ background: 'var(--bg-soft, #faf8f5)' }}>
+          <h2>Qloo Doorstep / Call Cultural Icebreaker</h2>
+          <p className="care-muted">
+            When calling or knocking on {senior.name}'s door for this handover, lead with a warm cultural touchpoint before checking readings:
+          </p>
+          <p style={{ margin: '0.35rem 0' }}>{tastePlan.doorstep_icebreaker.opener}</p>
+          <p className="care-muted" style={{ margin: '0.25rem 0 0', fontSize: '0.84rem' }}>
+            <strong>Music:</strong> {tastePlan.doorstep_icebreaker.music_icebreaker} ·{' '}
+            <strong>Safe treat:</strong> {tastePlan.doorstep_icebreaker.treat_icebreaker}
+            {tastePlan.doorstep_icebreaker.safety_reminder
+              ? ` · Safety: ${tastePlan.doorstep_icebreaker.safety_reminder}`
+              : ''}
+          </p>
+        </section>
+      )}
 
       <DecisionInfo ruleId={log?.find((d) => d.decision_id === h.decision_id)?.rule_id ?? null} day={log?.find((d) => d.decision_id === h.decision_id) ?? null} />
 

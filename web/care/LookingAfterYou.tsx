@@ -2,6 +2,7 @@
 // The check-in stays on this device (localStorage): it is about the caregiver, not the senior, and nobody
 // else sees it. Support details from AIC and MOH (see docs/user-research.md); check amounts with AIC.
 import { useState } from 'react';
+import { RespiteShieldCard } from './FamilyHome';
 
 const KEY = 'careloop-you';
 
@@ -21,7 +22,7 @@ const ADVICE: Record<Feeling, string> = {
   struggling: "You don't have to do this alone. Call AIC (below) about respite care or caregiver support. If you feel unsafe, call SOS on 1767.",
 };
 
-export default function LookingAfterYou() {
+export default function LookingAfterYou({ seniorId = 'tan', seniorName = 'Mr Tan Ah Kow' }: { seniorId?: string; seniorName?: string }) {
   const [last, setLast] = useState(load);
   const pick = (feeling: Feeling) => {
     const v = { feeling, date: new Date().toISOString().slice(0, 10) };
@@ -53,6 +54,7 @@ export default function LookingAfterYou() {
         {last && <p className="you-advice">{ADVICE[last.feeling]}</p>}
       </section>
 
+      <RespiteShieldCard seniorId={seniorId} name={seniorName} />
       <section className="care-card">
         <h2>Help for caregivers in Singapore</h2>
         <ul className="act-list">

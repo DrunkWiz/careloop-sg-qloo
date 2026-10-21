@@ -19,6 +19,8 @@ import CarePlan from './CarePlan';
 import LookingAfterYou from './LookingAfterYou';
 import VentSpace from './VentSpace';
 import InstallCard from './InstallCard';
+import JudgeCommandCenter from './JudgeCommandCenter';
+import EvalView from './EvalView';
 import { REFRESH_EVENT, markRedFlagSeen, seenRedFlags, useAlert, useLive, useRoute } from './live';
 import { navigate } from './nav';
 import Brand from '../shared/Brand';
@@ -41,6 +43,12 @@ function remembered(params: URLSearchParams, key: 'contact' | 'worker', fallback
 export default function CareApp() {
   const params = new URLSearchParams(window.location.search);
   const path = window.location.pathname;
+  if (params.get('judge') === '1' || path === '/care/pitch') {
+    return <JudgeCommandCenter />;
+  }
+  if (path === '/care/eval' || path.startsWith('/care/eval/')) {
+    return <EvalView />;
+  }
   const door = path.startsWith('/care/aac')
     ? 'centre'
     : path.startsWith('/care/family') || /^\/care\/(handover|pair)/.test(path) || params.get('caregiver') || params.get('contact')
@@ -49,7 +57,7 @@ export default function CareApp() {
 
   return (
     <main className={`care theme-${door} ${largeText() ? 'is-large-text' : ''}`}>
-      {params.has('demo') && !usingMocks && door !== 'choose' && <DemoBar />}
+      {params.has('demo') && <DemoBar />}
       {door === 'centre' ? (
         <AacApp workerId={remembered(params, 'worker', 'aac-siti')} />
       ) : door === 'family' ? (
@@ -396,6 +404,12 @@ function DemoBar() {
       <button disabled={busy} onClick={() => run(() => demoAdvance(11))}>
         +11 days
       </button>
+      <a href="/pitch" style={{ color: '#fff', fontWeight: 700, textDecoration: 'none', padding: '0.2rem 0.55rem', borderRadius: 6, background: '#0f766e', fontSize: '0.8rem' }}>
+        ⚡ Judge Studio (/pitch)
+      </a>
+      <a href="/eval/taste" style={{ color: '#fff', fontWeight: 600, textDecoration: 'none', padding: '0.2rem 0.55rem', borderRadius: 6, background: 'rgba(255,255,255,0.16)', fontSize: '0.8rem' }}>
+        📊 Qloo Benchmark (/eval/taste)
+      </a>
       <button disabled={busy} onClick={() => run(demoReset)}>
         Reset
       </button>

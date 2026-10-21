@@ -27,7 +27,7 @@ SCHEDULE = {
     "en": {"morning": "in the morning", "noon": "at noon", "evening": "in the evening", "night": "at night"},
     "zh": {"morning": "早上", "noon": "中午", "evening": "傍晚", "night": "晚上"},
 }
-GROUP_ZH = {"BP": "血压", "sugar": "血糖", "cholesterol": "胆固醇", "heart": "心脏"}
+GROUP_ZH = {"BP": "血压", "sugar": "血糖", "cholesterol": "胆固醇", "heart": "心脏", "gout": "痛风"}
 
 # generic name: brands, group, what it is for, how it helps, things to look out for (en, zh)
 TABLE: dict[str, dict] = {
@@ -134,6 +134,22 @@ TABLE: dict[str, dict] = {
                ["You may bruise more easily.", "Black stools or vomiting blood are urgent: see a doctor at once or call 995."]),
         "zh": ("小量的阿司匹林帮助防止血块，保护心脏和大脑。", "它让血液不那么容易凝结。", ["可能比较容易瘀青。", "大便发黑或吐血很紧急：请马上看医生或打 995。"]),
     },
+    "warfarin": {
+        "brands": ["marevan"], "group": "heart",
+        "en": ("Helps prevent harmful blood clots.", "It slows how quickly the blood clots so blood flows safely.",
+               ["Keep your daily portion of leafy green vegetables steady, and ask your pharmacist before taking herbal tonics or cranberry drinks.",
+                "Unusual bleeding, black stools or coughing blood are urgent: see a doctor at once or call 995."]),
+        "zh": ("帮助预防血栓，保护心脏与血管。", "它减缓血液凝结的速度，让血流更安全。",
+               ["日常深绿叶蔬菜的分量请保持稳定；饮用中药补汤或蔓越莓饮品前请先问药剂师。", "异常出血、黑便或咳血很紧急：请马上看医生或打 995。"]),
+    },
+    "allopurinol": {
+        "brands": ["zyloric"], "group": "gout",
+        "en": ("Helps prevent gout attacks by lowering uric acid in the body.", "It reduces how much uric acid the body makes over time.",
+               ["Drink plenty of plain water unless your doctor has asked you to limit fluids.",
+                "Tell your doctor right away and seek urgent care if you notice a new skin rash."]),
+        "zh": ("通过降低体内尿酸来预防痛风发作。", "它帮助身体减少制造尿酸。",
+               ["平时请多喝白开水（除非医生交代需限制饮水）。", "如果出现新的皮肤红疹，请立刻看医生。"]),
+    },
 }
 
 _BRANDS = {b: g for g, e in TABLE.items() for b in e["brands"]}
@@ -153,10 +169,14 @@ def identify(name: str) -> str | None:
 
 
 def explain(med: dict, lang: str = "en") -> dict:
-    """One medicine from the senior's record, explained. `lang`: en, en-SG or zh (Singlish speakers read English)."""
+    """One medicine from the senior's record, explained. `lang`: en, en-SG, zh, ms or ta."""
+    from backend.taste.constraints import medicine_leaflet_note
+
     ui = "zh" if lang == "zh" else "en"
+    leaflet_lang = lang if lang in ("en", "zh", "ms", "ta") else ui
     generic = identify(med.get("name", ""))
     when = [SCHEDULE[ui].get(s, s) for s in med.get("schedule", [])]
+    leaflet = medicine_leaflet_note(med.get("name", ""), generic, lang=leaflet_lang)
     out = {
         "name": med.get("name", ""),
         "dose_text": med.get("dose_text", ""),
@@ -164,6 +184,8 @@ def explain(med: dict, lang: str = "en") -> dict:
         "for_bp": bool(med.get("for_bp")),
         "known": generic is not None,
         "generic": generic,
+        "food_note": leaflet["note"] if leaflet else None,
+        "food_badge": leaflet["badge"] if leaflet else None,
     }
     if generic is None:
         out.update(group=None, what_for=UNKNOWN[ui], how_it_helps=None, look_out_for=[])

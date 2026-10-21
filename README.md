@@ -12,6 +12,8 @@ Built for the Qloo Agentic Hackathon (powered by Qloo Taste AI).
 - Senior app: [/senior?senior=tan](https://careloop-sg.onrender.com/senior?senior=tan)
 - Family app: [/care/family?contact=tan-weiling](https://careloop-sg.onrender.com/care/family?contact=tan-weiling)
 - Centre console: [/care/aac?worker=aac-siti](https://careloop-sg.onrender.com/care/aac?worker=aac-siti)
+- **Synchronized Split-Screen Judge Command Center (`/pitch` / `?judge=1`):** [/pitch](https://careloop-sg.onrender.com/pitch)
+- **Quantitative Qloo Ablation Benchmark (`/eval/taste`):** [/eval/taste](https://careloop-sg.onrender.com/eval/taste)
 - Add `&demo` to a family or centre link for the demo clock (reset, +1 day, +11 days).
 
 The first visit after a quiet spell can take about a minute: the free service sleeps when nobody uses it,
@@ -40,6 +42,11 @@ CareLoop SG adds a 4-step Qloo Taste Agent (`backend/taste/`) that plans cultura
   3. **Rung-2 "Low Day" Cultural Nudge (`2.low_day`):** When the deterministic engine spots a single quiet/low-movement day, it pairs the gentle senior-only check-in with a Qloo place + nostalgic music/film pick (`low_day_nudge`, verified via `guardrail.py`).
   4. **Family Visit Kit with One-Tap WhatsApp Share:** Generates a health-safe takeaway treat, nostalgic music pick, classic film conversation starter, and active safety checklist (`visit_kit`) that families can copy or share to their family WhatsApp group in one tap.
   5. **Visual Cross-Domain Taste Bridge Badges:** Every Qloo recommendation displays its explicit multi-hop reasoning path (`Seed → [Shared Cultural Tags] → Target Domain → ✓ Safety Check`).
+  6. **Synchronized Split-Screen "Judge Command Center" (`/pitch` / `?judge=1`):** Live dual-pane demo studio rendering the Senior Phone on the left and the Family Caregiver (`/care`) + AAC (`/care/aac`) + Qloo Trace Inspector on the right, with a live Qloo Telemetry Pill and 4 one-click story scenarios.
+  7. **"Kopi Kakis" — Qloo Affinity Buddy Matching for Lonely Seniors (`GET /aac/{id}/kopi-kakis`):** Pairwise Qloo cultural affinity matching across AAC seniors (`urn:entity:artist`, `urn:entity:movie`, `urn:entity:place`), generating a Befriender-Facilitated Introduction Card with shared Qloo hooks, union-safe meeting spots, and a 2-sentence icebreaker script.
+  8. **Intergenerational "Memory Lane" Reminiscence Prompts & Family Keepsakes (`GET/POST /senior/{id}/memories`):** Daily Qloo nostalgia prompts on the Senior App that save structured Memory Capsules into a family-shared Memory Lane Keepsake Book on `/care`.
+  9. **Caregiver Respite & Burnout Shield (`GET /senior/{id}/respite`):** Detects primary caregiver rota streaks or Vent Space posts and generates a Guilt-Free 3-Hour Respite Plan matching the senior with a high-affinity, medically safe AAC programme and a one-click WhatsApp sibling handover.
+  10. **Quantitative 38-Persona Qloo Ablation Benchmark (`GET /eval/taste` & `/eval/taste` UI):** Compares `Generic LLM Baseline` (100.0% violation rate, 19.0/100 specificity), `Rule-Filtered LLM` (55.3% violation rate, 22.0/100 specificity), and `CareLoop + Qloo Taste AI` (`0.0%` violation rate, `82.2/100` specificity, `100.0%` guardrail pass rate across `en`, `zh`, `ms`, `ta`).
 
 ### How CareLoop uses language models
 

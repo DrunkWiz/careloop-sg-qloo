@@ -1,6 +1,6 @@
 // Senior app's API client. Talks to Vibu's API when VITE_API_URL is set; otherwise to an
 // in-browser mock (mock.ts) so the app works before the contract freezes and without a backend.
-import type { Lang } from '../shared/i18n';
+import type { AppLang, Lang } from '../shared/i18n';
 import type { CheckInResult, Consent, KnownFact, PairResult, ReadingResult, Today } from './types';
 import type { MedicinesView, PreventionView } from '../shared/contract';
 import { mock } from './mock';
@@ -20,8 +20,8 @@ async function http<T>(method: string, path: string, body?: unknown): Promise<T>
 }
 
 export const api = {
-  /** lang: what the app is showing now, so the prompt and haze text come back in that language. */
-  today: (seniorId: string, lang?: Lang): Promise<Today> =>
+  /** lang: what the app is showing now, so the prompt, Qloo taste plan and haze text come back in that language. */
+  today: (seniorId: string, lang?: AppLang): Promise<Today> =>
     usingMock ? mock.today(seniorId) : http('GET', `/senior/${seniorId}/today${lang ? `?lang=${encodeURIComponent(lang)}` : ''}`),
 
   /** Every check-in goes here as text: speech is transcribed in the browser; the big buttons send canned text. */
@@ -45,20 +45,30 @@ export const api = {
     usingMock ? mock.knows(seniorId) : http('GET', `/senior/${seniorId}/knows`),
 
   // Added endpoints (Nathan, need team OK): what each medicine is for, and vaccines and check-ups due.
-  medicines: (seniorId: string, lang: Lang): Promise<MedicinesView> =>
+  medicines: (seniorId: string, lang: AppLang): Promise<MedicinesView> =>
     usingMock ? mockMedicines() : http('GET', `/senior/${seniorId}/medicines?lang=${lang}`),
 
-  prevention: (seniorId: string, lang: Lang): Promise<PreventionView> =>
+  prevention: (seniorId: string, lang: AppLang): Promise<PreventionView> =>
     usingMock ? mockPrevention() : http('GET', `/senior/${seniorId}/prevention?lang=${lang}`),
 
   forget: (seniorId: string, factId: string): Promise<void> =>
     usingMock ? mock.forget(seniorId, factId) : http('DELETE', `/senior/${seniorId}/knows/${encodeURIComponent(factId)}`),
 
-  // NOT IN THE CONTRACT YET (raise with Vibu): recording "Not for me" on a suggestion, and pairing.
+  // NOT IN THE CONTRACT YET (raise with Vibu): recording "Not for me" / "Going" on a suggestion, and pairing.
   notForMe: (seniorId: string, suggestionId: string): Promise<void> =>
     usingMock
       ? mock.notForMe(seniorId, suggestionId)
       : http('POST', `/senior/${seniorId}/suggestions/${encodeURIComponent(suggestionId)}/response`, { response: 'not_for_me' }),
+
+  going: (seniorId: string, suggestionId: string): Promise<void> =>
+    usingMock
+      ? mock.going(seniorId, suggestionId)
+      : http('POST', `/senior/${seniorId}/suggestions/${encodeURIComponent(suggestionId)}/response`, { response: 'going' }),
+
+  addTaste: (seniorId: string, seed: string): Promise<unknown> =>
+    usingMock
+      ? mock.addTaste(seniorId, seed)
+      : http('POST', `/senior/${seniorId}/taste`, { seed }),
 
   pair: (code: string, lang: Lang, consent: Consent, seniorId?: string | null): Promise<PairResult> =>
     usingMock

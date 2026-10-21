@@ -3,7 +3,7 @@ import './welcome.css';
 
 export default function Welcome() {
   return <div className="welcome">
-    <header className="welcome-nav"><Brand /><a href="/care">Open caregiver app <span aria-hidden="true">↗</span></a></header>
+    <header className="welcome-nav"><Brand /><div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}><a href="/pitch">⚡ Judge Studio <span aria-hidden="true">↗</span></a><a href="/eval/taste">📊 Qloo Benchmark <span aria-hidden="true">↗</span></a><a href="/care">Open caregiver app <span aria-hidden="true">↗</span></a></div></header>
     <main>
       <section className="welcome-hero">
         <div className="welcome-copy">

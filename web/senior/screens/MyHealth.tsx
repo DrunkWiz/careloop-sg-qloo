@@ -3,11 +3,11 @@
 // not a model. A medicine CareLoop doesn't know says so and points to the pharmacist.
 import { useEffect, useState } from 'react';
 import type { MedicinesView, PreventionView } from '../../shared/contract';
-import { useT, type Lang } from '../../shared/i18n';
+import { useT, type AppLang } from '../../shared/i18n';
 import { api } from '../api';
 import { Icon, Screen } from '../ui';
 
-export function MyHealth({ seniorId, lang, onBack, toast }: { seniorId: string; lang: Lang; onBack: () => void; toast: (s: string) => void }) {
+export function MyHealth({ seniorId, lang, onBack, toast }: { seniorId: string; lang: AppLang; onBack: () => void; toast: (s: string) => void }) {
   const t = useT();
   const [meds, setMeds] = useState<MedicinesView | null>(null);
   const [checks, setChecks] = useState<PreventionView | null>(null);
@@ -32,6 +32,11 @@ export function MyHealth({ seniorId, lang, onBack, toast }: { seniorId: string; 
               {t('meds.howTake')}: {m.dose_text}
               {m.when.length ? `, ${m.when.join(', ')}` : ''}
             </p>
+            {m.food_note && (
+              <p className="sa-note" style={{ marginTop: 6, padding: '6px 10px', borderRadius: 8, background: 'rgba(138, 90, 0, 0.09)', color: '#6b4400', fontWeight: 500 }}>
+                🍊 {m.food_badge ? `${m.food_badge}: ` : ''}{m.food_note}
+              </p>
+            )}
             {m.known && (
               <details className="sa-med-more">
                 <summary>{t('meds.more')}</summary>

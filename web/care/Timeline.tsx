@@ -74,6 +74,11 @@ export default function Timeline({ log, name }: { log: LogDay[]; name: string })
           <span className={`tl-chip is-${toneOf(day.rung)}`}>{TONE_LABEL[toneOf(day.rung)]}</span>
         </p>
         <p className="tl-detail-line">{ruleText(day.rule_id, day.rung)}</p>
+        {day.qloo_nudge && (
+          <p className="care-muted" style={{ margin: '0.25rem 0 0.4rem', fontSize: '0.88rem' }}>
+            <strong>Qloo Low-Day Cultural Nudge sent to {name}:</strong> {day.qloo_nudge}
+          </p>
+        )}
         {day.checkins.map((c, i) => (
           <p key={i} className="tl-said">
             “{c.raw_text}” <span className="care-muted">· {name}, {fmtTime(c.time)}</span>

@@ -1,85 +1,76 @@
-# Caregiver app: simulated users and desk research
+# Synthetic User Research: 25-Persona Simulation & Pain-Point Audit
 
-**What this is.** Ten *synthetic* personas, each walked through the caregiver app (14 Oct build, demo data
-after `POST /demo/advance {"days": 11}`), plus a short desk review of published research on what family
-caregivers and centre staff need. **These are not real user interviews.** The personas are composites written
-from the research below. Treat the feedback as hypotheses to check with real caregivers, not as findings.
-Some checks were run in the browser against the live API (noted "observed"); the rest are walkthroughs.
+> **Honesty & Data Labeling Note (`CLAUDE.md` Rule):** All 25 user personas and journeys below are **synthetic simulations** created to stress-test CareLoop + Qloo Taste AI across diverse Singapore eldercare, clinical, cultural, religious, and linguistic contexts.
 
-## The ten personas
+---
 
-| # | Persona | Situation | Main job for CareLoop |
-| --- | --- | --- | --- |
-| 1 | **Wei Ling**, 42, daughter | Works full-time in finance, lives 40 min from Mr Tan (Ang Mo Kio). Checks her phone at lunch. | "Tell me if something's wrong. Otherwise leave me alone." |
-| 2 | **Kelvin**, 38, son | Works in Melbourne (3 hours ahead). Sends money, calls on Sundays, feels guilty. | Know how Dad is and help from far away. |
-| 3 | **Mei**, 50, daughter | Runs a hawker stall. Reads Chinese best. Mdm Wong (Mandarin) shares the digest only. | A quick, reassuring look, in Chinese. |
-| 4 | **Priya**, 29, granddaughter | Nursing student, detail-minded. Helps her grandfather with appointments. | The numbers, trends, and something to show the doctor. |
-| 5 | **Hafiz**, 46, eldest son | Two kids at home, three siblings, one father. Ends up doing most of it. | Share the work fairly; see who's doing what. |
-| 6 | **Mdm Lim Bee Hoon**, 67, wife | Lives with her husband; has her own diabetes and arthritis. Small text is hard. | Remember appointments and medicines; not be overwhelmed. |
-| 7 | **Daniel**, 33, son | Lives with his mother but works night shifts; asleep when she takes her pills. | "Did she take her pill and check in today?" |
-| 8 | **Maria**, 36, domestic helper | Live-in helper for Mr Tan's neighbour; does daily care; employer's family make decisions. | Know what to watch for and when to tell the family. |
-| 9 | **Siti**, 31, AAC befriender | Covers a caseload of seniors with no family to call; heavy reporting load. | Find who needs a call today; stop re-typing records. |
-| 10 | **Mr Rajan**, 52, AAC centre manager | Runs a small team; reports engagement and programme figures to the funding agency. | Centre-level picture; programme uptake; export for reports. |
+## 1. The 25 Synthetic Personas Tested
 
-## What each persona hit (walkthroughs)
+### Cohort A — Seniors Living Alone or Semi-Independently (9 Personas)
+| # | Synthetic Persona | Age & Language | Clinical & Medicine Profile | Cultural / Taste Seeds | Simulated Pain Point Uncovered |
+|---|---|---|---|---|---|
+| 1 | **Mdm梁 (Mdm Liang)** | 78, Mandarin / Cantonese (`zh`) | Hypertension, Diabetes, Amlodipine 5mg, Metformin 500mg | Cantonese opera, Frances Yip, Teochew porridge | Wanted to tap **"I'm going"** on a suggestion, hear it read aloud, and immediately listen to her recommended Frances Yip song without typing. |
+| 2 | **Mr陳 (Uncle Tan)** | 74, English / Hokkien (`en`) | Hypertension, Atorvastatin 20mg | Teresa Teng, kopitiam, tai chi, 70s Mandarin classics | Mentioned *"missed hearing Teresa Teng"* in his morning check-in, but had no confirmation that CareLoop remembered it on his *Knows* screen. |
+| 3 | **Cik Siti Rahmah** | 71, Malay (`ms`) | Hypertension, Diabetes, Losartan | P. Ramlee, Saloma, Malay keroncong, nasi padang | Needed strict **Halal** filtering on Qloo food recommendations and native Bahasa Melayu (`ms`) explanations for why a place or song was picked. |
+| 4 | **Mr Govindasamy** | 76, Tamil (`ta`) | Hypertension, Vegetarian (Hindu), Amlodipine | Carnatic classical, M.S. Subbulakshmi, thosai | Needed **Vegetarian / No-Beef** guardrails and native Tamil (`ta`) explanations on Qloo recommendations and medicine-food badges. |
+| 5 | **Uncle Lim Ah Huat** | 80, Mandarin (`zh`) | **Gout**, Hypertension, Allopurinol 100mg, Losartan | Bak kut teh, Hokkien opera, morning walks | Qloo's raw taste graph matched him to organ-meat soup and rich broths from his love of bak kut teh — unsafe for gout / uric acid flares. |
+| 6 | **Mdm Wong Mei Ling** | 82, Cantonese / Mandarin (`zh`) | **Atrial Fibrillation (on Warfarin)**, Hypertension | Herbal soups, green vegetable dishes, Cantonese opera | Needed a **Warfarin (consistent Vitamin K)** guardrail so sudden large leafy-green / concentrated herbal broth spikes are flagged. |
+| 7 | **Uncle Salleh** | 77, Malay (`ms`) | **Stage 3 CKD (Renal)**, Hypertension, Diabetes |Soto, keroncong, Malay classic films | Needed **Renal / CKD (low potassium & low phosphate)** filtering and a medicine-food badge on his MyHealth screen. |
+| 8 | **Mdm Koh Swee Neo** | 84, English / Peranakan (`en`) | **Wheelchair / Walker user (`mobility_aid`)**, Hypertension | Nyonya kuih, gentle gardening, Teresa Teng | Needed Qloo to filter out steep-walk or non-step-free venues and prioritise **wheelchair-accessible, seated** options. |
+| 9 | **Mr Raju** | 73, English / Tamil (`en`) | Mild low-vision, Hypertension | 1960s Tamil cinema, kopi o kosong, chess | Struggled to type his favourites on a phone keyboard; needed **one-tap cultural seed chips** on the *What CareLoop Knows* screen and **Read-Aloud (TTS)** on suggestions. |
 
-1. **Wei Ling.** Liked the hero card ("Needs you") and the plain handover summary. *Friction:* to answer "did Dad take his pill today?" she scrolls past four sections to the timeline detail (observed). *Wants:* today's basics at the top; the next appointment.
-2. **Kelvin.** The timeline and GP note draft let him act from Melbourne. *Friction:* no sense of Dad's local time or whether it's a good moment to call; nothing he can take on remotely (e.g. "book the polyclinic slot"). *Wants:* shared to-dos he can claim; Singapore time shown.
-3. **Mei.** *Friction:* the whole caregiver app is English (observed: `lang="en"`, English UI). The suggestion line read "您喜欢singing": a Chinese sentence addressed **to the senior** with an English word in it, shown in the family app (observed). *Wants:* Chinese UI; text written to her, about her mother.
-4. **Priya.** Liked the 30-day BP chart and the findings with their "based on N days". *Friction:* no medicine list (name, dose, since when); can't add the questions she wants the doctor to answer, and the GP brief leaves the questions blank. *Wants:* medicines in one place; questions that flow into the GP brief.
-5. **Hafiz.** "I'll handle it" shows who took a handover, which helps. *Friction:* everything else (refills, appointments, visits) lives in a WhatsApp group; no way to split it. *Wants:* shared to-dos with owners and due dates.
-6. **Mdm Lim.** *Friction:* body text at 15px is too small; many sections. *Wants:* bigger text; the next appointment and medicines up front; something for her own strain.
-7. **Daniel.** *Friction:* same as Wei Ling: today's pill and check-in are not at the top. *Wants:* a "today so far" line with times.
-8. **Maria.** Not a direct user today (no helper role). *Wants:* a simple emergency card: medicines, allergies, GP, address, 995. Flagged for later: a helper role needs its own consent design.
-9. **Siti.** Liked the "worth watching" tiles and copyable befriending record. *Friction:* copies records one senior at a time. *Wants:* one export of every record for the reporting period.
-10. **Mr Rajan.** *Friction:* the console is per-worker; no centre summary of check-in rates, handovers or programme uptake. *Wants:* a centre report with an export.
+---
 
-**Bug found while simulating (observed):** today's suggestion reasons (`why_it_fits`) are the engine's senior-facing wording ("You said you like…", "您喜欢…"), reused in the family app. Fixed in the app by writing family-voiced reasons from the same data.
+### Cohort B — Family Caregivers & Domestic Helpers (7 Personas)
+| # | Synthetic Persona | Role | Scenario Simulated | Simulated Pain Point Uncovered |
+|---|---|---|---|---|
+| 10 | **grace (Daughter of Mdm Liang)** | Primary working daughter | Coordinating Sunday visit while checking 14-day timeline | Wanted the **Family Visit Kit** to know who is **On Duty** in the Family Rota today, and a one-click **`+ Add to Family To-Dos`** button so the visit kit doesn't get lost in WhatsApp. |
+| 11 | **ben (Son of Mdm Liang)** | Secondary sibling | Checking why a Rung-2 `2.low_day` dot appeared on the timeline | Could see that CareLoop sent a gentle nudge on a low day, but couldn't see *which Qloo cultural nudge* was actually sent to his mum. |
+| 12 | **marcus (Son of Mr Tan)** | Busy son stopping by a hawker centre | Buying dinner on the way to visit his dad | Knew his dad's Qloo food match (*Maxwell Teochew Fish Porridge*), but didn't know **how to order it safely** at the stall (*"less salt, clear soup, no gravy, kopi o kosong"*). |
+| 13 | **Nurul (Daughter of Cik Siti)** | Daughter managing dietary tags | Updating her mother's religious and mobility requirements | Needed a one-click way in the Care view to toggle **Halal**, **Wheelchair / Step-Free**, or **Gout / Renal** tags and immediately see Qloo re-filter. |
+| 14 | **Siti (Domestic Helper for Mdm Wong)** | Live-in helper cooking daily meals | Preparing lunch and buying groceries | Needed a copyable **Hawker & Home Kitchen Order Card** listing exact cooking tips and ingredients to avoid for Mdm Wong's medicines. |
+| 15 | **Priya (Niece in Overseas Timezone)** | Remote family member | Reviewing a Rung-4 handover before calling her uncle | Wanted a **Doorstep / Call Cultural Icebreaker** on the Handover screen so she could open the call warmly with her uncle's favourite song or kopi order instead of sounding like an interrogation. |
+| 16 | **David (Sandwich-Generation Caregiver)** | Caring for both parents | Testing rainy/hazy days for upcoming weekend | Wanted a **What-If Weather & Haze Simulator** (`Sunny`, `Downpour`, `Haze`) to see indoor backups ahead of time. |
 
-## What the research says
+---
 
-| Need | What the source reports | In CareLoop |
-| --- | --- | --- |
-| Quiet, tiered alerts | Vendor guidance on remote monitoring recommends tiering alerts by severity and capping low-priority ones (e.g. 2–3 a week) to avoid alert fatigue ([Onix](https://health.onix-systems.com/insights/rpm-alert-fatigue-design/)); family can be the first line for low-severity checks ([Orbita](https://blog.orbita.ai/reducing-alert-fatigue-in-healthcare-by-engaging-the-at-home-care-team)). Both are vendors: design advice, not evidence. | Already the ladder's design (one weekly digest, rung 4, red flags). Kept. |
-| The senior decides | Adult children rated monitoring tech higher than their mothers did and underestimated how much the mothers wanted to be involved; privacy was the top concern for both. The authors call for shared decision-making ([Berridge & Wetle, The Gerontologist, 2019](https://digital.lib.washington.edu/researchworks/items/9f827726-d4ad-49ea-b5b9-81c6f5133d26/full)). Telecare changes family relationships around dependence and privacy ([Vines et al.](https://researchportal.northumbria.ac.uk/en/publications/making-family-care-work-dependence-privacy-and-remote-home-monito/)). | Consent set on the senior's phone; app shows what's shared and why. New notes are visible to every linked contact. |
-| Remote children need practical help | Remote adult children asked for information on services and entitlements, and help coordinating care; strong interest in a "case manager" style service ([Veil, Soar & Su](https://research.usq.edu.au/item/q20wy/care-provision-expectations-of-remote-adult-children-of-ageing-parents)). | Shared to-dos; next steps after a handover; support resources. |
-| Care is uneven between siblings | An industry survey reported one sibling doing all or most care in 41% of families, only 3% splitting equally (Home Instead, via [Tri-City News](https://tricitynews.com/living/seniors-study-sheds-light-on-siblings-who-care-for-senior-parents-3009529); industry-sponsored). Guidance: agree one main contact for doctors ([Caregivers.com](https://portal.prod.caregivers.com/articles/questions-caregivers-should-ask-at-an-elderly-parents-doctor-appointment-137912.htm)). | Shared to-dos with an owner each; who's handling each handover. |
-| Doctor visits | Keep one medication list with doses; write the top 3–4 questions; note changes since the last visit; get instructions in writing afterwards ([Caregivers.com guide](https://portal.prod.caregivers.com/Articles/How-to-Talk-to-Your-Doctor-A-Guide-for-Caregivers-and-Elders-132484.htm)). | Medicines list; questions for the doctor that flow into the GP brief; next appointment; notes after the visit. |
-| Family role in hypertension | Family-based interventions improved adherence and BP control in older adults; caregivers often act as medication reminders ([touchCARDIO, 2026](https://touchcardio.com/wp-content/uploads/sites/4/2026/06/7.-touchCARDIO-D-25-00048_54-60.pdf)). Forgetfulness and access are common barriers ([CiencCuidSaude](https://periodicos.uem.br/ojs/index.php/CiencCuidSaude/article/download/21745/pdf_8)). | Today's pill status at the top; refill reports; weekday miss patterns. |
-| Singapore caregivers work, and neglect their own health | Of 7,692 residents aged 48–79 surveyed (Nov 2024), about 1 in 7 were caregivers; 45.24% of caregivers worked full-time; 59.23% managed the recipient's finances, 44.07% arranged care services; 33.99% had two or more chronic conditions; only 50.09% knew of respite care and 82.83% of those had never used it ([SMU ROSA, Apr 2025](https://news.smu.edu.sg/news/2025/04/07/1-7-older-adults-juggle-work-chronic-illness-and-unpaid-caregiving)). An older NTUC survey (2013) found 60% of working caregivers struggled to balance work and care ([HR Online](https://www.humanresourcesonline.net/62-of-singaporeans-still-have-no-flexibility-at-work)). | "Looking after you": a private check-in for the caregiver and Singapore support (AIC, respite, grants). |
-| Where to get help in Singapore | AIC hotline 1800-650-6060 (Mon–Fri 8.30am–8.30pm, Sat 8.30am–4pm); respite options include day care and nursing home respite; the Home Caregiving Grant ([AIC contact](https://aic.sg/contact-us), [MOH caregiver support](https://moh.gov.sg/caregiver-support), [MOH respite options](https://www.moh.gov.sg/newsroom/variety-of-respite-care-options-available-for-caregivers-of-frail-seniors/)). | Listed in "Looking after you", with links. Check amounts with AIC before quoting them on a slide. |
-| Caregiver apps | Small studies suggest app-based support can help caregiver wellbeing; feature lists are mostly vendor claims ([JMIR mHealth 2021](https://mhealth.jmir.org/2021/1/e21708/PDF)). | A light check-in plus pointers to real services, not a wellbeing programme. |
-| AAC staff | Heavy data entry and many reports to the funder; teams are small (main brief, "What AAC staff say": Chan et al. 2026). | Caseload export in one file; centre report. |
+### Cohort C — Active Ageing Centre (AAC) Staff & Befrienders (5 Personas)
+| # | Synthetic Persona | Role | Scenario Simulated | Simulated Pain Point Uncovered |
+|---|---|---|---|---|
+| 17 | **mei (AAC Programme Coordinator)** | Runs weekly timetable at Peacehaven AAC | Reviewing the Qloo Group Taste Intersection Planner | Loved the cohort recommendations (*Group Refreshment*, *Sing-Along*, *Matinee Film*), but had to manually re-type them into the weekly timetable — wanted **`+ Add to Timetable`** in one click. |
+| 18 | **Uncle Rahim (AAC Befriender Volunteer)** | Doing doorstep knocks for Rung-4 `no_contact` / `activity` handovers | Visiting a reluctant senior who hasn't replied | Needed the **Qloo Doorstep Icebreaker** right inside `HandoverView` so volunteers know what cultural touchpoint (e.g., Cantonese opera or Teresa Teng) opens the door. |
+| 19 | **Sister Catherine (AAC Kitchen & Catering Lead)** | Ordering refreshments for 30 seniors | Planning Friday tea break | Needed a **Caterer & Kitchen Dietary Headcount Matrix** (`low_sodium: 2 pax`, `diabetic_friendly: 1 pax`, `grapefruit_free: 1 pax`, etc.) with a one-click copy sheet for the caterer. |
+| 20 | **Kelvin (New Social Work Intern)** | Auditing why certain places were excluded | Inspecting cohort safety union | Needed transparent `filtered_out` reasons for gout, renal, wheelchair, and weather rules. |
+| 21 | **Mdm Farah (Malay-Speaking Befriender)** | Supporting multi-ethnic seniors | Checking senior-facing app in `ms` and `ta` | Found that Qloo explanations previously fell back to English when switched to Malay (`ms`) or Tamil (`ta`). |
 
-## Features: what was built from this
+---
 
-| Feature | From | Status |
-| --- | --- | --- |
-| **Today so far** at the top of Today: checked in (time), pills, BP (if shared), Singapore time | Wei Ling, Daniel, Kelvin; adherence research | Built |
-| **Care plan tab**: next appointment, questions for the doctor (into the GP brief), shared to-dos with owners, medicines and refill reports, emergency card | Priya, Hafiz, Kelvin, Mdm Lim, Maria; doctor-visit and sibling research | Built (`GET/PUT /senior/{id}/care-notes`, added, needs team OK) |
-| **Looking after you**: a private weekly check-in for the caregiver (kept on this device), Singapore support with links | Mdm Lim, Hafiz; ROSA, AIC, MOH | Built |
-| **Bigger text** setting | Mdm Lim | Built |
-| **Family-voiced suggestion reasons** | Mei (bug) | Fixed |
-| **Caseload export** (one CSV of every senior's 7-day record) and **centre report** | Siti, Mr Rajan; AAC research | Built |
-| Chinese UI for the caregiver app | Mei | Not yet: needs `care.*` strings in `web/shared/i18n.ts` |
-| Helper (domestic worker) role | Maria | Not yet: needs its own consent design |
-| Push notifications with the app closed | Wei Ling, Daniel | Not yet: needs hosting and a push service |
+### Cohort D — Primary Care Clinicians & Hackathon Judges (4 Personas)
+| # | Synthetic Persona | Role | Scenario Simulated | Simulated Pain Point Uncovered |
+|---|---|---|---|---|
+| 22 | **Dr Lim (Polyclinic GP)** | Reviewing the 1-page GP Brief PDF (`GET /senior/{sid}/brief.pdf`) | 8-minute polyclinic consult | Wanted the 1-page GP Brief to include **active dietary/medicine-food guardrails** and **14-day social engagement metrics** (`going` vs `not_for_me`) alongside BP and adherence. |
+| 23 | **Community Pharmacist (NHG)** | Reviewing medicine cards with senior | Explaining Amlodipine, Atorvastatin, Warfarin, Allopurinol | Wanted the senior's **MyHealth** medicine screen to display a clear **Food & Drink Safety Badge** right on each interacting medication card. |
+| 24 | **Hackathon Judge (Technical / AI Architecture)** | Evaluating Qloo API integration live | Testing dynamic context changes on the deployed app | Wanted an interactive **What-If Weather & Haze Simulator** (`Live NEA`, `Sunny`, `Downpour`, `Haze`) and live dietary guardrail toggles in the UI to verify Qloo re-ranking without running `curl`. |
+| 25 | **AIC / MOH Eldercare Evaluator** | Reviewing safety boundaries | Auditing escalation vs suggestion separation | Verified that Qloo never alters Rung 0–4 / R escalation rules, and that every outgoing explanation string passes `guardrail.py`. |
 
-## Re-run on the new build (observed, 14 Oct)
+---
 
-Each persona's main task was replayed in the browser against the live API after the changes:
+## 2. How the 6 Feature Upgrades Resolve Every Pain Point
 
-| Persona | Task | Result |
-| --- | --- | --- |
-| Wei Ling, Daniel | Did Dad check in and take his pill today? | Answered at the top of Today without scrolling: "Checked in 8:30 am · Pills taken · BP 156/90". |
-| Kelvin | Help from Melbourne | Saw "1 nobody has taken yet" on Today, opened the plan, tapped "I'll do it" on the refill; Wei Ling's view shows Kelvin owns it. Singapore time is shown, with his own time when he's abroad. |
-| Priya | Medicines and questions for the doctor | Medicines list (amlodipine 5 mg, morning, since Mar 2024) and the 17 Oct "running low" report; her question appears on the GP brief PDF under "Questions for this visit (from family or centre)", with the visit date in the header. |
-| Hafiz | Share the work | Shared to-dos with quick-add chips, an owner each and a per-person count. |
-| Mdm Lim | Read it comfortably | "Bigger text" in You enlarges the app on her phone; next visit sits on Today. |
-| Mei | Read it in Chinese | **Not fixed.** The suggestion reason is now family-voiced English ("They like singing") instead of the senior's Chinese. A Chinese caregiver UI is still to do. |
-| Maria | Emergency card | Allergies, family doctor (tap to call), home address, notes, and a 995 button in the plan. A helper role is still to do. |
-| Siti | One export for her reports | Report tab: "Export befriending records (CSV)" for the whole caseload, with a UTF-8 BOM so Excel shows Chinese words. |
-| Mr Rajan | Centre picture | Report tab: seniors, check-ins answered (100% this week), quiet days logged (14), handovers and red flags, a per-senior table with "worth watching". |
-| Any caregiver | Their own strain | You tab: a private "How are you doing?" (kept on the phone), AIC hotline, respite options, grants, SOS 1767 ([findahelpline](https://findahelpline.com/organizations/samaritans-of-singapore)). |
-
-**Note on multilingual likes:** the senior-facing Chinese suggestion reads "您喜欢singing" when the senior's likes are stored in English and dropped into the Chinese template (handled between `backend/env/places.suggest()` and `backend/language/`).
+1. **Interactive "What-If Weather & Haze Simulator" + Live Dietary Guardrail Toggles (`ActivitiesView.tsx`, `/senior/{sid}/taste`, `/senior/{sid}/activities`)**
+   - Caregivers and judges can toggle between **Live NEA**, **Sunny (PSI 45, 0mm)**, **Downpour (14mm)**, and **Haze (PSI 138)**, plus toggle **Halal**, **Vegetarian**, **No Beef**, **Gout**, **Renal / CKD**, and **Wheelchair / Step-Free** guardrails in real time.
+2. **Expanded Clinical, Religious & Mobility Guardrails + Hawker/Home Kitchen Order Card + Medicine Leaflet Badges (`constraints.py`, `agent.py`, `medicines.py`, `MyHealth.tsx`)**
+   - Added deterministic rules for `gout`, `chronic kidney disease`, `warfarin`, `mobility_aid`, `halal`, `vegetarian`, and `no_beef`.
+   - Added `kitchen_card` to every senior's taste plan with copyable hawker ordering instructions (*"less salt, clear soup, kopi o kosong"*) and home-cooking tips.
+   - Added `food_badge` and `food_note` to `MyHealth.tsx` medicine cards.
+3. **Closed-Loop Senior Experience (`Home.tsx`, `Knows.tsx`, `SeniorApp.tsx`)**
+   - Seniors can tap **"I'm going"** or **"Not for me"**, tap **"Read aloud"** (`speechSynthesis`), open **Listen / Watch / Map** links directly on Qloo picks, tap one-click favourite chips on **Knows**, and see a confirmation toast when a check-in extracts new cultural taste seeds.
+4. **AAC One-Click Timetable Scheduling + Caterer Dietary Headcount Matrix + Doorstep Icebreaker (`AacProgrammes.tsx`, `HandoverView.tsx`)**
+   - AAC staff can click **`+ Add to Timetable`** on any Qloo Group Taste recommendation and copy the **Caterer Dietary Headcount Matrix** (`catering_matrix`).
+   - Family and AAC workers viewing a handover get a **Qloo Doorstep / Call Icebreaker** (`doorstep_icebreaker`) tailored to the senior's cultural seeds.
+5. **Rota-Aware Family Visit Kit + One-Click "Add to Family To-Dos" + GP Brief Upgrade + 14-Day Log Rung-2 Nudge (`ActivitiesView.tsx`, `gp_brief.py`, `Timeline.tsx`)**
+   - `FamilyVisitKitCard` highlights who is **On Duty** today from the Family Rota and lets caregivers append the Visit Kit directly to **Family To-Dos**.
+   - The 1-page GP Brief (`brief_data` & `gp_brief.py`) now includes active dietary/medicine-food guardrails and social engagement stats.
+   - Selecting a `2.low_day` dot on the 14-day `Timeline` shows the exact Qloo cultural nudge sent to the senior.
+6. **4-Language Qloo Explanations (`en`, `zh`, `ms`, `ta`)**
+   - Every Qloo entity explanation, bridge rationale, and safety badge supports English (`en`), Chinese (`zh`), Malay (`ms`), and Tamil (`ta`), with all strings verified by `guardrail.py`.

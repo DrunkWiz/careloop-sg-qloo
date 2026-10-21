@@ -29,10 +29,16 @@ from backend import healthsync
 from backend.healthsync.ingest import recent as healthsync_recent
 from backend.language import describe as model_chain
 from backend.language import understand, write
+from backend.eval import run_taste_benchmark
 from backend.language.facts import Facts
 from backend.taste import (
+    active_constraints,
     build_group_taste_plan,
+    build_kopi_kakis,
+    build_memory_lane,
+    build_respite_plan,
     build_taste_plan,
+    create_memory_capsule,
     describe_qloo,
     extract_taste_seeds_from_text,
     get_qloo_client,
@@ -78,6 +84,7 @@ def senior_or_404(sid: str) -> dict:
 # --- requests ------------------------------------------------------------------------------
 
 Lang = Literal["en", "en-SG", "zh"]
+TasteLang = Literal["en", "en-SG", "zh", "ms", "ta"]
 
 
 class CheckInIn(BaseModel):
@@ -201,10 +208,11 @@ def post_reading(body: ReadingIn):
 
 
 @app.get("/senior/{sid}/today")
-def senior_today(sid: str, lang: Optional[Lang] = None):
+def senior_today(sid: str, lang: Optional[TasteLang] = None):
     """lang: the language the senior app is showing right now (defaults to the senior's saved language)."""
     senior = senior_or_404(sid)
     lang = lang or senior["language"]
+    engine_lang: Lang = "en" if lang in ("ms", "ta") else lang  # type: ignore[assignment]
     t = today()
     d = build(store, senior, t, days=2)[t]
     checkins = store.list("checkin", senior_id=sid, day_from=t.isoformat(), day_to=t.isoformat())
@@ -214,7 +222,7 @@ def senior_today(sid: str, lang: Optional[Lang] = None):
     due = not feel_logged and now().hour * 60 + now().minute >= hh * 60 + mm - 30
     prompt = None
     if due:
-        m = write("1", Facts(lang=lang), lang, to="senior", context={"name": senior["name"]})
+        m = write("1", Facts(lang=engine_lang), engine_lang, to="senior", context={"name": senior["name"]})
         prompt = {"to": "senior", "rung": "1", "language": m.language, "text": m.text, "from_template": m.from_template,
                   "guardrail": {"passed": m.guardrail.passed, "reasons": m.guardrail.reasons}, "model": m.model}
     band, en, zh = haze_band(d.psi)
@@ -243,18 +251,148 @@ def _erased_taste(sid: str) -> set[str]:
 
 
 @app.get("/senior/{sid}/taste")
-def senior_taste(sid: str, lang: Optional[Lang] = None):
-    """Qloo Taste AI plan, health-constraint filter log, 4-step agent trace, and LLM-only comparison."""
+def senior_taste(
+    sid: str,
+    lang: Optional[TasteLang] = None,
+    psi: Optional[int] = None,
+    rain_mm: Optional[float] = None,
+):
+    """Qloo Taste AI plan, health-constraint filter log, 4-step agent trace, and LLM-only comparison.
+
+    Accepts optional `psi` and `rain_mm` query parameters so caregivers or judges can run
+    the interactive What-If Weather & Haze Simulator in real time.
+    """
     senior = senior_or_404(sid)
     lang = lang or senior["language"]
     t = today()
     d = build(store, senior, t, days=2)[t]
+    eff_psi = psi if psi is not None else d.psi
+    eff_rain = rain_mm if rain_mm is not None else d.rain_mm
     return build_taste_plan(
         {**senior, "language": lang},
         t,
+        indoor_only=bool((eff_rain or 0) >= 5.0 or (eff_psi or 0) > 100),
+        rain_mm=eff_rain,
+        psi=eff_psi,
+        erased_keys=_erased_taste(sid),
+    )
+
+
+class DietaryUpdateIn(BaseModel):
+    toggle: Optional[str] = Field(default=None, max_length=60)
+    conditions: Optional[list[str]] = None
+    psi: Optional[int] = None
+    rain_mm: Optional[float] = None
+
+
+@app.put("/senior/{sid}/dietary")
+def put_senior_dietary(sid: str, body: DietaryUpdateIn):
+    """Toggle or replace dietary, religious, clinical, or mobility tags on a senior and return the updated Qloo plan."""
+    senior = senior_or_404(sid)
+    cur = list(senior.get("conditions") or [])
+    if body.conditions is not None:
+        cur = [c.strip().lower() for c in body.conditions if c and c.strip()]
+    elif body.toggle:
+        tag = body.toggle.strip().lower()
+        if not tag:
+            raise HTTPException(400, "Empty dietary tag")
+        lower_map = {c.lower(): c for c in cur}
+        if tag in lower_map:
+            cur = [c for c in cur if c.lower() != tag]
+        else:
+            cur.append(tag)
+    else:
+        raise HTTPException(400, "Provide toggle or conditions")
+    senior["conditions"] = cur
+    store.put("senior", senior)
+    return senior_taste(sid, psi=body.psi, rain_mm=body.rain_mm)
+
+
+class MemoryIn(BaseModel):
+    story_text: str = Field(..., min_length=1, max_length=2000)
+    prompt: Optional[str] = Field(default=None, max_length=500)
+    qloo_seed: Optional[str] = Field(default=None, max_length=120)
+    qloo_entity_id: Optional[str] = Field(default=None, max_length=160)
+    qloo_domain: Optional[str] = Field(default=None, max_length=60)
+    recorded_by: Optional[str] = Field(default=None, max_length=80)
+    language: Optional[TasteLang] = None
+
+
+def _saved_memories(sid: str) -> list[dict]:
+    raw = store.setting(f"memories:{sid}")
+    if not raw:
+        return []
+    try:
+        data = json.loads(raw)
+        return data if isinstance(data, list) else []
+    except json.JSONDecodeError:
+        return []
+
+
+@app.get("/senior/{sid}/memories")
+def get_senior_memories(sid: str, lang: Optional[TasteLang] = None):
+    """Intergenerational Memory Lane reminiscence prompt and family keepsake book anchored to Qloo nostalgia seeds."""
+    senior = senior_or_404(sid)
+    eff_lang = lang or senior["language"]
+    return build_memory_lane(
+        {**senior, "language": eff_lang},
+        today(),
+        saved_capsules=_saved_memories(sid),
+        erased_keys=_erased_taste(sid),
+    )
+
+
+@app.post("/senior/{sid}/memories")
+def post_senior_memory(sid: str, body: MemoryIn):
+    """Save a new Reminiscence Memory Capsule recorded by the senior or a visiting family member."""
+    senior = senior_or_404(sid)
+    eff_lang = body.language or senior["language"]
+    capsule = create_memory_capsule(
+        {**senior, "language": eff_lang},
+        story_text=body.story_text,
+        prompt=body.prompt,
+        qloo_seed=body.qloo_seed,
+        qloo_entity_id=body.qloo_entity_id,
+        qloo_domain=body.qloo_domain,
+        recorded_by=body.recorded_by,
+        language=eff_lang,
+        day=today(),
+    )
+    saved = _saved_memories(sid)
+    saved.insert(0, capsule)
+    store.set_setting(f"memories:{sid}", json.dumps(saved[:50]))
+    lane = build_memory_lane(
+        {**senior, "language": eff_lang},
+        today(),
+        saved_capsules=saved[:50],
+        erased_keys=_erased_taste(sid),
+    )
+    return {**capsule, "capsule": capsule, "memory_lane": lane}
+
+
+@app.get("/senior/{sid}/respite")
+def get_senior_respite(sid: str):
+    """Caregiver Respite & Burnout Shield: 3-hour guilt-free respite plan matched with a safe Qloo AAC programme."""
+    senior = senior_or_404(sid)
+    t = today()
+    d = build(store, senior, t, days=2)[t]
+    contacts = [c for c in store.list("contact", senior_id=sid) if c.get("role") == "family"]
+    aac_id = senior.get("aac_id") or "aac-100"
+    progs = _programmes(aac_id)
+    rota = store.get("rota", f"rota-{sid}")
+    streak_days = 6 if rota else 5
+    cutoff = (now() - timedelta(days=7)).isoformat()
+    recent_vents = [p for p in store.list("ventpost") if not p.get("hidden") and p["time"] >= cutoff]
+    return build_respite_plan(
+        senior,
+        t,
+        contacts=contacts,
+        programmes=progs,
+        streak_days=streak_days,
+        has_recent_vent=len(recent_vents) > 0,
         indoor_only=bool((d.rain_mm or 0) >= 5.0 or (d.psi or 0) > 100),
-        rain_mm=d.rain_mm,
         psi=d.psi,
+        rain_mm=d.rain_mm,
         erased_keys=_erased_taste(sid),
     )
 
@@ -318,6 +456,8 @@ def knows(sid: str):
     for k in store.list("knows", senior_id=sid):
         out.append({"id": f"learned:{k['id']}", "kind": "other", "text": k["text"]})
     out += taste_knows_entries(s, erased_keys=_erased_taste(sid))
+    for m in _saved_memories(sid):
+        out.append({"id": f"memory:{m['id']}", "kind": "other", "text": f"Memory ({m.get('qloo_seed', 'story')}): {m.get('story_text', '')}"})
     return out
 
 
@@ -342,6 +482,12 @@ def forget(sid: str, fact: str):
     elif kind == "contact":
         if not store.delete("contact", key):
             raise HTTPException(404, fact)
+    elif kind == "memory":
+        saved = _saved_memories(sid)
+        filtered = [m for m in saved if m.get("id") != key]
+        if len(filtered) == len(saved):
+            raise HTTPException(404, fact)
+        store.set_setting(f"memories:{sid}", json.dumps(filtered))
     elif kind == "learned":
         if not store.delete("knows", key):
             raise HTTPException(404, fact)
@@ -719,6 +865,62 @@ def get_aac_taste_group(aac_id: str):
     )
 
 
+@app.get("/aac/{aac_id}/kopi-kakis")
+def get_aac_kopi_kakis(aac_id: str, focus_senior_id: Optional[str] = None):
+    """Kopi Kakis — Qloo Affinity Buddy Matching for seniors at an Active Ageing Centre."""
+    p = place(aac_id)
+    centre_name = p["name"] if p else aac_id
+    t = today()
+    seniors = [s for s in store.list("senior") if s.get("aac_id") == aac_id]
+    if not seniors:
+        aac_senior_ids = {c["senior_id"] for c in store.list("contact") if c.get("role") == "aac"}
+        seniors = [s for s in store.list("senior") if s["id"] in aac_senior_ids]
+    if not seniors:
+        seniors = store.list("senior")[:6]
+    if focus_senior_id:
+        fs = store.get("senior", focus_senior_id)
+        if fs and all(s["id"] != focus_senior_id for s in seniors):
+            seniors = [fs] + seniors
+    indoor_only = False
+    rain_mm = None
+    psi = None
+    erased_map: dict[str, set[str]] = {}
+    for s in seniors:
+        erased_map[s["id"]] = _erased_taste(s["id"])
+        d = build(store, s, t, days=2)[t]
+        if (d.rain_mm or 0) >= 5.0 or (d.psi or 0) > 100:
+            indoor_only = True
+        if d.rain_mm is not None:
+            rain_mm = d.rain_mm
+        if d.psi is not None:
+            psi = d.psi
+    return build_kopi_kakis(
+        aac_id,
+        centre_name,
+        seniors,
+        t,
+        focus_senior_id=focus_senior_id,
+        indoor_only=indoor_only,
+        rain_mm=rain_mm,
+        psi=psi,
+        erased_by_senior=erased_map,
+    )
+
+
+@app.get("/senior/{sid}/kopi-kakis")
+def get_senior_kopi_kakis(sid: str):
+    """Kopi Kakis buddy matches centered on a specific senior at their Active Ageing Centre."""
+    senior = senior_or_404(sid)
+    aac_id = senior.get("aac_id") or "aac-100"
+    return get_aac_kopi_kakis(aac_id, focus_senior_id=sid)
+
+
+@app.get("/eval/taste")
+def get_eval_taste():
+    """Quantitative Qloo Ablation & Multi-Metric Benchmark comparing Generic LLM, Rule-Filtered LLM, and CareLoop + Qloo."""
+    return run_taste_benchmark()
+
+
 @app.put("/aac/{aac_id}/programmes")
 def put_programmes(aac_id: str, programmes: list[Programme] = Body(...)):
     """AAC staff enter their weekly timetable once; it feeds every linked senior's suggestions."""
@@ -852,6 +1054,11 @@ def brief_data(sid: str, days: int = 90):
         "next_appointment": next((a for a in sorted((store.get("carenotes", f"notes-{sid}") or {}).get("appointments", []), key=lambda a: a["date"])
                                   if a["date"] >= t.isoformat()), None),
         "prevention_due": _prevention_due(senior, t),
+        "dietary_rules": [r["badge"] for r in active_constraints(senior)["active_rules"]],
+        "social_engagement": {
+            "going_count": sum(1 for s in store.list("suggestion", senior_id=sid) if s.get("response") == "going"),
+            "not_for_me_count": len(senior.get("hidden_suggestions") or []),
+        },
         "note": "Generated from the CareLoop decision log. Not connected to any clinic system. Synthetic data in the demo.",
     }
 
@@ -889,6 +1096,7 @@ def decision_log(sid: str, days: int = 14, contact: Optional[str] = None):
     for c in store.list("checkin", senior_id=sid, day_from=start.isoformat(), day_to=t.isoformat()):
         checkins.setdefault(c["time"][:10], []).append(c)
 
+    erased = _erased_taste(sid)
     out = []
     for i in range(days):
         d = t - timedelta(i)
@@ -898,6 +1106,9 @@ def decision_log(sid: str, days: int = 14, contact: Optional[str] = None):
         red = bool(dec and dec["rung"] == "R")
         hidden = sees == "nothing" and not red
         numbers = sees == "readings" or red
+        qloo_nudge = None
+        if dec and dec.get("rule_id") == "2.low_day" and not hidden:
+            qloo_nudge = build_taste_plan(senior, d, erased_keys=erased)["low_day_nudge"]["text"]
         out.append({
             "date": key,
             "rung": None if hidden or not dec else dec["rung"],
@@ -911,6 +1122,7 @@ def decision_log(sid: str, days: int = 14, contact: Optional[str] = None):
             "social": bool(h and h.social) if activity_ok and not hidden else None,
             "bp": ({"systolic": round(h.sys), "diastolic": round(h.dia)} if h and h.sys and h.dia and numbers and not hidden else None),
             "psi": h.psi if h else None, "rain_mm": h.rain_mm if h else None, "festival": h.festival if h else None,
+            "qloo_nudge": qloo_nudge,
         })
     return out
 
@@ -948,13 +1160,18 @@ def senior_insights(sid: str, days: int = 30, contact: Optional[str] = None):
 
 
 @app.get("/senior/{sid}/activities")
-def senior_activities(sid: str, contact: Optional[str] = None):
+def senior_activities(
+    sid: str,
+    contact: Optional[str] = None,
+    psi: Optional[int] = None,
+    rain_mm: Optional[float] = None,
+):
     """Their own AAC's programmes, the nearest AACs and CCs (data.gov.sg), recent suggestions and answers,
     and whether today calls for indoor options. (added: Nathan, needs team OK)"""
     from backend.reports.activities import activities
 
     senior, family, see = _viewer(sid, contact)
-    return activities(store, senior, today(), responses=see["activity"])
+    return activities(store, senior, today(), responses=see["activity"], psi_override=psi, rain_override=rain_mm)
 
 
 # --- care notes: what the family and centre keep together (added: Nathan, needs team OK) -----------------
@@ -1045,7 +1262,7 @@ def put_care_notes(sid: str, body: CareNotes, contact: Optional[str] = None):
 # doesn't know is never guessed at: it says so and points to the pharmacist.
 
 @app.get("/senior/{sid}/medicines")
-def senior_medicines(sid: str, lang: Optional[Lang] = None, contact: Optional[str] = None):
+def senior_medicines(sid: str, lang: Optional[TasteLang] = None, contact: Optional[str] = None):
     from backend.reports.medicines import explain_all
 
     senior, family, see = _viewer(sid, contact)
@@ -1055,7 +1272,7 @@ def senior_medicines(sid: str, lang: Optional[Lang] = None, contact: Optional[st
 
 
 @app.get("/senior/{sid}/prevention")
-def senior_prevention(sid: str, lang: Optional[Lang] = None, contact: Optional[str] = None):
+def senior_prevention(sid: str, lang: Optional[TasteLang] = None, contact: Optional[str] = None):
     from backend.reports.prevention import checklist
 
     senior, family, see = _viewer(sid, contact)

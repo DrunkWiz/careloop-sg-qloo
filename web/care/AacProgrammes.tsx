@@ -1,8 +1,8 @@
 // Weekly programme timetable (GET/PUT /aac/{aac_id}/programmes). Staff enter it once; it feeds every
 // linked senior's suggestions.
 import { useEffect, useState } from 'react';
-import type { Activities, CaseloadRow, GroupTastePlan, Programme, ProgrammeIn, Weekday } from '../shared/contract';
-import { getAacTasteGroup, getActivities, getProgrammes, putProgrammes } from '../shared/api';
+import type { Activities, CaseloadRow, GroupCateringMatrix, GroupTastePlan, KopiKakisResponse, Programme, ProgrammeIn, Weekday } from '../shared/contract';
+import { getAacKopiKakis, getAacTasteGroup, getActivities, getProgrammes, putProgrammes } from '../shared/api';
 import { BackLink } from './HandoverView';
 import { timeKey } from './ActivitiesView';
 import TimetableImport from './TimetableImport';
@@ -52,10 +52,13 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
   const [draft, setDraft] = useState(blank);
   const [busy, setBusy] = useState(false);
   const [groupPlan, setGroupPlan] = useState<GroupTastePlan | null>(null);
+  const [kopiKakis, setKopiKakis] = useState<KopiKakisResponse | null>(null);
+  const [copiedPairId, setCopiedPairId] = useState<string | null>(null);
 
   useEffect(() => {
     getProgrammes(centre.id).then(setList, (e: Error) => setError(e.message));
     getAacTasteGroup(centre.id).then(setGroupPlan, () => setGroupPlan(null));
+    getAacKopiKakis(centre.id).then(setKopiKakis, () => setKopiKakis(null));
   }, [centre.id]);
 
   const save = async (next: ProgrammeIn[]) => {
@@ -224,42 +227,98 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
             </div>
           )}
           <ul className="act-list">
-            {groupPlan.group_recommendations.refreshment_or_outing.map((r) => (
-              <li key={r.id} className="act-item">
-                <span className="act-kind is-programme">Group Refreshment</span>
-                <span className="act-body">
-                  <strong>{r.name}</strong>
-                  <span className="care-muted">{r.why}</span>
-                  <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
-                    <code>Bridge:</code> {r.bridge}
+            {groupPlan.group_recommendations.refreshment_or_outing.map((r) => {
+              const scheduled = list?.some((p) => p.title.toLowerCase() === r.name.toLowerCase());
+              return (
+                <li key={r.id} className="act-item">
+                  <span className="act-kind is-programme">Group Refreshment</span>
+                  <span className="act-body">
+                    <strong>{r.name}</strong>
+                    <span className="care-muted">{r.why}</span>
+                    <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                      <code>Bridge:</code> {r.bridge}
+                    </span>
                   </span>
-                </span>
-              </li>
-            ))}
-            {groupPlan.group_recommendations.music_playlist.map((m) => (
-              <li key={m.id} className="act-item">
-                <span className="act-kind is-aac">Sing-Along</span>
-                <span className="act-body">
-                  <strong>{m.name}</strong>
-                  <span className="care-muted">{m.why}</span>
-                  <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
-                    <code>Bridge:</code> {m.bridge}
+                  {list && (
+                    <button
+                      type="button"
+                      className="care-link"
+                      disabled={busy || scheduled}
+                      onClick={() =>
+                        void save([
+                          ...list.map(strip),
+                          { title: r.name, weekdays: ['wed'], time: '10:30', tags: ['food', 'social'], indoor: true, free: true },
+                        ])
+                      }
+                    >
+                      {scheduled ? '✓ In Timetable' : '+ Add to Timetable'}
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+            {groupPlan.group_recommendations.music_playlist.map((m) => {
+              const title = `Sing-Along: ${m.name}`;
+              const scheduled = list?.some((p) => p.title.toLowerCase() === title.toLowerCase());
+              return (
+                <li key={m.id} className="act-item">
+                  <span className="act-kind is-aac">Sing-Along</span>
+                  <span className="act-body">
+                    <strong>{m.name}</strong>
+                    <span className="care-muted">{m.why}</span>
+                    <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                      <code>Bridge:</code> {m.bridge}
+                    </span>
                   </span>
-                </span>
-              </li>
-            ))}
-            {groupPlan.group_recommendations.matinee_film.map((f) => (
-              <li key={f.id} className="act-item">
-                <span className="act-kind is-cc">Matinee Film</span>
-                <span className="act-body">
-                  <strong>{f.name}</strong>
-                  <span className="care-muted">{f.why}</span>
-                  <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
-                    <code>Bridge:</code> {f.bridge}
+                  {list && (
+                    <button
+                      type="button"
+                      className="care-link"
+                      disabled={busy || scheduled}
+                      onClick={() =>
+                        void save([
+                          ...list.map(strip),
+                          { title, weekdays: ['thu'], time: '14:00', tags: ['music', 'karaoke'], indoor: true, free: true },
+                        ])
+                      }
+                    >
+                      {scheduled ? '✓ In Timetable' : '+ Add to Timetable'}
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+            {groupPlan.group_recommendations.matinee_film.map((f) => {
+              const title = `Matinee Screening: ${f.name}`;
+              const scheduled = list?.some((p) => p.title.toLowerCase() === title.toLowerCase());
+              return (
+                <li key={f.id} className="act-item">
+                  <span className="act-kind is-cc">Matinee Film</span>
+                  <span className="act-body">
+                    <strong>{f.name}</strong>
+                    <span className="care-muted">{f.why}</span>
+                    <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                      <code>Bridge:</code> {f.bridge}
+                    </span>
                   </span>
-                </span>
-              </li>
-            ))}
+                  {list && (
+                    <button
+                      type="button"
+                      className="care-link"
+                      disabled={busy || scheduled}
+                      onClick={() =>
+                        void save([
+                          ...list.map(strip),
+                          { title, weekdays: ['fri'], time: '14:30', tags: ['film', 'nostalgia'], indoor: true, free: true },
+                        ])
+                      }
+                    >
+                      {scheduled ? '✓ In Timetable' : '+ Add to Timetable'}
+                    </button>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           {groupPlan.filtered_out.length > 0 && (
             <p className="care-muted" style={{ marginTop: '0.5rem' }}>
@@ -267,6 +326,71 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
               {groupPlan.filtered_out.map((f) => `${f.name} (${f.reason})`).join('; ')}.
             </p>
           )}
+          {groupPlan.catering_matrix && (
+            <CatererMatrixCard matrix={groupPlan.catering_matrix} />
+          )}
+        </section>
+      )}
+
+      {kopiKakis && kopiKakis.matches.length > 0 && (
+        <section className="care-card" id="kopi-kakis">
+          <h2>“Kopi Kakis” — Qloo Affinity Buddy Matcher for Lonely Seniors</h2>
+          <p className="care-muted">
+            Lonely seniors often hesitate to join large group sessions alone. CareLoop computes pairwise cultural affinity across{' '}
+            <strong>{kopiKakis.aac_name}</strong> using resolved Qloo entities (<code>urn:entity:artist</code>, <code>urn:entity:movie</code>,{' '}
+            <code>urn:entity:place</code>), shared spoken languages, and the stricter union of both seniors' medical and dietary rules.
+          </p>
+          <ul className="act-list">
+            {kopiKakis.matches.map((m) => (
+              <li key={m.pair_id} className="act-item" style={{ alignItems: 'flex-start' }}>
+                <span className="act-kind is-programme">{m.affinity_pct}% Match</span>
+                <span className="act-body">
+                  <strong>
+                    {m.senior_a.name} ↔ {m.senior_b.name}
+                  </strong>
+                  <span className="care-muted" style={{ display: 'block', marginTop: '0.2rem' }}>
+                    <strong>Shared Qloo hooks:</strong> {m.shared_hooks.join(' · ')} ({m.shared_language_label})
+                  </span>
+                  <span className="care-muted" style={{ display: 'block', marginTop: '0.15rem' }}>
+                    <strong>Union-safe meeting spot:</strong> {m.safe_meeting_spot.name} ·{' '}
+                    <em>{m.union_badges.join(', ') || 'Standard health checks'}</em>
+                  </span>
+                  <span
+                    className="care-muted"
+                    style={{
+                      display: 'block',
+                      marginTop: '0.35rem',
+                      padding: '0.45rem 0.6rem',
+                      background: 'var(--bg-soft, #faf8f5)',
+                      borderRadius: '6px',
+                      borderLeft: '3px solid var(--accent, #0f766e)',
+                    }}
+                  >
+                    <strong>Befriender Introduction Script (EN):</strong> {m.befriender_script.en}
+                    <br />
+                    <span style={{ fontSize: '0.86rem' }}>
+                      <strong>华语破冰台词 (ZH):</strong> {m.befriender_script.zh}
+                    </span>
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  className="care-link"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(`${m.befriender_script.en}\n\n${m.befriender_script.zh}`);
+                      setCopiedPairId(m.pair_id);
+                      setTimeout(() => setCopiedPairId(null), 2200);
+                    } catch {
+                      /* ignore */
+                    }
+                  }}
+                >
+                  {copiedPairId === m.pair_id ? '✓ Copied Script' : 'Copy Intro Card'}
+                </button>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 
@@ -319,5 +443,40 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
         </section>
       )}
     </>
+  );
+}
+
+function CatererMatrixCard({ matrix }: { matrix: GroupCateringMatrix }) {
+  const [copied, setCopied] = useState(false);
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(matrix.caterer_sheet_text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <div className="care-card" style={{ marginTop: '0.75rem', background: 'var(--bg-soft, #faf8f5)' }}>
+      <h3 style={{ margin: '0 0 0.35rem', fontSize: '0.96rem' }}>
+        Caterer & Kitchen Dietary Headcount Matrix ({matrix.total_seniors} seniors)
+      </h3>
+      <p className="care-muted" style={{ margin: '0 0 0.35rem' }}>
+        <strong>Recommended cohort refreshment:</strong> {matrix.recommended_refreshment}
+      </p>
+      <ul className="care-muted" style={{ margin: '0 0 0.5rem 1.1rem', padding: 0 }}>
+        {(matrix.rows ?? []).map((row) => (
+          <li key={row.rule_id}>
+            <strong>{row.badge}:</strong> {row.count} / {matrix.total_seniors} ({row.seniors.join(', ')})
+          </li>
+        ))}
+      </ul>
+      <button type="button" className="care-secondary" onClick={onCopy}>
+        {copied ? 'Copied Caterer Sheet!' : 'Copy Caterer Dietary Sheet'}
+      </button>
+    </div>
   );
 }

@@ -177,6 +177,8 @@ export interface BriefData {
   senior: { id: string; name: string; conditions: string[]; medicines: Medicine[] };
   period: { from: string; to: string };
   aac: { id: string; name: string | null; going: string[] } | null;
+  dietary_rules?: string[];
+  social_engagement?: { going_count: number; not_for_me_count: number };
 }
 
 // GET /senior/{id}/log?days=N&contact=… (added, needs team OK): every day's decision, newest first.
@@ -195,6 +197,7 @@ export interface LogDay {
   psi: number | null;
   rain_mm: number | null;
   festival: string | null;
+  qloo_nudge?: string | null;
 }
 
 // GET /care/caregiver/{caregiver_id}: a caregiver's linked seniors (one caregiver, many seniors).
@@ -368,6 +371,41 @@ export interface TasteVisitKit {
   whatsapp_text: string;
 }
 
+export interface TasteKitchenCard {
+  stall_suggestion: string;
+  dish_order_phrase: string;
+  drink_order_phrase: string;
+  avoid_items: string[];
+  kitchen_swaps: string[];
+  copy_text: string;
+}
+
+export interface TasteDoorstepIcebreaker {
+  opener: string;
+  music_icebreaker: string;
+  treat_icebreaker: string;
+  film_icebreaker: string;
+  safety_reminder?: string;
+}
+
+export interface GroupCateringMatrix {
+  total_seniors: number;
+  recommended_refreshment: string;
+  counts: {
+    halal: number;
+    vegetarian: number;
+    no_beef: number;
+    low_salt: number;
+    less_sugar: number;
+    low_purine_gout: number;
+    renal_friendly: number;
+    no_grapefruit_pomelo: number;
+    wheelchair_seated: number;
+  };
+  rows?: { rule_id: string; badge: string; count: number; seniors: string[] }[];
+  caterer_sheet_text: string;
+}
+
 export interface GroupTastePlan {
   aac_id: string;
   aac_name: string;
@@ -377,6 +415,7 @@ export interface GroupTastePlan {
   shared_seeds: { query: string; count: number; seniors: string[] }[];
   resolved_entities?: { seed: string; entity_id: string; name: string; type: string; tags: string[] }[];
   cohort_constraints: { rule: string; label: string; triggered_by: string[] }[];
+  catering_matrix?: GroupCateringMatrix;
   weather?: { psi: number | null; rain_mm: number | null; indoor_only: boolean };
   group_recommendations: {
     refreshment_or_outing: { id: string; name: string; tags?: string[]; why: string; bridge: string }[];
@@ -390,6 +429,8 @@ export interface TasteFilteredItem {
   entity_id: string;
   name: string;
   rule_id: string;
+  rule_code?: string;
+  rule_ids?: string[];
   reason: string;
 }
 
@@ -402,13 +443,25 @@ export interface TasteTraceStep {
   details: string[];
 }
 
+export interface TasteTelemetry {
+  provider: string;
+  mode: 'live' | 'fixture';
+  resolved_urns: string[];
+  resolved_count: number;
+  guardrail_pass_rate: number;
+  latency_ms: number;
+}
+
 export interface TastePlan {
   senior_id: string;
   date: string;
   qloo_mode: 'live' | 'fixture';
+  telemetry?: TasteTelemetry;
+  resolved_entities?: { seed: string; entity_id: string; name: string; type: string; tags: string[] }[];
   profile: {
     neighbourhood: string;
     likes: string[];
+    conditions?: string[];
     music_seeds: string[];
     food_seeds: string[];
     film_seeds: string[];
@@ -420,7 +473,7 @@ export interface TastePlan {
     rain_mm: number | null;
     psi: number | null;
     badges: string[];
-    active_rules: { rule_id: string; kind: string; trigger: string; badge: string; explanation: string }[];
+    active_rules: { rule_id: string; rule_code?: string; kind: string; trigger: string; badge: string; explanation: string }[];
   };
   recommendations: {
     places: TastePlacePick[];
@@ -429,6 +482,8 @@ export interface TastePlan {
   };
   low_day_nudge?: TasteLowDayNudge;
   visit_kit?: TasteVisitKit;
+  kitchen_card?: TasteKitchenCard;
+  doorstep_icebreaker?: TasteDoorstepIcebreaker;
   filtered_out: TasteFilteredItem[];
   trace: TasteTraceStep[];
   guardrail: { passed: boolean; checked_count: number; reasons: string[] };
@@ -574,6 +629,8 @@ export interface MedicineNote {
   what_for: string;
   how_it_helps: string | null;
   look_out_for: string[];
+  food_note?: string | null;
+  food_badge?: string | null;
 }
 
 export interface MedicinesView {
@@ -599,4 +656,172 @@ export interface PreventionItem {
 export interface PreventionView {
   items: PreventionItem[];
   note: string;
+}
+
+
+// --- Flagship Capabilities (Kopi Kakis, Memory Lane, Respite Shield, Taste Benchmark) ---
+
+export interface KopiKakiMatch {
+  pair_id: string;
+  senior_a: { id: string; name: string; language: string; likes: string[] };
+  senior_b: { id: string; name: string; language: string; likes: string[] };
+  affinity_score: number;
+  affinity_pct: number;
+  shared_hooks: string[];
+  shared_tags: string[];
+  shared_urns: string[];
+  shared_language_label: string;
+  union_badges: string[];
+  safe_meeting_spot: {
+    entity_id: string;
+    name: string;
+    category: string;
+    indoor: boolean;
+    fit_badges: string[];
+  };
+  companion_music: string;
+  befriender_script: {
+    en: string;
+    zh: string;
+  };
+}
+
+export interface KopiKakisResponse {
+  aac_id: string;
+  aac_name: string;
+  date: string;
+  qloo_mode: string;
+  focus_senior_id: string | null;
+  matches: KopiKakiMatch[];
+  guardrail: { passed: boolean; checked_count: number; reasons: string[] };
+}
+
+export interface MemoryCapsule {
+  id: string;
+  senior_id: string;
+  date: string;
+  qloo_seed: string;
+  qloo_urn: string;
+  era_tag: string;
+  prompt: string;
+  story_text: string;
+  language: Lang | 'ms' | 'ta' | string;
+  recorded_by: string;
+  guardrail?: { passed: boolean; reasons: string[] };
+}
+
+export interface MemoryLaneResponse {
+  senior_id: string;
+  senior_name: string;
+  date: string;
+  language: Lang;
+  qloo_mode: string;
+  daily_prompt: {
+    prompt: string;
+    qloo_seed: string;
+    qloo_urn: string;
+    music_companion: string;
+    film_companion: string;
+    food_companion: string;
+    starter_chips: string[];
+  };
+  capsules: MemoryCapsule[];
+  guardrail: { passed: boolean; checked_count: number; reasons: string[] };
+}
+
+export interface RespitePlanResponse {
+  senior_id: string;
+  senior_name: string;
+  date: string;
+  qloo_mode: string;
+  burnout_shield: {
+    active: boolean;
+    streak_days: number;
+    has_recent_vent: boolean;
+    trigger_reason: string;
+  };
+  window_hours: number;
+  recommended_slot: string;
+  primary_caregiver: { id: string; name: string };
+  backup_contact: { id: string; name: string };
+  matched_programme: {
+    id: string;
+    title: string;
+    when: string;
+    where: string;
+    kind: string;
+    indoor: boolean;
+    qloo_fit_pct: number;
+    why_safe_and_loved: string;
+    safety_badges: string[];
+  };
+  companion_picks: {
+    post_session_treat: string;
+    music_on_way: string;
+  };
+  summary: string;
+  whatsapp_text: string;
+  guardrail: { passed: boolean; checked_count: number; reasons: string[] };
+}
+
+export interface TasteBenchmarkArchitecture {
+  id: 'generic_llm' | 'rule_filtered_llm' | 'careloop_qloo';
+  name: string;
+  description: string;
+  clinical_violation_rate_pct: number;
+  personas_with_violation: number;
+  total_violations: number;
+  cultural_specificity_score: number;
+  guardrail_pass_rate_pct: number;
+  multilingual_coverage_pct: number;
+}
+
+export interface TasteBenchmarkPersonaRow {
+  persona_id: string;
+  name: string;
+  cohort: 'demo_senior' | 'synthetic_persona';
+  language: Lang | 'ms' | 'ta' | string;
+  conditions: string[];
+  medicines: string[];
+  dietary_prefs: string[];
+  likes: string[];
+  generic_llm: {
+    picks: string[];
+    violation_count: number;
+    violations: { item: string; rule_code: string; rule_id: string; reason: string }[];
+    specificity_score: number;
+    guardrail_passed: boolean;
+  };
+  rule_filtered_llm: {
+    picks: string[];
+    violation_count: number;
+    violations: { item: string; rule_code: string; rule_id: string; reason: string }[];
+    specificity_score: number;
+    guardrail_passed: boolean;
+  };
+  careloop_qloo: {
+    picks: string[];
+    music_pick: string;
+    movie_pick: string;
+    filtered_out_count: number;
+    filtered_out_rules: string[];
+    violation_count: number;
+    violations: { item: string; rule_code: string; rule_id: string; reason: string }[];
+    specificity_score: number;
+    guardrail_passed: boolean;
+    explanation_sample: string;
+  };
+}
+
+export interface TasteEvalBenchmark {
+  benchmark_version: string;
+  evaluated_on: string;
+  total_personas: number;
+  cohorts: { demo_seniors: number; synthetic_personas: number };
+  architectures: TasteBenchmarkArchitecture[];
+  multilingual_breakdown: Record<
+    string,
+    { label: string; tested_personas: number; guardrail_pass_rate_pct: number; cultural_specificity_avg: number }
+  >;
+  per_persona: TasteBenchmarkPersonaRow[];
 }

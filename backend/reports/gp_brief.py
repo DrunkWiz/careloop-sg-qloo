@@ -240,6 +240,10 @@ def _story(data: dict) -> list:
         med_line = "; ".join(f"{_text(m.get('name', '').capitalize())} {_text(m.get('dose_text', ''))}".strip()
                              + (f" (since {_dy(m['started'])})" if m.get("started") else "") for m in meds)
         story.append(Paragraph(f"<b>Taking:</b> {med_line}", S_BODY))
+    diet_rules = data.get("dietary_rules") or []
+    if diet_rules:
+        story.append(Spacer(1, 2))
+        story.append(Paragraph("<b>Active dietary & medicine-leaflet guardrails:</b> " + "; ".join(_text(r) for r in diet_rules) + ".", S_BODY))
     story.append(Spacer(1, 6))
 
     # Chart

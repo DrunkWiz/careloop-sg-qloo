@@ -260,6 +260,37 @@ export function getAacTasteGroup(aacId: string): Promise<GroupTastePlan> {
       { rule: 'no_high_sugar', label: 'Unsweetened / low-GI options required (diabetes care)', triggered_by: ['Mdm Aminah'] },
       { rule: 'no_grapefruit', label: 'Avoid grapefruit (medicine interaction)', triggered_by: ['Mr Ong'] },
     ],
+    catering_matrix: {
+      total_seniors: 5,
+      recommended_refreshment: 'Teochew Steamed Fish Porridge & Clear Soup Stall',
+      counts: {
+        halal: 1,
+        vegetarian: 0,
+        no_beef: 1,
+        low_salt: 4,
+        less_sugar: 1,
+        low_purine_gout: 1,
+        renal_friendly: 0,
+        no_grapefruit_pomelo: 1,
+        wheelchair_seated: 1,
+      },
+      rows: [
+        { rule_id: 'diet.hypertension.low_sodium', badge: 'Low-salt / less gravy', count: 4, seniors: ['Mr Ong', 'Mdm Aminah', 'Mdm Lee', 'Mr Goh'] },
+        { rule_id: 'diet.diabetes.low_sugar', badge: 'Siew dai / kosong', count: 1, seniors: ['Mdm Aminah'] },
+        { rule_id: 'pref.halal', badge: 'Halal-friendly', count: 1, seniors: ['Mdm Aminah'] },
+        { rule_id: 'diet.gout.low_purine', badge: 'Low-purine (gout-safe)', count: 1, seniors: ['Mr Goh'] },
+        { rule_id: 'mobility.step_free_seated', badge: 'Step-free / seated', count: 1, seniors: ['Mdm Lee'] },
+      ],
+      caterer_sheet_text:
+        'Sample AAC (Bedok North) — Caterer & Outing Headcount Matrix (5 seniors):\n' +
+        '• Recommended Venue / Dish: Teochew Steamed Fish Porridge & Clear Soup Stall\n' +
+        '• Low-Salt / Less Gravy: 4 pax\n' +
+        '• Less Sugar / Kosong (Diabetic-Friendly): 1 pax\n' +
+        '• Halal-Certified: 1 pax\n' +
+        '• Low-Purine (No Organ Meat / Anchovy Broth): 1 pax\n' +
+        '• No Grapefruit / Pomelo (Statin/BP Leaflet): 1 pax\n' +
+        '• Wheelchair / Step-Free Seating: 1 pax',
+    },
     weather: { psi: 45, rain_mm: 0, indoor_only: false },
     group_recommendations: {
       refreshment_or_outing: [
