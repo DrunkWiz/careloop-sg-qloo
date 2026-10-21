@@ -95,7 +95,7 @@ export default function BpChart({ series, baseline, flagged = [] }: Props) {
       </svg>
       <figcaption>
         mmHg. Dashed lines are their usual ({Math.round(baseline.systolic)}/{Math.round(baseline.diastolic)}).
-        {flagged.length > 0 && ' Shaded: the days CareLoop flagged.'} Gaps: no reading that day.
+        {flagged.length > 0 && ' Shaded: the days Fondly flagged.'} Gaps: no reading that day.
       </figcaption>
     </figure>
   );

@@ -1,4 +1,4 @@
-// /care: which CareLoop are you? Family and centre staff get different apps, built for different jobs.
+// /care: which Fondly are you? Family and centre staff get different apps, built for different jobs.
 // Until login exists, the demo people are listed here (all synthetic).
 import { usingMocks } from '../shared/api';
 
@@ -31,10 +31,10 @@ export default function RoleChooser() {
   return (
     <div className="chooser">
       <header className="chooser-head">
-        <p className="chooser-brand">CareLoop SG</p>
+        <p className="chooser-brand">Fondly</p>
         <h1>Who's looking after someone today?</h1>
         <p className="care-muted">
-          CareLoop stays quiet until something is different for the person you care for, then hands it to you with the evidence.
+          Fondly stays quiet until something is different for the person you care for, then hands it to you with the evidence.
         </p>
       </header>
 

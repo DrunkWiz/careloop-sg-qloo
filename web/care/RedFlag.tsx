@@ -44,7 +44,7 @@ export default function RedFlag({ senior, contactId, aac, handover, message, rea
       <dl className="red-flag-facts">
         {summary && (
           <>
-            <dt>What CareLoop saw</dt>
+            <dt>What Fondly saw</dt>
             <dd>{summary.charAt(0).toUpperCase() + summary.slice(1)}</dd>
           </>
         )}

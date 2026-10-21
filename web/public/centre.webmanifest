@@ -1,8 +1,8 @@
 {
   "id": "/care/aac",
-  "name": "CareLoop for Centres",
-  "short_name": "CL Centres",
-  "description": "CareLoop SG. Synthetic demo: not real people.",
+  "name": "Fondly for Centres",
+  "short_name": "Fondly Centres",
+  "description": "Fondly (built on CareLoop SG). Synthetic demo: not real people.",
   "start_url": "/care/aac",
   "scope": "/care/",
   "display": "standalone",

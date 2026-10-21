@@ -1,8 +1,8 @@
 {
   "id": "/senior",
-  "name": "CareLoop",
-  "short_name": "CareLoop",
-  "description": "CareLoop SG. Synthetic demo: not real people.",
+  "name": "Fondly",
+  "short_name": "Fondly",
+  "description": "Fondly (built on CareLoop SG). Synthetic demo: not real people.",
   "start_url": "/senior",
   "scope": "/senior",
   "display": "standalone",

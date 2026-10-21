@@ -26,7 +26,7 @@ days = int(os.environ.get("CARELOOP_DEMO_DAYS", "0") or 0)
 if days and os.environ.get("CARELOOP_SEED") == "demo" and demo.today(api_module.store) == demo.DEMO_TODAY:
     demo.advance(api_module.store, days)
 
-site = FastAPI(title="CareLoop SG (site)", docs_url=None, redoc_url=None, openapi_url=None)
+site = FastAPI(title="Fondly (site)", docs_url=None, redoc_url=None, openapi_url=None)
 site.mount("/api", api_module.app)
 
 if (DIST / "assets").is_dir():

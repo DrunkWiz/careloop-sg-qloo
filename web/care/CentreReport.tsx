@@ -54,7 +54,7 @@ export default function CentreReport({ data, extras, centre }: { data: Caseload;
     download(
       `befriending-records-${data.today}.csv`,
       csv([
-        ['Senior', 'Date', 'Replied', 'Their words', 'Pills', 'Saw people', 'CareLoop decided', 'Rule', 'Reason'],
+        ['Senior', 'Date', 'Replied', 'Their words', 'Pills', 'Saw people', 'Fondly decided', 'Rule', 'Reason'],
         ...rows.flatMap(({ r, log }) =>
           [...log].sort((a, b) => a.date.localeCompare(b.date)).map((d) => [
             r.senior.name, d.date, d.replied ? 'yes' : 'no', d.checkins.map((c) => c.raw_text).join(' / '), d.pills ?? '',
@@ -78,7 +78,7 @@ export default function CentreReport({ data, extras, centre }: { data: Caseload;
       <div className="console-title">
         <h1>Centre report</h1>
         <p className="care-muted">
-          {centre} · {fmt(from)} to {fmt(data.today)} · written from CareLoop's decision log, so nothing is typed in twice
+          {centre} · {fmt(from)} to {fmt(data.today)} · written from Fondly's decision log, so nothing is typed in twice
         </p>
       </div>
 

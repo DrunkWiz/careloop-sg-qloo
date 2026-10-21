@@ -4,9 +4,9 @@
 export type AppDoor = 'senior' | 'family' | 'centre';
 
 const DOORS: Record<AppDoor, { manifest: string; title: string; theme: string; icon: string }> = {
-  senior: { manifest: '/senior.webmanifest', title: 'CareLoop', theme: '#f5f7f2', icon: '/icons/green-180.png' },
-  family: { manifest: '/family.webmanifest', title: 'CareLoop', theme: '#f5f7f2', icon: '/icons/green-180.png' },
-  centre: { manifest: '/centre.webmanifest', title: 'CL Centres', theme: '#23264f', icon: '/icons/navy-180.png' },
+  senior: { manifest: '/senior.webmanifest', title: 'Fondly', theme: '#f5f7f2', icon: '/icons/green-180.png' },
+  family: { manifest: '/family.webmanifest', title: 'Fondly', theme: '#f5f7f2', icon: '/icons/green-180.png' },
+  centre: { manifest: '/centre.webmanifest', title: 'Fondly Centres', theme: '#23264f', icon: '/icons/navy-180.png' },
 };
 
 export function doorFor(path: string, search: string): AppDoor | null {

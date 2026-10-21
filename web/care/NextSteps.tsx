@@ -1,5 +1,5 @@
 // Help with the step someone just took on a handover, so claiming it isn't a dead end.
-// Fixed templates filled from the evidence. Nothing here is medical advice, and nothing is sent by CareLoop:
+// Fixed templates filled from the evidence. Nothing here is medical advice, and nothing is sent by Fondly:
 // the person copies or shares it themselves.
 import { useState } from 'react';
 import type { Handover, SeniorRef } from '../shared/contract';
@@ -18,7 +18,7 @@ function gpNote(h: Handover, senior: SeniorRef, from: string): string {
     'Dear Doctor,',
     '',
     `I'm writing about ${senior.name}, who sees you for high blood pressure.`,
-    `CareLoop, the app we use to keep track of readings between visits, flagged this: ${plainSummary(h, senior.name)}`,
+    `Fondly, the app we use to keep track of readings between visits, flagged this: ${plainSummary(h, senior.name)}`,
     readings ? `Home readings in the last week (mmHg): ${readings}.` : '',
     h.evidence.tried.length ? `What was already tried: ${h.evidence.tried.map((t) => `${fmtDate(t.date)}, ${t.what}`).join('; ')}.` : '',
     '',
@@ -78,7 +78,7 @@ export default function NextSteps({ h, senior, from }: { h: Handover; senior: Se
     return (
       <section className="care-card ns">
         <h2>Your note to the GP</h2>
-        <p className="care-muted">A draft from the evidence. Edit it as you like before sending; CareLoop doesn't send it.</p>
+        <p className="care-muted">A draft from the evidence. Edit it as you like before sending; Fondly doesn't send it.</p>
         <pre className="ns-note">{text}</pre>
         <CopyShare text={text} title={`Note about ${senior.name}`} />
         {pdf && (

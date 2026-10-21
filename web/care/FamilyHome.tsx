@@ -42,10 +42,10 @@ export default function FamilyHome({ view, log }: { view: FamilyView; log: LogDa
     status === 'red_flag'
       ? 'Everyone in the family was told at once. See below.'
       : status === 'handover'
-        ? `CareLoop has stopped nudging ${senior.name} and is waiting for someone to pick a next step.`
+        ? `Fondly has stopped nudging ${senior.name} and is waiting for someone to pick a next step.`
         : quietDays >= 2
-          ? `${quietDays} quiet days in a row. CareLoop checked every day and found nothing to tell you.`
-          : 'CareLoop checks every day and only tells you when something is different for them.';
+          ? `${quietDays} quiet days in a row. Fondly checked every day and found nothing to tell you.`
+          : 'Fondly checks every day and only tells you when something is different for them.';
 
   const redMsg = [...view.red_flags]
     .sort((a, b) => b.time.localeCompare(a.time))
@@ -128,7 +128,7 @@ function NoticedPreview({ seniorId, contactId }: { seniorId: string; contactId: 
   return (
     <section className="care-section">
       <div className="card-head">
-        <h2 className="care-section-title">What CareLoop noticed</h2>
+        <h2 className="care-section-title">What Fondly noticed</h2>
         <button className="care-link" onClick={() => navigate('/care/family/health')}>
           All of it →
         </button>
@@ -175,7 +175,7 @@ function TodaySoFar({ log, today, name, shared }: { log: LogDay[] | null; today:
         <span className="today-icon" aria-hidden="true">{d?.pills === 'taken' ? '✓' : d?.pills === 'missed' ? '!' : '…'}</span>
         <span>
           <strong>{d?.pills === 'taken' ? 'Pills taken' : d?.pills === 'missed' ? 'Missed a dose' : 'Pills not reported'}</strong>
-          <span>{d?.pills === 'missed' ? 'CareLoop asked gently' : 'today'}</span>
+          <span>{d?.pills === 'missed' ? 'Fondly asked gently' : 'today'}</span>
         </span>
       </div>
       <div className={`today-item ${d?.bp ? 'is-yes' : 'is-no'}`}>

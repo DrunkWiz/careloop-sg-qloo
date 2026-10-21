@@ -1,5 +1,5 @@
 // Things to do near the senior, pulled in automatically: their own AAC's programmes this week, the nearest
-// AACs and community clubs (data.gov.sg), what CareLoop suggested today and how the senior has answered.
+// AACs and community clubs (data.gov.sg), what Fondly suggested today and how the senior has answered.
 // Nothing here is booked: the senior picks, and a "not for me" is remembered.
 import { useEffect, useState } from 'react';
 import type { Activities } from '../shared/contract';
@@ -41,13 +41,13 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
     <>
       {a.indoor_only && (
         <p className="care-notice">
-          {a.why_indoor === 'rain' ? `Rain today (${a.rain_mm} mm nearby)` : `Haze today (PSI ${a.psi})`}: CareLoop is only suggesting indoor options.
+          {a.why_indoor === 'rain' ? `Rain today (${a.rain_mm} mm nearby)` : `Haze today (PSI ${a.psi})`}: Fondly is only suggesting indoor options.
         </p>
       )}
 
       <section className="care-card">
         <h2>Suggested to {name} today</h2>
-        <p className="care-muted">Picked by CareLoop's rules from what {name} likes{a.likes.length ? ` (${a.likes.join(', ')})` : ''}: their own centre first, then the nearest community club.</p>
+        <p className="care-muted">Picked by Fondly's rules from what {name} likes{a.likes.length ? ` (${a.likes.join(', ')})` : ''}: their own centre first, then the nearest community club.</p>
         <ul className="act-list">
           {a.suggested_today.map((s, i) => (
             <li key={i} className="act-item">

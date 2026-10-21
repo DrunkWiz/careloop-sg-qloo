@@ -1,12 +1,12 @@
-# CareLoop SG
+# Fondly
 
-CareLoop SG supports Singapore seniors with hypertension between doctor visits.
+Fondly (built on CareLoop SG) supports Singapore seniors with hypertension between doctor visits, and plans good days around what each senior is fond of (food, music, places, outings) using Qloo's taste graph while keeping their health, medicine and weather limits in force.
 It stays quiet until something is wrong for *this* senior, then hands over to their family,
 or to their Active Ageing Centre (AAC) if they have no family, with the evidence.
 
 **Rules pick the rung. The model only understands and writes words.**
 
-Tencent Cloud Hackathon SG 2026, Healthcare track, NTU LKCMedicine Challenge 2.
+Built for the Qloo Agentic Hackathon (built on CareLoop SG from Tencent Cloud Hackathon SG 2026).
 
 **Try it: https://careloop-sg.onrender.com** (synthetic demo; opens on the video's day, 24 Oct)
 - Senior app: [/senior?senior=tan](https://careloop-sg.onrender.com/senior?senior=tan)

@@ -1,10 +1,10 @@
-# CareLoop SG: notes for AI agents
+# Fondly: notes for AI agents
 
 Read this before changing anything. Then read [docs/build-log.md](docs/build-log.md) for what has been built, why, and what is still open.
 
 ## What this is
 
-CareLoop SG supports Singapore seniors with hypertension between doctor visits. It stays quiet until something is actually wrong for *this* senior, then hands over to their family, or to their Active Ageing Centre (AAC) if they have no family, with the evidence.
+Fondly (built on CareLoop SG) supports Singapore seniors with hypertension between doctor visits, and plans good days around what each senior is fond of using Qloo's taste graph while keeping their health, medicine and weather limits in force. It stays quiet until something is actually wrong for *this* senior, then hands over to their family, or to their Active Ageing Centre (AAC) if they have no family, with the evidence.
 
 - **Event:** Tencent Cloud Hackathon SG 2026, Healthcare track, NTU LKCMedicine Challenge 2.
 - **Deadlines:** submission Fri 16 Oct 2026 23:59 SGT; team target 18:00; code freeze Thu 15 Oct 18:00.

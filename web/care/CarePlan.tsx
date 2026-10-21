@@ -1,7 +1,7 @@
 // Care plan: what the family (or centre) keeps together for one senior. Shared with every linked contact.
 // Appointments, questions for the doctor (they go onto the GP brief), to-dos with an owner each, the senior's
 // medicines (what each is for) and refill reports, vaccines and check-ups due, and an emergency card.
-// None of it changes what CareLoop's rules decide.
+// None of it changes what Fondly's rules decide.
 import { useCallback, useEffect, useState } from 'react';
 import type { Appointment, CareNotes, MedicinesView, PreventionView, Task } from '../shared/contract';
 import { briefPdfUrl, getCareNotes, getMedicines, getPrevention, putCareNotes } from '../shared/api';
@@ -317,7 +317,7 @@ function Medicines({ seniorId, contactId, insights }: { seniorId: string; contac
       )}
       {insights && (
         <p className="care-muted">
-          Taken on {insights.adherence.taken_days} of {insights.adherence.reported_days} reported days. Doses are as on the label; CareLoop never changes them.
+          Taken on {insights.adherence.taken_days} of {insights.adherence.reported_days} reported days. Doses are as on the label; Fondly never changes them.
         </p>
       )}
       {v && <p className="care-muted plan-small">{v.note}</p>}

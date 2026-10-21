@@ -23,7 +23,7 @@ const strip = ({ title, title_zh, weekdays, time, tags, indoor, free }: Programm
 
 const blank = { title: '', weekdays: [] as Weekday[], time: '10:00', indoor: true, free: true };
 
-// Which seniors each programme suits, from what they told CareLoop they like (the same match the
+// Which seniors each programme suits, from what they told Fondly they like (the same match the
 // engine's suggestions use). Matched by title, so it works for entered and sample timetables alike.
 function useSuits(seniors: CaseloadRow[], timetable: string) {
   const [acts, setActs] = useState<{ name: string; a: Activities }[]>([]);
@@ -88,7 +88,7 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
       <BackLink to="/care/aac" label="Caseload" />
       <h1>Weekly programmes</h1>
       <p className="care-lead">
-        Enter {centre.name}'s timetable once, or import it. CareLoop suggests these to linked seniors who'd enjoy them, indoor ones first
+        Enter {centre.name}'s timetable once, or import it. Fondly suggests these to linked seniors who'd enjoy them, indoor ones first
         on rainy or hazy days.
       </p>
       <TimetableImport aacId={centre.id} onSaved={() => void getProgrammes(centre.id).then(setList, (e: Error) => setError(e.message))} />
@@ -199,7 +199,7 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
       {ccs.length > 0 && (
         <section className="care-card">
           <h2>Community clubs nearby</h2>
-          <p className="care-muted">From PA's list on data.gov.sg. CareLoop offers the nearest one when there's nothing at your centre that day.</p>
+          <p className="care-muted">From PA's list on data.gov.sg. Fondly offers the nearest one when there's nothing at your centre that day.</p>
           <ul className="act-list">
             {ccs.map((c) => (
               <li key={c.id} className="act-item">
