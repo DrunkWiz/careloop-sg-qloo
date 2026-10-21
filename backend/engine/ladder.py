@@ -128,6 +128,9 @@ def run_day(store, senior_id: str, day: date, *, now: datetime | None = None, ga
     if out.rule_id == "2.low_day":
         sugs = todays_suggestions(store, senior, day, days[day])
         out.inputs["place"] = sugs[0]["place"] if sugs else None
+        qloo_sug = next((s for s in sugs if str(s.get("place_id", "")).startswith(("qloo-", "urn:entity:"))), None)
+        if qloo_sug:
+            out.inputs["qloo_pick"] = qloo_sug["place"]
     audience, consent_note = _audience(senior, out)
 
     prev = store.get("decision", did)

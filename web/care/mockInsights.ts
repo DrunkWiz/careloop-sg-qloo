@@ -44,6 +44,13 @@ const MOCK_TASTE_PLAN: TastePlan = {
         matched_seeds: ['Teresa Teng', 'Clear fish soup'],
         fit_badges: ['Indoor', 'Low-sodium available'],
         why: 'Because Mr Tan enjoys Teresa Teng and Clear fish soup, Qloo matched this sheltered place in their area (low-salt options available).',
+        bridge: {
+          seed: 'Teresa Teng',
+          shared_tags: ['mandopop', '1970s_nostalgia', 'kopitiam'],
+          target_domain: 'food_and_social',
+          safety_check: 'Indoor · Low-sodium available',
+          path_label: 'Teresa Teng → mandopop, 1970s_nostalgia → food_and_social → Indoor · Low-sodium available',
+        },
       },
     ],
     music: [
@@ -53,6 +60,13 @@ const MOCK_TASTE_PLAN: TastePlan = {
         affinity: 0.96,
         matched_seeds: ['Teresa Teng'],
         why: 'Because Mr Tan enjoys Teresa Teng, Qloo matched this artist for their day.',
+        bridge: {
+          seed: 'Teresa Teng',
+          shared_tags: ['mandopop', 'ballad', '1970s'],
+          target_domain: 'music_artist',
+          safety_check: 'Guardrail & health check passed',
+          path_label: 'Teresa Teng → mandopop, ballad → music_artist → Guardrail & health check passed',
+        },
       },
     ],
     movies: [
@@ -62,8 +76,30 @@ const MOCK_TASTE_PLAN: TastePlan = {
         affinity: 0.91,
         matched_seeds: ['Teresa Teng', '1960s Cathay Mandarin classics'],
         why: 'Because Mr Tan enjoys Teresa Teng and 1960s Cathay Mandarin classics, Qloo matched this classic film.',
+        bridge: {
+          seed: 'Teresa Teng',
+          shared_tags: ['mandopop', 'cathay_classics', 'nostalgia_sg'],
+          target_domain: 'classic_film',
+          safety_check: 'Guardrail & health check passed',
+          path_label: 'Teresa Teng → mandopop, cathay_classics → classic_film → Guardrail & health check passed',
+        },
       },
     ],
+  },
+  low_day_nudge: {
+    place: 'Kebun Baru Kopitiam & Community Corner',
+    music: 'Fei Yu-ching (费玉清)',
+    text: 'If today feels a bit quiet, you could put on Fei Yu-ching (费玉清) or drop by Kebun Baru Kopitiam & Community Corner.',
+    guardrail_passed: true,
+  },
+  visit_kit: {
+    treat: 'Kebun Baru Kopitiam & Community Corner (Indoor, Low-sodium available)',
+    music: 'Fei Yu-ching (费玉清)',
+    film: 'Mambo Girl (曼波女郎) — Cathay Classics',
+    safety_note: 'Low-sodium options, No grapefruit/pomelo (amlodipine), Indoor-only (PSI 112)',
+    summary: 'Visiting Mr Tan today: bring a light treat from Kebun Baru Kopitiam & Community Corner, put on Fei Yu-ching (费玉清), and chat about Mambo Girl (曼波女郎) — Cathay Classics.',
+    whatsapp_text:
+      'Visiting Mr Tan — CareLoop + Qloo Visit Kit:\n• Takeaway / Outing: Kebun Baru Kopitiam & Community Corner (Indoor, Low-sodium available)\n• Put on music: Fei Yu-ching (费玉清)\n• Nostalgia film / topic: Mambo Girl (曼波女郎) — Cathay Classics\n• Health & medicine checks applied: Low-sodium options, No grapefruit/pomelo (amlodipine), Indoor-only (PSI 112)',
   },
   filtered_out: [
     {

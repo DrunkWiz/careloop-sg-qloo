@@ -3,7 +3,7 @@
 // constraints, what CareLoop suggested today and how the senior has answered.
 // Nothing here is booked: the senior picks, and a "not for me" is remembered.
 import { useEffect, useState } from 'react';
-import type { Activities } from '../shared/contract';
+import type { Activities, TasteVisitKit } from '../shared/contract';
 import { addSeniorTaste, getActivities, searchTaste, type TasteSearchResult } from '../shared/api';
 import { REFRESH_EVENT, useRefreshTick } from './live';
 
@@ -90,6 +90,11 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
                     {p.why} · {Math.round(p.affinity * 100)}% Qloo match
                     {p.fit_badges.length > 0 ? ` · ${p.fit_badges.join(', ')}` : ''}
                   </span>
+                  {p.bridge && (
+                    <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                      <code>Bridge:</code> {p.bridge.path_label}
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
@@ -101,6 +106,11 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
                   <span className="care-muted">
                     {m.why} · {Math.round(m.affinity * 100)}% Qloo match
                   </span>
+                  {m.bridge && (
+                    <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                      <code>Bridge:</code> {m.bridge.path_label}
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
@@ -112,10 +122,36 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
                   <span className="care-muted">
                     {mv.why} · {Math.round(mv.affinity * 100)}% Qloo match
                   </span>
+                  {mv.bridge && (
+                    <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                      <code>Bridge:</code> {mv.bridge.path_label}
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
           </ul>
+
+          {tp.visit_kit && (
+            <FamilyVisitKitCard name={name} kit={tp.visit_kit} />
+          )}
+
+          {tp.low_day_nudge && (
+            <details className="care-card decision-info" style={{ marginTop: '0.5rem' }}>
+              <summary>Rung-2 "Low Day" cultural nudge (when movement or contact dips for 1 day)</summary>
+              <dl>
+                <dt>Rule <code>{tp.low_day_nudge.rule_id ?? '2.low_day'}</code> (senior-only gentle suggestion, never alerts family)</dt>
+                <dd>
+                  <p style={{ margin: '0.25rem 0' }}>{tp.low_day_nudge.nudge_text ?? tp.low_day_nudge.text}</p>
+                  <p className="care-muted" style={{ margin: '0.25rem 0 0' }}>
+                    <strong>Place / Treat:</strong> {tp.low_day_nudge.place_pick ?? tp.low_day_nudge.place}
+                    {(tp.low_day_nudge.music_companion ?? tp.low_day_nudge.music) ? ` · Companion song: ${tp.low_day_nudge.music_companion ?? tp.low_day_nudge.music}` : ''}
+                    {tp.low_day_nudge.film_companion ? ` · Film: ${tp.low_day_nudge.film_companion}` : ''}
+                  </p>
+                </dd>
+              </dl>
+            </details>
+          )}
 
           <details className="care-card decision-info" style={{ marginTop: '0.75rem' }}>
             <summary>How this was picked (Qloo agent steps & health guardrails)</summary>
@@ -329,6 +365,57 @@ function QlooFavouriteBox({ seniorId, name }: { seniorId: string; name: string }
         </ul>
       )}
       {addedMsg && <p className="care-muted" style={{ margin: 0 }}>{addedMsg}</p>}
+    </div>
+  );
+}
+
+function FamilyVisitKitCard({ name, kit }: { name: string; kit: TasteVisitKit }) {
+  const [copied, setCopied] = useState(false);
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(kit.whatsapp_text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      /* ignore if clipboard unavailable */
+    }
+  };
+
+  const waUrl = `https://wa.me/?text=${encodeURIComponent(kit.whatsapp_text)}`;
+
+  return (
+    <div className="care-card" style={{ marginTop: '0.75rem', background: 'var(--bg-soft, #faf8f5)' }}>
+      <h3 style={{ margin: '0 0 0.25rem', fontSize: '0.98rem' }}>Bringing something over? Family Visit Kit for {name}</h3>
+      <p className="care-muted" style={{ margin: '0 0 0.5rem' }}>{kit.summary}</p>
+      <ul className="care-muted" style={{ margin: '0 0 0.6rem 1.1rem', padding: 0 }}>
+        {kit.treat && (
+          <li>
+            <strong>Safe treat to tapao:</strong> {kit.treat}
+          </li>
+        )}
+        {kit.music && (
+          <li>
+            <strong>Put on during visit:</strong> {kit.music}
+          </li>
+        )}
+        {kit.film && (
+          <li>
+            <strong>Watch together:</strong> {kit.film}
+          </li>
+        )}
+        <li>
+          <strong>Safety check:</strong> {kit.safety_note}
+        </li>
+      </ul>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <button type="button" className="care-secondary" onClick={onCopy}>
+          {copied ? 'Copied for WhatsApp!' : 'Copy for Family WhatsApp'}
+        </button>
+        <a className="care-link" href={waUrl} target="_blank" rel="noreferrer" style={{ alignSelf: 'center' }}>
+          Share on WhatsApp ↗
+        </a>
+      </div>
     </div>
   );
 }

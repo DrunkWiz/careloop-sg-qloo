@@ -53,10 +53,12 @@ export interface CheckInResult {
   facts: Facts;
   /** The engine's reply to the senior, if any (rung 0 means none). */
   message: Message | null;
+  extracted_tastes?: string[];
 }
 
 export interface ReadingResult {
   message: Message | null;
+  extracted_tastes?: string[];
   rung: Rung;
 }
 

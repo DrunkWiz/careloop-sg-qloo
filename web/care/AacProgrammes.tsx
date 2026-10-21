@@ -1,8 +1,8 @@
 // Weekly programme timetable (GET/PUT /aac/{aac_id}/programmes). Staff enter it once; it feeds every
 // linked senior's suggestions.
 import { useEffect, useState } from 'react';
-import type { Activities, CaseloadRow, Programme, ProgrammeIn, Weekday } from '../shared/contract';
-import { getActivities, getProgrammes, putProgrammes } from '../shared/api';
+import type { Activities, CaseloadRow, GroupTastePlan, Programme, ProgrammeIn, Weekday } from '../shared/contract';
+import { getAacTasteGroup, getActivities, getProgrammes, putProgrammes } from '../shared/api';
 import { BackLink } from './HandoverView';
 import { timeKey } from './ActivitiesView';
 import TimetableImport from './TimetableImport';
@@ -51,9 +51,11 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState(blank);
   const [busy, setBusy] = useState(false);
+  const [groupPlan, setGroupPlan] = useState<GroupTastePlan | null>(null);
 
   useEffect(() => {
     getProgrammes(centre.id).then(setList, (e: Error) => setError(e.message));
+    getAacTasteGroup(centre.id).then(setGroupPlan, () => setGroupPlan(null));
   }, [centre.id]);
 
   const save = async (next: ProgrammeIn[]) => {
@@ -194,6 +196,78 @@ export default function AacProgrammes({ centre, seniors }: { centre: { id: strin
             Add a programme
           </button>
         )
+      )}
+
+      {groupPlan && (
+        <section className="care-card">
+          <h2>Group Taste Intersection Planner (Qloo Cohort Match)</h2>
+          <p className="care-muted">
+            Intersects the Qloo taste profiles of {groupPlan.seniors.length} linked seniors at {groupPlan.aac_name} while enforcing the{' '}
+            <strong>strictest union of medical, medicine-leaflet and weather rules</strong> so every senior in the room is safe.
+          </p>
+          {groupPlan.shared_seeds.length > 0 && (
+            <p className="care-muted">
+              <strong>Shared cultural seeds across cohort:</strong>{' '}
+              {groupPlan.shared_seeds.map((s) => `${s.query} (${s.seniors.join(', ')})`).join(' · ')}
+            </p>
+          )}
+          {groupPlan.cohort_constraints.length > 0 && (
+            <div style={{ margin: '0.5rem 0' }}>
+              <strong>Active Cohort Safety Union:</strong>
+              <ul className="care-muted" style={{ margin: '0.25rem 0 0.5rem 1.1rem', padding: 0 }}>
+                {groupPlan.cohort_constraints.map((c) => (
+                  <li key={c.rule}>
+                    {c.label} — <em>triggered by {c.triggered_by.join(', ')}</em>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <ul className="act-list">
+            {groupPlan.group_recommendations.refreshment_or_outing.map((r) => (
+              <li key={r.id} className="act-item">
+                <span className="act-kind is-programme">Group Refreshment</span>
+                <span className="act-body">
+                  <strong>{r.name}</strong>
+                  <span className="care-muted">{r.why}</span>
+                  <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                    <code>Bridge:</code> {r.bridge}
+                  </span>
+                </span>
+              </li>
+            ))}
+            {groupPlan.group_recommendations.music_playlist.map((m) => (
+              <li key={m.id} className="act-item">
+                <span className="act-kind is-aac">Sing-Along</span>
+                <span className="act-body">
+                  <strong>{m.name}</strong>
+                  <span className="care-muted">{m.why}</span>
+                  <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                    <code>Bridge:</code> {m.bridge}
+                  </span>
+                </span>
+              </li>
+            ))}
+            {groupPlan.group_recommendations.matinee_film.map((f) => (
+              <li key={f.id} className="act-item">
+                <span className="act-kind is-cc">Matinee Film</span>
+                <span className="act-body">
+                  <strong>{f.name}</strong>
+                  <span className="care-muted">{f.why}</span>
+                  <span className="care-muted" style={{ display: 'block', fontSize: '0.78rem', marginTop: '0.15rem' }}>
+                    <code>Bridge:</code> {f.bridge}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          {groupPlan.filtered_out.length > 0 && (
+            <p className="care-muted" style={{ marginTop: '0.5rem' }}>
+              <strong>Filtered out for cohort safety:</strong>{' '}
+              {groupPlan.filtered_out.map((f) => `${f.name} (${f.reason})`).join('; ')}.
+            </p>
+          )}
+        </section>
       )}
 
       {acts.some((x) => x.a.taste_plan) && (

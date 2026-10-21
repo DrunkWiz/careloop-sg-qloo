@@ -34,6 +34,12 @@ CareLoop SG adds a 4-step Qloo Taste Agent (`backend/taste/`) that plans cultura
 4. **`guardrail_check` (`backend/language/guardrail.py`):** Checks every outgoing "why it fits" explanation string (English and Chinese) through CareLoop's language safety guardrail.
 - **Strictly at the suggestion layer:** The Qloo agent never picks an escalation rung (`0`–`4` or `R`), never decides whom to contact, and never touches red-flag emergency handling.
 - **Side-by-side comparison:** See [docs/qloo-comparison.md](docs/qloo-comparison.md) and the in-app **"Why Qloo? (LLM-only baseline vs CareLoop + Qloo)"** panel on the Activities page.
+- **Five advanced Qloo agent workflows built in:**
+  1. **Voice/Text Check-In → Live Qloo Taste Extraction (`POST /checkin`):** When a senior mentions a singer, dish, or pastime during their morning check-in (e.g. *"listened to Teresa Teng"* or *"had fish soup at the kopitiam"*), CareLoop extracts the cultural seed, resolves it via `qloo.search`, adds it to their profile, and lists it in **What CareLoop knows about me** so the senior can erase it anytime.
+  2. **Multi-Senior "Group Taste Intersection" Planner for AAC Centres (`GET /aac/{id}/taste-group`):** Intersects the Qloo taste graphs of all linked seniors at an Active Ageing Centre to recommend a shared group outing/refreshment, sing-along playlist, and matinee film while enforcing the **strictest union of medical, medicine-leaflet, and weather guardrails** across the cohort (showing which seniors triggered each safety rule).
+  3. **Rung-2 "Low Day" Cultural Nudge (`2.low_day`):** When the deterministic engine spots a single quiet/low-movement day, it pairs the gentle senior-only check-in with a Qloo place + nostalgic music/film pick (`low_day_nudge`, verified via `guardrail.py`).
+  4. **Family Visit Kit with One-Tap WhatsApp Share:** Generates a health-safe takeaway treat, nostalgic music pick, classic film conversation starter, and active safety checklist (`visit_kit`) that families can copy or share to their family WhatsApp group in one tap.
+  5. **Visual Cross-Domain Taste Bridge Badges:** Every Qloo recommendation displays its explicit multi-hop reasoning path (`Seed → [Shared Cultural Tags] → Target Domain → ✓ Safety Check`).
 
 ### How CareLoop uses language models
 

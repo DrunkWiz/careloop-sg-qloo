@@ -25,6 +25,7 @@ import type {
   ProgrammeIn,
   RotaView,
   TastePlan,
+  GroupTastePlan,
   VentPost,
 } from './contract';
 import * as mock from '../care/mock';
@@ -261,5 +262,9 @@ export function searchTaste(query: string): Promise<{ query: string; mode: strin
 export function addSeniorTaste(seniorId: string, seed: string): Promise<TastePlan> {
   if (!BASE) return mockInsights.getActivities(seniorId).then((a) => a.taste_plan!);
   return http(`/senior/${seniorId}/taste`, { method: 'POST', body: JSON.stringify({ seed }) });
+}
+
+export function getAacTasteGroup(aacId: string): Promise<GroupTastePlan> {
+  return BASE ? http(`/aac/${aacId}/taste-group`) : mockAac.getAacTasteGroup(aacId);
 
 }

@@ -317,6 +317,14 @@ export interface Place {
   lon: number;
 }
 
+export interface TasteBridge {
+  seed: string;
+  shared_tags: string[];
+  target_domain: string;
+  safety_check: string;
+  path_label: string;
+}
+
 export interface TastePlacePick {
   entity_id: string;
   name: string;
@@ -327,6 +335,7 @@ export interface TastePlacePick {
   matched_seeds: string[];
   fit_badges: string[];
   why: string;
+  bridge?: TasteBridge;
 }
 
 export interface TasteMediaPick {
@@ -335,6 +344,46 @@ export interface TasteMediaPick {
   affinity: number;
   matched_seeds: string[];
   why: string;
+  bridge?: TasteBridge;
+}
+
+export interface TasteLowDayNudge {
+  rule_id?: string;
+  place: string | null;
+  place_pick?: string;
+  music: string | null;
+  music_companion?: string | null;
+  film_companion?: string | null;
+  text: string;
+  nudge_text?: string;
+  guardrail_passed: boolean;
+}
+
+export interface TasteVisitKit {
+  treat: string;
+  music: string;
+  film: string;
+  safety_note: string;
+  summary: string;
+  whatsapp_text: string;
+}
+
+export interface GroupTastePlan {
+  aac_id: string;
+  aac_name: string;
+  engine: string;
+  mode: string;
+  seniors: { id: string; name: string; language?: string; conditions?: string[]; medicines?: string[] }[];
+  shared_seeds: { query: string; count: number; seniors: string[] }[];
+  resolved_entities?: { seed: string; entity_id: string; name: string; type: string; tags: string[] }[];
+  cohort_constraints: { rule: string; label: string; triggered_by: string[] }[];
+  weather?: { psi: number | null; rain_mm: number | null; indoor_only: boolean };
+  group_recommendations: {
+    refreshment_or_outing: { id: string; name: string; tags?: string[]; why: string; bridge: string }[];
+    music_playlist: { id: string; name: string; tags?: string[]; why: string; bridge: string }[];
+    matinee_film: { id: string; name: string; tags?: string[]; why: string; bridge: string }[];
+  };
+  filtered_out: { name: string; reason: string }[];
 }
 
 export interface TasteFilteredItem {
@@ -378,6 +427,8 @@ export interface TastePlan {
     music: TasteMediaPick[];
     movies: TasteMediaPick[];
   };
+  low_day_nudge?: TasteLowDayNudge;
+  visit_kit?: TasteVisitKit;
   filtered_out: TasteFilteredItem[];
   trace: TasteTraceStep[];
   guardrail: { passed: boolean; checked_count: number; reasons: string[] };

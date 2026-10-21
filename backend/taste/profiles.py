@@ -195,3 +195,61 @@ def taste_knows_entries(senior: dict, erased_keys: set[str] | None = None) -> li
                 "text": f"偏好食物：{f}" if zh else f"Fond of {f}",
             })
     return items
+
+
+# Natural-language keywords (English, Singlish, Mandarin, Malay, Tamil) mapped to canonical Qloo seeds.
+CHECKIN_TASTE_KEYWORDS: list[tuple[tuple[str, ...], str, str]] = [
+    (("teresa teng", "deng lijun", "邓丽君", "甜蜜蜜", "月亮代表我的心"), "Teresa Teng", "music"),
+    (("fong fei-fei", "fong fei fei", "凤飞飞", "掌声响起", "爱拼才会赢"), "Fong Fei-Fei", "music"),
+    (("fei yu-ching", "fei yu ching", "费玉清", "一剪梅"), "Fei Yu-ching", "music"),
+    (("frances yip", "叶丽仪", "上海滩"), "Frances Yip", "music"),
+    (("p. ramlee", "p ramlee", "getaran jiwa", "bujang lapok", "比南利"), "P. Ramlee", "music"),
+    (("saloma", "莎萝玛"), "Saloma", "music"),
+    (("m. nasir", "m nasir"), "M. Nasir", "music"),
+    (("soundararajan", "t.m. soundararajan", "pasamalar"), "T.M. Soundararajan", "music"),
+    (("susheela", "p. susheela"), "P. Susheela", "music"),
+    (("gurdas maan", "punjabi folk"), "Gurdas Maan", "music"),
+    (("cliff richard", "the shadows", "rediffusion", "丽的呼声", "young ones"), "Cliff Richard", "music"),
+    (("fish soup", "fish porridge", "teochew porridge", "steamed fish", "鱼汤", "鱼片粥", "鱼糜", "潮州粥", "清蒸鱼"), "Teochew fish porridge", "food"),
+    (("thosai", "dosa", "sambar", "薄饼", "印度薄饼"), "plain thosai", "food"),
+    (("chapati", "ginger tea", "masala tea", "姜茶", "麦饼"), "masala ginger tea", "food"),
+    (("kopi", "kopitiam", "咖啡", "咖啡乌", "咖啡店"), "kopi", "food"),
+    (("mahjong", "麻将", "打麻将", "打牌"), "mahjong", "activity"),
+    (("karaoke", "sing-along", "choir", "卡拉ok", "唱歌", "合唱"), "karaoke", "activity"),
+    (("tai chi", "qigong", "太极", "气功", "晨运"), "exercise", "activity"),
+    (("gardening", "orchid", "herb garden", "种花", "园艺", "胡姬花"), "gardening", "activity"),
+    (("patchwork", "handicraft", "rattan", "手工", "拼布", "编织"), "crafts", "activity"),
+]
+
+
+def extract_taste_seeds_from_text(text: str, client=None) -> list[dict]:
+    """Extract cultural, music, food, and activity taste seeds from a senior's voice/text check-in.
+
+    Resolves each matched seed via Qloo `/search` (live or fixture fallback) so the senior's
+    morning check-in naturally enriches their Qloo taste profile. Every extracted seed is saved
+    to `senior['likes']` and immediately visible/erasable in `/senior/{id}/knows`.
+    """
+    if not text or not text.strip():
+        return []
+    lowered = text.lower()
+    seen_seeds: set[str] = set()
+    extracted: list[dict] = []
+
+    if client is None:
+        from backend.taste.client import QlooClient
+        client = QlooClient()
+
+    for triggers, canonical_seed, category in CHECKIN_TASTE_KEYWORDS:
+        if any(t in lowered for t in triggers) and canonical_seed.lower() not in seen_seeds:
+            seen_seeds.add(canonical_seed.lower())
+            sr = client.search(canonical_seed, location="Singapore", limit=1)
+            top = (sr.get("results") or [{}])[0]
+            extracted.append({
+                "seed": canonical_seed,
+                "canonical": canonical_seed,
+                "category": category,
+                "entity_id": top.get("entity_id", f"urn:entity:place:qloo-{canonical_seed.lower().replace(' ', '-')}"),
+                "entity_name": top.get("name", canonical_seed),
+            })
+    return extracted
+

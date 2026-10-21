@@ -12,6 +12,7 @@ import type {
   ProgrammeIn,
   Rung,
   SeniorRef,
+  GroupTastePlan,
 } from '../shared/contract';
 import { applyClaims, delay, registerMock } from './mock';
 
@@ -228,4 +229,85 @@ export function putProgrammes(aacId: string, list: ProgrammeIn[]): Promise<Progr
     /* storage unavailable: kept for this page only */
   }
   return delay(out);
+}
+
+export function getAacTasteGroup(aacId: string): Promise<GroupTastePlan> {
+  return delay({
+    aac_id: aacId,
+    aac_name: AAC.name,
+    engine: 'qloo_taste_ai',
+    mode: 'fixture',
+    seniors: [
+      { id: 'ong', name: 'Mr Ong', language: 'zh', conditions: ['hypertension', 'high_cholesterol'], medicines: ['amlodipine'] },
+      { id: 'aminah', name: 'Mdm Aminah', language: 'en', conditions: ['hypertension', 'diabetes'], medicines: ['metformin'] },
+      { id: 'lee', name: 'Mdm Lee', language: 'en', conditions: ['hypertension'], medicines: [] },
+      { id: 'goh', name: 'Mr Goh', language: 'zh', conditions: ['hypertension'], medicines: [] },
+      { id: 'ng', name: 'Mr Ng', language: 'en-SG', conditions: [], medicines: [] },
+    ],
+    shared_seeds: [
+      { query: 'kopitiam', count: 4, seniors: ['Mr Ong', 'Mdm Lee', 'Mr Goh', 'Mr Ng'] },
+      { query: 'Teresa Teng', count: 3, seniors: ['Mr Ong', 'Mdm Lee', 'Mr Goh'] },
+      { query: 'tai chi', count: 3, seniors: ['Mr Ong', 'Mdm Aminah', 'Mr Goh'] },
+      { query: 'P. Ramlee', count: 2, seniors: ['Mdm Aminah', 'Mr Ng'] },
+    ],
+    resolved_entities: [
+      { seed: 'kopitiam', entity_id: 'urn:entity:place:kopitiam-heritage', name: 'Traditional Nanyang Kopitiam', type: 'urn:entity:place', tags: ['kopi', 'nostalgia', 'morning_routine'] },
+      { seed: 'Teresa Teng', entity_id: 'urn:entity:artist:teresa-teng', name: 'Teresa Teng (邓丽君)', type: 'urn:entity:artist', tags: ['mandopop', '1970s', 'nostalgia'] },
+      { seed: 'P. Ramlee', entity_id: 'urn:entity:artist:p-ramlee', name: 'P. Ramlee', type: 'urn:entity:artist', tags: ['malay_classics', 'jalan_ampas', '1960s'] },
+    ],
+    cohort_constraints: [
+      { rule: 'no_high_sodium', label: 'Low-sodium options required (hypertension care)', triggered_by: ['Mr Ong', 'Mdm Aminah', 'Mdm Lee', 'Mr Goh'] },
+      { rule: 'no_high_sugar', label: 'Unsweetened / low-GI options required (diabetes care)', triggered_by: ['Mdm Aminah'] },
+      { rule: 'no_grapefruit', label: 'Avoid grapefruit (medicine interaction)', triggered_by: ['Mr Ong'] },
+    ],
+    weather: { psi: 45, rain_mm: 0, indoor_only: false },
+    group_recommendations: {
+      refreshment_or_outing: [
+        {
+          id: 'urn:entity:place:teochew-fish-soup',
+          name: 'Teochew Steamed Fish Porridge & Clear Soup Stall',
+          tags: ['teochew', 'low_sodium_available', 'easy_to_chew', 'hawker_heritage', 'indoor_seating'],
+          why: 'Matches cohort taste for Traditional Nanyang Kopitiam & Teresa Teng; fits all 5 seniors (Low-sodium options required (hypertension care); Unsweetened / low-GI options required (diabetes care)).',
+          bridge: 'kopitiam + Teresa Teng → [nostalgia, 1970s] → Teochew Steamed Fish Porridge & Clear Soup Stall (✓ cohort-safe)',
+        },
+        {
+          id: 'urn:entity:place:soy-beancurd-less-sugar',
+          name: 'Traditional Warm Tau Huay & Soy Milk (Siew Dai / Kosong)',
+          tags: ['nostalgia', 'custom_sugar_level', 'low_gi_option', 'calcium_rich', 'indoor_seating'],
+          why: 'Matches cohort taste for Traditional Nanyang Kopitiam & Teresa Teng; fits all 5 seniors (Low-sodium options required (hypertension care); Unsweetened / low-GI options required (diabetes care)).',
+          bridge: 'kopitiam + Teresa Teng → [nostalgia, 1970s] → Traditional Warm Tau Huay & Soy Milk (Siew Dai / Kosong) (✓ cohort-safe)',
+        },
+      ],
+      music_playlist: [
+        {
+          id: 'urn:entity:artist:teresa-teng',
+          name: 'Teresa Teng — The Moon Represents My Heart (月亮代表我的心)',
+          tags: ['mandopop', '1970s', 'singalong', 'nostalgia'],
+          why: 'Shared nostalgic sing-along pick across the cohort (Traditional Nanyang Kopitiam, Teresa Teng (邓丽君)).',
+          bridge: 'kopitiam + Teresa Teng → [nostalgia, singalong] → Teresa Teng — The Moon Represents My Heart (月亮代表我的心)',
+        },
+        {
+          id: 'urn:entity:artist:saloma',
+          name: 'Biduanita Saloma & P. Ramlee Duets',
+          tags: ['malay_classics', '1960s', 'kampung_memories', 'singalong'],
+          why: 'Shared nostalgic sing-along pick across the cohort (Traditional Nanyang Kopitiam, Teresa Teng (邓丽君)).',
+          bridge: 'kopitiam + Teresa Teng → [nostalgia, singalong] → Biduanita Saloma & P. Ramlee Duets',
+        },
+      ],
+      matinee_film: [
+        {
+          id: 'urn:entity:movie:ilo-ilo',
+          name: 'Ilo Ilo (爸妈不在家) — Heartwarming Singapore Family Drama',
+          tags: ['singapore_cinema', 'family', 'mandarin_hokkien'],
+          why: 'Group matinee screening matched via Qloo cross-domain taste graph for 5 seniors at Sample AAC (Bedok North).',
+          bridge: 'kopitiam + Teresa Teng → [nostalgia, singapore_heritage] → Ilo Ilo (爸妈不在家) — Heartwarming Singapore Family Drama',
+        },
+      ],
+    },
+    filtered_out: [
+      { name: 'Old Airport Road Char Kway Teow & Laksa', reason: 'Filtered for cohort safety: Low-sodium options required (hypertension care) (Mr Ong, Mdm Aminah, Mdm Lee, Mr Goh)' },
+      { name: 'Traditional Kopi Gu You & Kaya Toast Set (Full Sugar)', reason: 'Filtered for cohort safety: Unsweetened / low-GI options required (diabetes care) (Mdm Aminah)' },
+    ],
+  });
+
 }

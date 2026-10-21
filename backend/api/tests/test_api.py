@@ -409,6 +409,25 @@ class Api(unittest.TestCase):
         self.assertTrue(len(sr["results"]) >= 1)
         added = self.c.post("/senior/tan/taste", json={"seed": "Frances Yip"}).json()
         self.assertIn("Frances Yip", added["profile"]["likes"])
+        # Feature 4 & 5 & 3: visit_kit, low_day_nudge, and bridge metadata included in taste plan
+        self.assertIn("visit_kit", added)
+        self.assertIn("low_day_nudge", added)
+        self.assertIn("bridge", added["recommendations"]["places"][0])
+        # Feature 1: Check-in voice/text extracts Qloo taste seeds and adds to senior likes
+        ci = self.c.post("/checkin", json={
+            "senior_id": "tan",
+            "text": "Good morning, took my medicine and listened to P. Ramlee songs today.",
+            "language": "en",
+        }).json()
+        self.assertTrue(any(e["canonical"] == "P. Ramlee" for e in ci["extracted_tastes"]))
+        knows_after = self.c.get("/senior/tan/knows").json()
+        self.assertTrue(any("P. Ramlee" in k["text"] for k in knows_after))
+        # Feature 2: Multi-Senior Group Taste Intersection for AAC centres
+        group = self.c.get("/aac/aac-ang-mo-kio/taste-group").json()
+        self.assertEqual(group["aac_id"], "aac-ang-mo-kio")
+        self.assertGreaterEqual(len(group["seniors"]), 1)
+        self.assertGreaterEqual(len(group["cohort_constraints"]), 1)
+        self.assertGreaterEqual(len(group["group_recommendations"]["refreshment_or_outing"]), 1)
 
 
 if __name__ == "__main__":

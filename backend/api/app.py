@@ -30,7 +30,14 @@ from backend.healthsync.ingest import recent as healthsync_recent
 from backend.language import describe as model_chain
 from backend.language import understand, write
 from backend.language.facts import Facts
-from backend.taste import build_taste_plan, describe_qloo, get_qloo_client, taste_knows_entries
+from backend.taste import (
+    build_group_taste_plan,
+    build_taste_plan,
+    describe_qloo,
+    extract_taste_seeds_from_text,
+    get_qloo_client,
+    taste_knows_entries,
+)
 
 from . import demo
 from .store import Store
@@ -162,7 +169,20 @@ def post_checkin(body: CheckInIn):
     decision = run_day(store, body.senior_id, t.date(), now=t)
     new = [store.get("message", m) for m in decision["message_ids"] if m not in before]
     reply = next((m for m in new if m and m["to"] == "senior"), None)
-    return {"checkin_id": cid, "facts": facts.to_dict(), "message": reply, "rung": decision["rung"]}
+    extracted = extract_taste_seeds_from_text(body.text, client=get_qloo_client())
+    if extracted:
+        likes = list(senior.get("likes") or [])
+        erased = _erased_taste(body.senior_id)
+        changed = False
+        for item in extracted:
+            seed = item["seed"]
+            if seed not in likes and seed not in erased and f"like:{seed}" not in erased:
+                likes.append(seed)
+                changed = True
+        if changed:
+            senior["likes"] = likes
+            store.put("senior", senior)
+    return {"checkin_id": cid, "facts": facts.to_dict(), "message": reply, "rung": decision["rung"], "extracted_tastes": extracted}
 
 
 @app.post("/reading")
@@ -660,6 +680,43 @@ def _programmes(aac_id: str) -> list[dict]:
 def get_programmes(aac_id: str):
     _refresh_feed(aac_id)
     return _programmes(aac_id)
+
+
+@app.get("/aac/{aac_id}/taste-group")
+def get_aac_taste_group(aac_id: str):
+    """Multi-senior Qloo group taste intersection and cohort health-guardrail union for an Active Ageing Centre."""
+    p = place(aac_id)
+    centre_name = p["name"] if p else aac_id
+    t = today()
+    seniors = [s for s in store.list("senior") if s.get("aac_id") == aac_id]
+    if not seniors:
+        aac_senior_ids = {c["senior_id"] for c in store.list("contact") if c.get("role") == "aac"}
+        seniors = [s for s in store.list("senior") if s["id"] in aac_senior_ids]
+    if not seniors:
+        seniors = store.list("senior")[:4]
+    indoor_only = False
+    rain_mm = None
+    psi = None
+    erased_map: dict[str, set[str]] = {}
+    for s in seniors:
+        erased_map[s["id"]] = _erased_taste(s["id"])
+        d = build(store, s, t, days=2)[t]
+        if (d.rain_mm or 0) >= 5.0 or (d.psi or 0) > 100:
+            indoor_only = True
+        if d.rain_mm is not None:
+            rain_mm = d.rain_mm
+        if d.psi is not None:
+            psi = d.psi
+    return build_group_taste_plan(
+        aac_id,
+        centre_name,
+        seniors,
+        t,
+        indoor_only=indoor_only,
+        rain_mm=rain_mm,
+        psi=psi,
+        erased_by_senior=erased_map,
+    )
 
 
 @app.put("/aac/{aac_id}/programmes")

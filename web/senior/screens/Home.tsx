@@ -87,11 +87,13 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
                 {today.taste_plan.recommendations.music.map((m) => (
                   <p key={m.entity_id} className="sa-why" style={{ margin: 0 }}>
                     <strong>{t('suggest.music')}</strong> {m.name} — {m.why}
+                    {m.bridge ? ` (${m.bridge.path_label})` : ''}
                   </p>
                 ))}
                 {today.taste_plan.recommendations.movies.map((mv) => (
                   <p key={mv.entity_id} className="sa-why" style={{ margin: 0 }}>
                     <strong>{t('suggest.film')}</strong> {mv.name} — {mv.why}
+                    {mv.bridge ? ` (${mv.bridge.path_label})` : ''}
                   </p>
                 ))}
                 {today.taste_plan.filtered_out.length > 0 && (
