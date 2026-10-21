@@ -37,7 +37,7 @@ from .store import Store
 
 VERSION = "0.1.0"
 
-app = FastAPI(title="Fondly", version=VERSION)
+app = FastAPI(title="CareLoop SG", version=VERSION)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 store = Store()

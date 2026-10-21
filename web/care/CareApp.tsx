@@ -60,7 +60,7 @@ export default function CareApp() {
         <RoleChooser />
       )}
       <footer className="care-footer">
-        {usingMocks ? 'Offline demo data. ' : ''}All people in Fondly's demo are synthetic. Built on CareLoop SG. No real patient data.
+        {usingMocks ? 'Offline demo data. ' : ''}All people in CareLoop's demo are synthetic. No real patient data.
       </footer>
     </main>
   );
@@ -212,7 +212,7 @@ function FamilyApp({ contactId, hideHeader = false }: { contactId: string; hideH
   useLive(load);
   useAlert(
     view?.status === 'red_flag' ? `Red flag: ${view.senior.name}` : view?.status === 'handover' ? `${view.senior.name} needs you` : null,
-    view?.red_flags[0]?.text ?? 'Open Fondly to see the evidence.',
+    view?.red_flags[0]?.text ?? 'Open CareLoop to see the evidence.',
   );
 
   const onClaimed = (h: Handover) =>

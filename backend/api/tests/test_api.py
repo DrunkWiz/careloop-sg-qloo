@@ -396,7 +396,7 @@ class Api(unittest.TestCase):
         self.assertEqual(len(taste["trace"]), 4)
         self.assertTrue(taste["guardrail"]["passed"])
         self.assertIn("llm_only", taste["comparison"])
-        self.assertIn("fondly_with_qloo", taste["comparison"])
+        self.assertIn("careloop_with_qloo", taste["comparison"])
         act = self.c.get("/senior/tan/activities").json()
         self.assertIn("taste_plan", act)
         # Senior can erase a Qloo taste seed from /knows

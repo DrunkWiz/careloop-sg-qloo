@@ -1,4 +1,4 @@
-"""Fondly's Qloo Taste AI package: cross-domain taste discovery with deterministic health & weather guardrails."""
+"""CareLoop SG's Qloo Taste AI package: cross-domain taste discovery with deterministic health & weather guardrails."""
 from backend.taste.agent import build_taste_plan, get_qloo_client
 from backend.taste.baseline_llm import llm_only_baseline
 from backend.taste.client import FixtureQlooClient, QlooClient, describe_qloo

@@ -2,18 +2,17 @@
 
 What has been built, the decisions behind it, and what is still open. Newest first. Add to it when you finish a piece of work; keep each entry short.
 
-## 21 Oct 2026: Fondly — Qloo Taste AI agent, health-constraint filter, "How this was picked" panel, LLM-only vs Qloo evaluation
+## 21 Oct 2026: CareLoop SG (Powered by Qloo) — Qloo Taste AI agent, health-constraint filter, "How this was picked" panel, LLM-only vs Qloo evaluation
 
-- **Rebrand & clean repository.** Fresh git repository (`fondly`) with no personal contributor emails and stray `.lnk` shortcut removed. Rebranded user-facing surfaces across `/`, `/senior`, `/care/family` and `/care/aac` to **Fondly** ("Fondly for Centres" on the AAC console) while keeping all CareLoop safety rules, schemas (`contracts/`), and frozen evaluation benchmarks (`backend/synth/heldout.json`) intact.
+- **Clean repository & AGPL-3.0 licence.** Fresh git repository with no personal contributor emails and stray `.lnk` shortcut removed; licensed under `AGPL-3.0` (`LICENSE`), with `render.yaml` Blueprint for one-click Render deployment. Kept all CareLoop SG branding, screenshots, safety rules, schemas (`contracts/`), and frozen evaluation benchmarks (`backend/synth/heldout.json`) intact.
 - **Qloo Taste AI client & offline Singapore fixtures** (`backend/taste/client.py`, `backend/taste/fixtures/qloo_fixtures.json`). Supports live calls to `https://hackathon.api.qloo.com` (`/search` and `/v2/insights` with `X-Api-Key` and in-memory TTL cache) when `QLOO_API_KEY` is set, and falls back automatically to recorded Singapore fixtures across three Qloo entity domains (`urn:entity:place`, `urn:entity:artist`, `urn:entity:movie`) and regions (`central`, `west`, `east`) when offline or without a key.
 - **Rich taste profiles & `/knows` erasure** (`backend/taste/profiles.py`). Every demo senior has seeds across music, food, classic films and outings, plus fallback seeds for newly paired seniors. Seniors can see and delete any `taste:` preference from `GET/DELETE /senior/{id}/knows`, and erased seeds are excluded immediately from Qloo queries.
 - **Single reviewable health & medicine-leaflet constraint table** (`backend/taste/constraints.py`, marked `PLACEHOLDER` for clinical/pharmacist sign-off). Filters Qloo candidates against hypertension (blocks high-sodium preserved dishes), diabetes (blocks sugary syrups), statins (`atorvastatin` / `simvastatin`: blocks grapefruit/pomelo), high-potassium kidney caution (`losartan` / `telmisartan` / `amlodipine` + kidney condition), plus live PSI (> 100) and rain.
 - **4-step Qloo Taste Agent** (`backend/taste/agent.py`). Runs `qloo_search` -> `qloo_insights` -> `check_health_constraints` -> `guardrail_check` (`backend/language/guardrail.py`). Strictly suggestion-only: never decides rungs (`0`-`4`, `R`), who to notify, or red-flag handling. Exposed on `GET /senior/{id}/today`, `GET /senior/{id}/activities`, `GET /senior/{id}/taste`, `GET /taste/search`, `POST /senior/{id}/taste`, and `GET /meta`.
-- **Web surfaces & LLM-only comparison.** Senior app (`web/senior/screens/Home.tsx`) shows an expandable "How Fondly picked this" drawer with Qloo music/film picks and health/weather filter explanations in 4 languages. Family & Centre Activities (`web/care/ActivitiesView.tsx`) and Centre Programmes (`web/care/AacProgrammes.tsx`) show the 4-step Qloo agent trace, blocked candidates, an interactive Qloo favourite search box, and a side-by-side "LLM-only baseline vs Fondly + Qloo" card. Full evaluation in `docs/qloo-comparison.md` and submission text in `docs/submission/qloo-submission.md`.
+- **Web surfaces & LLM-only comparison.** Senior app (`web/senior/screens/Home.tsx`) shows an expandable "How CareLoop picked this" drawer with Qloo music/film picks and health/weather filter explanations in 4 languages. Family & Centre Activities (`web/care/ActivitiesView.tsx`) and Centre Programmes (`web/care/AacProgrammes.tsx`) show the 4-step Qloo agent trace, blocked candidates, an interactive Qloo favourite search box, and a side-by-side "LLM-only baseline vs CareLoop + Qloo" card. Full evaluation in `docs/qloo-comparison.md` and submission text in `docs/submission/qloo-submission.md`.
 - **Still open before submission (Sat 31 Oct 2026, 11:45am SGT):**
-  1. Add `QLOO_API_KEY` on the new Render service (`fondly`) and record a live verification log.
-  2. Push to the public GitHub repository (`fondly`) once created.
-  3. Added `LICENSE` (`AGPL-3.0`).
+  1. Add `QLOO_API_KEY` on the Render service and record a live verification log.
+  2. Record the <3 minute demo video showing the Qloo Taste Agent and health guardrails in action.
 
 ## 15 Oct 2026: sibling rota, pairing UX, relationship tests
 

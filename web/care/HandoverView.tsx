@@ -74,7 +74,7 @@ export default function HandoverView({ handover: h, senior, contactId, claimerNa
       <p className="care-eyebrow">
         {senior.name} · {KIND_TITLE[h.kind]}
       </p>
-      <h1>{h.status === 'open' ? 'Fondly needs you to pick a next step' : KIND_TITLE[h.kind]}</h1>
+      <h1>{h.status === 'open' ? 'CareLoop needs you to pick a next step' : KIND_TITLE[h.kind]}</h1>
       <p className="care-lead">{plainSummary(h, senior.name)}</p>
       <p className="care-engine">
         The rule's own words: {cap(evidence.summary)}.
@@ -92,7 +92,7 @@ export default function HandoverView({ handover: h, senior, contactId, claimerNa
 
       {evidence.tried.length > 0 && (
         <section className="care-card">
-          <h2>What Fondly already tried</h2>
+          <h2>What CareLoop already tried</h2>
           <ol className="care-timeline">
             {evidence.tried.map((t, i) => (
               <li key={i}>
@@ -110,7 +110,7 @@ export default function HandoverView({ handover: h, senior, contactId, claimerNa
               </li>
             ))}
           </ol>
-          <p className="care-muted">Fondly has stopped nudging. It does nothing more until someone picks a step.</p>
+          <p className="care-muted">CareLoop has stopped nudging. It does nothing more until someone picks a step.</p>
         </section>
       )}
 

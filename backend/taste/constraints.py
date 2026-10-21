@@ -1,4 +1,4 @@
-"""Deterministic health, medicine-leaflet, weather and preference constraints for Fondly's taste agent.
+"""Deterministic health, medicine-leaflet, weather and preference constraints for CareLoop's taste agent.
 
 Safety boundary (CLAUDE.md):
 - The taste agent works ONLY at the suggestion level (places, food, music, films, AAC programmes).

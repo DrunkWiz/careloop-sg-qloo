@@ -1,4 +1,4 @@
-"""Fondly's Qloo Taste Agent: plans culturally grounded, health-safe days for each senior.
+"""CareLoop SG's Qloo Taste Agent: plans culturally grounded, health-safe days for each senior.
 
 Safety & architecture rules (CLAUDE.md):
 1. Works ONLY at the suggestion level. Never touches rungs 0-4 or R, or who gets contacted.
@@ -49,7 +49,7 @@ def build_taste_plan(
     erased_keys: set[str] | None = None,
     client: QlooClient | None = None,
 ) -> dict:
-    """Run the 4-step Fondly Taste Agent for `senior` on `day` and return the full TastePlan + trace."""
+    """Run the 4-step CareLoop Taste Agent for `senior` on `day` and return the full TastePlan + trace."""
     qloo = client or get_qloo_client()
     zh = senior.get("language") == "zh"
     lang = "zh" if zh else "en"
@@ -221,14 +221,14 @@ def build_taste_plan(
     ]
 
     baseline = llm_only_baseline(senior, indoor_only=indoor_only, psi=psi, rain_mm=rain_mm)
-    fondly_highlights = [
+    careloop_highlights = [
         f"{p['name']} ({', '.join(p['fit_badges']) or 'Qloo match'}): {p['why']}"
         for p in safe_places[:2]
     ]
     if music_picks:
-        fondly_highlights.append(f"Music: {music_picks[0]['name']} — {music_picks[0]['why']}")
+        careloop_highlights.append(f"Music: {music_picks[0]['name']} — {music_picks[0]['why']}")
     if movie_picks:
-        fondly_highlights.append(f"Film: {movie_picks[0]['name']} — {movie_picks[0]['why']}")
+        careloop_highlights.append(f"Film: {movie_picks[0]['name']} — {movie_picks[0]['why']}")
 
     return {
         "senior_id": senior.get("id", ""),
@@ -264,9 +264,9 @@ def build_taste_plan(
         },
         "comparison": {
             "llm_only": baseline,
-            "fondly_with_qloo": {
-                "mode": f"fondly_qloo_{qloo_mode}",
-                "picks": fondly_highlights,
+            "careloop_with_qloo": {
+                "mode": f"careloop_qloo_{qloo_mode}",
+                "picks": careloop_highlights,
                 "filtered_count": len(filtered_out),
                 "filtered_examples": [f"{f['name']} ({f['rule_id']})" for f in filtered_out[:3]],
             },

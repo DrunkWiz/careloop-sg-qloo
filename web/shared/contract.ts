@@ -383,7 +383,7 @@ export interface TastePlan {
   guardrail: { passed: boolean; checked_count: number; reasons: string[] };
   comparison: {
     llm_only: { mode: string; prompt_summary: string; generic_picks: string[]; limitations: string[] };
-    fondly_with_qloo: { mode: string; picks: string[]; filtered_count: number; filtered_examples: string[] };
+    careloop_with_qloo: { mode: string; picks: string[]; filtered_count: number; filtered_examples: string[] };
   };
 }
 

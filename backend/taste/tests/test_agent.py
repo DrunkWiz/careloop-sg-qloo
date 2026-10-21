@@ -1,4 +1,4 @@
-"""Unit tests for Fondly's Qloo Taste Agent, health constraints, and LLM-only comparison."""
+"""Unit tests for CareLoop SG's Qloo Taste Agent, health constraints, and LLM-only comparison."""
 from __future__ import annotations
 
 import unittest

@@ -138,8 +138,8 @@ const MOCK_TASTE_PLAN: TastePlan = {
         'Loses cultural specificity (Teresa Teng -> Fei Yu-ching / 1960s Cathay classics).',
       ],
     },
-    fondly_with_qloo: {
-      mode: 'fondly_qloo_fixture',
+    careloop_with_qloo: {
+      mode: 'careloop_qloo_fixture',
       picks: [
         'Kebun Baru Kopitiam & Community Corner (Indoor, Low-sodium available)',
         'Music: Fei Yu-ching (费玉清)',

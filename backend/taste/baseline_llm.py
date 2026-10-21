@@ -1,7 +1,7 @@
-"""LLM-only baseline (without Qloo taste graph or Fondly's deterministic constraint tools).
+"""LLM-only baseline (without Qloo taste graph or CareLoop's deterministic constraint tools).
 
 Used for the side-by-side comparison in `GET /senior/{id}/taste`, `ActivitiesView.tsx`, and
-`docs/qloo-comparison.md` to demonstrate why Qloo's cross-domain taste graph + Fondly's
+`docs/qloo-comparison.md` to demonstrate why Qloo's cross-domain taste graph + CareLoop's
 deterministic health/weather guardrail tools outperform a standalone LLM prompt.
 """
 from __future__ import annotations

@@ -1,4 +1,4 @@
-// "Add to home screen": Fondly as an app on the phone, with its own icon and no browser bar.
+// "Add to home screen": CareLoop as an app on the phone, with its own icon and no browser bar.
 // Android and desktop Chrome offer a prompt we can trigger; iPhone has none, so it gets the steps.
 import { useEffect, useState } from 'react';
 import { canPrompt, isInstalled, isIos, onInstallChange, promptInstall } from '../shared/pwa';
@@ -10,7 +10,7 @@ export default function InstallCard({ senior }: { senior: string }) {
 
   return (
     <section className="care-card">
-      <h2>Fondly on your home screen</h2>
+      <h2>CareLoop on your home screen</h2>
       {isInstalled() ? (
         <p className="care-muted">Done: you're using the app from your home screen.</p>
       ) : canPrompt() ? (

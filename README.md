@@ -1,12 +1,12 @@
-# Fondly
+# CareLoop SG
 
-Fondly (built on CareLoop SG) supports Singapore seniors with hypertension between doctor visits, and plans good days around what each senior is fond of (food, music, places, outings) using Qloo's taste graph while keeping their health, medicine and weather limits in force.
+CareLoop SG supports Singapore seniors with hypertension between doctor visits, and plans good days around what each senior enjoys (food, music, places, outings) using Qloo's taste graph while keeping their health, medicine and weather limits in force.
 It stays quiet until something is wrong for *this* senior, then hands over to their family,
 or to their Active Ageing Centre (AAC) if they have no family, with the evidence.
 
 **Rules pick the rung. The model only understands and writes words.**
 
-Built for the Qloo Agentic Hackathon (built on CareLoop SG from Tencent Cloud Hackathon SG 2026).
+Built for the Qloo Agentic Hackathon (powered by Qloo Taste AI).
 
 **Try it: https://careloop-sg.onrender.com** (synthetic demo; opens on the video's day, 24 Oct)
 - Senior app: [/senior?senior=tan](https://careloop-sg.onrender.com/senior?senior=tan)
@@ -19,11 +19,11 @@ and when it wakes the demo starts again from 24 Oct.
 
 **How it's built:** [architecture, trust boundaries and design trade-offs](docs/architecture.md).
 
-### What makes Fondly Qloo-powered
+### What makes CareLoop SG Qloo-powered
 
 Qloo's core rule for the Agentic Hackathon is: **if it would work the same without Qloo, it's the wrong thing.**
 
-Fondly adds a 4-step Qloo Taste Agent (`backend/taste/`) that plans culturally specific, health-safe days around what each senior is fond of:
+CareLoop SG adds a 4-step Qloo Taste Agent (`backend/taste/`) that plans culturally specific, health-safe days around what each senior enjoys:
 1. **`qloo_search` (`GET /search`):** Resolves the senior's personal taste seeds (e.g. *Teresa Teng*, *P. Ramlee*, *Teochew steamed fish porridge*, *The Love Eterne*) and any favourites added by family or centre staff (`GET /taste/search`, `POST /senior/{id}/taste`) into Qloo entity IDs.
 2. **`qloo_insights` (`GET /v2/insights`):** Queries Qloo's cross-domain taste graph across three domains (`urn:entity:place`, `urn:entity:artist`, `urn:entity:movie`) in Singapore (`filter.location.query="Singapore"`) to connect a senior's favourite 1960s–70s singers and films to nearby kopitiams, hawker stalls, tea corners, companion music artists, and classic films.
 3. **`check_health_constraints` (`backend/taste/constraints.py`):** Filters every Qloo candidate through deterministic, reviewable tables (marked `PLACEHOLDER` pending clinical sign-off) and live NEA weather/haze data:
@@ -31,11 +31,11 @@ Fondly adds a 4-step Qloo Taste Agent (`backend/taste/`) that plans culturally s
    - **Medicine leaflet checks (`med_amlodipine`, `med_losartan`, `med_metformin`):** Blocks grapefruit/pomelo dishes (e.g. *Ah Chew Desserts — Mango Pomelo Sago*) when the senior takes **amlodipine**.
    - **Type 2 diabetes (`cond_diabetes`):** Filters out heavy syrup drinks (e.g. *Kampung Syrup Bandung*).
    - **Rain & Haze (`weather_indoor_only`):** Filters out outdoor parks when PSI > 100 or rain >= 5 mm.
-4. **`guardrail_check` (`backend/language/guardrail.py`):** Checks every outgoing "why it fits" explanation string (English and Chinese) through Fondly's language safety guardrail.
+4. **`guardrail_check` (`backend/language/guardrail.py`):** Checks every outgoing "why it fits" explanation string (English and Chinese) through CareLoop's language safety guardrail.
 - **Strictly at the suggestion layer:** The Qloo agent never picks an escalation rung (`0`–`4` or `R`), never decides whom to contact, and never touches red-flag emergency handling.
-- **Side-by-side comparison:** See [docs/qloo-comparison.md](docs/qloo-comparison.md) and the in-app **"Why Qloo? (LLM-only baseline vs Fondly + Qloo)"** panel on the Activities page.
+- **Side-by-side comparison:** See [docs/qloo-comparison.md](docs/qloo-comparison.md) and the in-app **"Why Qloo? (LLM-only baseline vs CareLoop + Qloo)"** panel on the Activities page.
 
-### How Fondly uses language models
+### How CareLoop uses language models
 
 - **Reading check-ins.** Rules read every check-in first, in English, Singlish and Mandarin (BP, doses, symptoms, red flags). Tencent Hunyuan then adds what rules miss: a symptom said in a roundabout way, the mood, an English gloss. It can add meaning but never remove a finding or invent a number.
 - **Writing messages.** The model drafts each message in the senior's language and tone, inside the step the rules already chose, keeping everything the fixed message says. Every draft passes a guardrail (no diagnosis, no dose change, no stopping a medicine, no invented number), or the fixed template goes out. **Red flags always use the fixed, signed-off wording**, sent at once, never reworded by a model.
@@ -191,7 +191,7 @@ pip install -r backend/requirements.txt && cd web && npm ci --include=dev && npm
 uvicorn backend.api.serve:site --host 0.0.0.0 --port $PORT                                       # start
 ```
 
-Environment: `CARELOOP_SEED=demo`, `CARELOOP_DEMO_DAYS=11` (plays the fortnight on a fresh store), `VITE_API_URL=/api`, `QLOO_API_KEY=<your-qloo-hackathon-key>`, `PYTHON_VERSION=3.11.9`, `NODE_VERSION=20.18.0`. When `QLOO_API_KEY` is set, Fondly calls `https://hackathon.api.qloo.com`; when unset or unreachable, it falls back automatically to recorded Singapore Qloo fixtures (`backend/taste/fixtures/qloo_fixtures.json`). The store is SQLite on the service's own disk, which is wiped when it restarts or sleeps; for the demo that means it starts again from 24 Oct. Postgres (`DATABASE_URL`) is supported by the store but not run yet.
+Environment: `CARELOOP_SEED=demo`, `CARELOOP_DEMO_DAYS=11` (plays the fortnight on a fresh store), `VITE_API_URL=/api`, `QLOO_API_KEY=<your-qloo-hackathon-key>`, `PYTHON_VERSION=3.11.9`, `NODE_VERSION=20.18.0`. When `QLOO_API_KEY` is set, CareLoop calls `https://hackathon.api.qloo.com`; when unset or unreachable, it falls back automatically to recorded Singapore Qloo fixtures (`backend/taste/fixtures/qloo_fixtures.json`). The store is SQLite on the service's own disk, which is wiped when it restarts or sleeps; for the demo that means it starts again from 24 Oct. Postgres (`DATABASE_URL`) is supported by the store but not run yet.
 
 ### On a phone, as an app
 

@@ -114,7 +114,7 @@ export const mock = {
         guardrail: { passed: true, checked_count: 3, reasons: [] },
         comparison: {
           llm_only: { mode: 'llm_only_baseline', prompt_summary: '', generic_picks: [], limitations: [] },
-          fondly_with_qloo: { mode: 'fondly_qloo_fixture', picks: [], filtered_count: 2, filtered_examples: [] },
+          careloop_with_qloo: { mode: 'careloop_qloo_fixture', picks: [], filtered_count: 2, filtered_examples: [] },
         },
       },
     };

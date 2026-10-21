@@ -1,4 +1,4 @@
-// Health: what Fondly noticed, and the last 30 days as charts. Shared by the family app and the centre console.
+// Health: what CareLoop noticed, and the last 30 days as charts. Shared by the family app and the centre console.
 import { useEffect, useState } from 'react';
 import type { Insights } from '../shared/contract';
 import { ApiError, getInsights, usingMocks } from '../shared/api';
@@ -102,7 +102,7 @@ export default function Health({ seniorId, contactId, name }: { seniorId: string
       </section>
 
       <section className="care-card health-findings">
-        <div className="card-head"><h2>What Fondly noticed</h2><span className="care-pill">{findings.length} observations</span></div>
+        <div className="card-head"><h2>What CareLoop noticed</h2><span className="care-pill">{findings.length} observations</span></div>
         <p className="care-muted">Patterns in {name}'s own routine, with the evidence behind them.</p>
         {findings.length ? <Findings findings={findings} limit={expanded ? undefined : 3} /> : <p className="care-muted">More check-ins will help build a picture.</p>}
         {findings.length > 3 && <button className="care-link" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? 'Show fewer observations ↑' : `See all ${findings.length} observations ↓`}</button>}

@@ -185,7 +185,7 @@ def taste_knows_entries(senior: dict, erased_keys: set[str] | None = None) -> li
             items.append({
                 "id": f"taste:{m}",
                 "kind": "like",
-                "text": f"喜欢听 {m} 的歌（Qloo 品味档案）" if zh else f"Enjoys music by {m} (Fondly taste profile)",
+                "text": f"喜欢听 {m} 的歌（Qloo 品味档案）" if zh else f"Enjoys music by {m} (Qloo taste profile)",
             })
     for f in profile["food_seeds"]:
         if f not in erased:

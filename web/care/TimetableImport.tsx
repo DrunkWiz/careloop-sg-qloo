@@ -1,5 +1,5 @@
 // Bring in a centre's timetable from what it already keeps: a calendar file or link (.ics, from Google
-// Calendar or Outlook) or a spreadsheet (.csv). Fondly shows what it read, with its guesses, before
+// Calendar or Outlook) or a spreadsheet (.csv). CareLoop shows what it read, with its guesses, before
 // anything is saved. A calendar link is pulled again once a day, so changes reach seniors on their own.
 import { useEffect, useState } from 'react';
 import type { ProgrammeFeed, TimetableImport as Result } from '../shared/contract';
@@ -70,7 +70,7 @@ export default function TimetableImport({ aacId, onSaved }: { aacId: string; onS
       {feed && feed.url && (
         <p className="care-muted">
           Pulled from your calendar link {feed.error ? `(last try failed: ${feed.error}) ` : ''}on {when(feed.pulled_at)}: {feed.count} programmes.
-          Fondly pulls it again every day.{' '}
+          CareLoop pulls it again every day.{' '}
           <button className="care-link" onClick={() => void stopProgrammeFeed(aacId).then(() => setFeed(null))}>
             Stop
           </button>

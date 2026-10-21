@@ -17,7 +17,7 @@ export default function DecisionInfo({ ruleId, day, message }: Props) {
       <dl>
         <dt>Who decided</dt>
         <dd>
-          Fondly's fixed rules{rule ? <> (rule <code>{rule}</code>)</> : null}. No AI model chooses who is told, or when.
+          CareLoop's fixed rules{rule ? <> (rule <code>{rule}</code>)</> : null}. No AI model chooses who is told, or when.
         </dd>
         {day?.rung != null && (
           <>
@@ -36,7 +36,7 @@ export default function DecisionInfo({ ruleId, day, message }: Props) {
         )}
         <dt>Thresholds</dt>
         <dd>Starting values, marked as placeholders until a clinician signs them off.</dd>
-        <dt>What Fondly never does</dt>
+        <dt>What CareLoop never does</dt>
         <dd>
           Diagnose, or advise on medicines. It only tells the people linked at setup: red flags at once, anything else
           only through a handover that a person then chooses to act on.

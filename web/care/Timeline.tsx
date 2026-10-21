@@ -1,4 +1,4 @@
-// Every day Fondly decided something, including the days it decided to do nothing. One dot per day,
+// Every day CareLoop decided something, including the days it decided to do nothing. One dot per day,
 // oldest on the left; tap a day for what happened and why. `compact` is the 7-dot strip on caseload rows.
 import { useState } from 'react';
 import type { LogDay } from '../shared/contract';
@@ -41,9 +41,9 @@ export default function Timeline({ log, name }: { log: LogDay[]; name: string })
 
   return (
     <section className="care-card tl">
-      <h2>What Fondly did, day by day</h2>
+      <h2>What CareLoop did, day by day</h2>
       <p className="care-muted">
-        {summary.join(' · ')}. Fondly logs every day, including the days it decides to do nothing.
+        {summary.join(' · ')}. CareLoop logs every day, including the days it decides to do nothing.
       </p>
       <div className="tl-days" role="listbox" aria-label="Days">
         {days.map((d) => (

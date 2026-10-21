@@ -1,6 +1,6 @@
 // Things to do near the senior, pulled in automatically: their own AAC's programmes this week, the nearest
 // AACs and community clubs (data.gov.sg), Qloo Taste AI cross-domain recommendations filtered by health/weather
-// constraints, what Fondly suggested today and how the senior has answered.
+// constraints, what CareLoop suggested today and how the senior has answered.
 // Nothing here is booked: the senior picks, and a "not for me" is remembered.
 import { useEffect, useState } from 'react';
 import type { Activities } from '../shared/contract';
@@ -43,14 +43,14 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
     <>
       {a.indoor_only && (
         <p className="care-notice">
-          {a.why_indoor === 'rain' ? `Rain today (${a.rain_mm} mm nearby)` : `Haze today (PSI ${a.psi})`}: Fondly is only suggesting indoor options.
+          {a.why_indoor === 'rain' ? `Rain today (${a.rain_mm} mm nearby)` : `Haze today (PSI ${a.psi})`}: CareLoop is only suggesting indoor options.
         </p>
       )}
 
       <section className="care-card">
         <h2>Suggested to {name} today</h2>
         <p className="care-muted">
-          Picked by Fondly's taste agent and safety rules from what {name} likes{a.likes.length ? ` (${a.likes.join(', ')})` : ''}: their own centre first, Qloo cross-domain taste matches, then the nearest community club.
+          Picked by CareLoop's taste agent and safety rules from what {name} likes{a.likes.length ? ` (${a.likes.join(', ')})` : ''}: their own centre first, Qloo cross-domain taste matches, then the nearest community club.
         </p>
         <ul className="act-list">
           {a.suggested_today.map((s, i) => (
@@ -73,7 +73,7 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
 
       {tp && (
         <section className="care-card">
-          <h2>Fondly + Qloo taste graph for {name}</h2>
+          <h2>CareLoop + Qloo taste graph for {name}</h2>
           <p className="care-muted">{tp.profile.summary}</p>
           {tp.constraints.badges.length > 0 && (
             <p className="care-muted">
@@ -139,7 +139,7 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
               ))}
               <dt>Safety boundary</dt>
               <dd>
-                Fondly's Qloo agent works only at the suggestion level. Escalation rungs (0–4 and R) and who gets contacted are always decided by deterministic rules, and every explanation string passes <code>guardrail.py</code>.
+                CareLoop's Qloo agent works only at the suggestion level. Escalation rungs (0–4 and R) and who gets contacted are always decided by deterministic rules, and every explanation string passes <code>guardrail.py</code>.
               </dd>
             </dl>
           </details>
@@ -149,7 +149,7 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
             <QlooFavouriteBox seniorId={seniorId} name={name} />
           </details>
           <details className="care-card decision-info" style={{ marginTop: '0.5rem' }}>
-            <summary>Why Qloo? (LLM-only baseline vs Fondly + Qloo)</summary>
+            <summary>Why Qloo? (LLM-only baseline vs CareLoop + Qloo)</summary>
             <dl>
               <dt>Prompt-only LLM baseline (without Qloo or health filter tools)</dt>
               <dd>
@@ -165,16 +165,16 @@ export default function ActivitiesView({ seniorId, contactId, name, compact }: {
                   ))}
                 </ul>
               </dd>
-              <dt>Fondly + Qloo Taste AI + deterministic health rules</dt>
+              <dt>CareLoop + Qloo Taste AI + deterministic health rules</dt>
               <dd>
                 <ul className="care-muted" style={{ margin: '0.25rem 0 0.5rem 1.1rem', padding: 0 }}>
-                  {tp.comparison.fondly_with_qloo.picks.map((pk, i) => (
+                  {tp.comparison.careloop_with_qloo.picks.map((pk, i) => (
                     <li key={i}>{pk}</li>
                   ))}
                 </ul>
-                {tp.comparison.fondly_with_qloo.filtered_examples.length > 0 && (
+                {tp.comparison.careloop_with_qloo.filtered_examples.length > 0 && (
                   <span>
-                    <strong>Filtered out for safety:</strong> {tp.comparison.fondly_with_qloo.filtered_examples.join('; ')}.
+                    <strong>Filtered out for safety:</strong> {tp.comparison.careloop_with_qloo.filtered_examples.join('; ')}.
                   </span>
                 )}
               </dd>

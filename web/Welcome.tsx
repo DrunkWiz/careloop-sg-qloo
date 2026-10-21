@@ -9,8 +9,8 @@ export default function Welcome() {
         <div className="welcome-copy">
           <span className="welcome-eyebrow"><span /> A LITTLE CLOSER, EVERY DAY</span>
           <h1>Everyday care.<br /><em>A little more<br />peace of mind.</em></h1>
-          <p>Small check-ins. A clearer picture. Fondly helps Singapore seniors and the people who care for them stay connected between doctor visits — and plans good days around what each senior is fond of.</p>
-          <a className="welcome-cta" href="#choose">Find your Fondly <span aria-hidden="true">↓</span></a>
+          <p>Small check-ins. A clearer picture. CareLoop helps Singapore seniors and the people who care for them stay connected between doctor visits — and plans good days around what each senior enjoys, powered by Qloo Taste AI.</p>
+          <a className="welcome-cta" href="#choose">Find your CareLoop <span aria-hidden="true">↓</span></a>
           <div className="welcome-languages">English <span>·</span> Singlish <span>·</span> 中文</div>
         </div>
         <div className="welcome-scene" aria-label="Daily check-ins connect a senior with their family">
@@ -32,6 +32,6 @@ export default function Welcome() {
       </section>
       <div className="welcome-principles"><span>✓ Simple daily check-ins</span><span>✓ Sharing choices stay with the senior</span><span>✓ People decide the next step</span></div>
     </main>
-    <footer className="welcome-footer"><Brand /><p>Built on CareLoop SG · Hackathon prototype · All demo people and readings are synthetic.</p><span>Made for care in Singapore.</span></footer>
+    <footer className="welcome-footer"><Brand /><p>Powered by Qloo Taste AI · Hackathon prototype · All demo people and readings are synthetic.</p><span>Made for care in Singapore.</span></footer>
   </div>;
 }

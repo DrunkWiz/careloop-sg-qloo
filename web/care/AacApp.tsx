@@ -1,4 +1,4 @@
-// Fondly for Centres: the AAC staff console, for seniors with no family to call.
+// CareLoop for Centres: the AAC staff console, for seniors with no family to call.
 // A work tool, not the family app: many seniors, dense, sortable, desktop-friendly (cards on a phone).
 // Routes: /care/aac · /care/aac/senior/{id} · /care/aac/handover/{id} · /care/aac/programmes
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -70,7 +70,7 @@ export default function AacApp({ workerId }: { workerId: string }) {
       (d) => {
         setData(d);
         setError(null);
-        // Per senior: the 7-day strip and what Fondly noticed. A caseload is tens of seniors, not thousands.
+        // Per senior: the 7-day strip and what CareLoop noticed. A caseload is tens of seniors, not thousands.
         Promise.all(
           d.seniors.map(async (r) => {
             const [log, insights] = await Promise.all([
@@ -162,9 +162,9 @@ export default function AacApp({ workerId }: { workerId: string }) {
     <div className="console">
       <header className="console-bar">
         <div className="console-brand">
-          <span className="console-logo" aria-hidden="true">FD</span>
+          <span className="console-logo" aria-hidden="true">CL</span>
           <div>
-            <strong>Fondly for Centres</strong>
+            <strong>CareLoop for Centres</strong>
             <span>{centre?.name ?? 'Your centre'}</span>
           </div>
         </div>
@@ -255,7 +255,7 @@ function CaseloadView({ data, extras }: { data: Caseload; extras: Record<string,
           <span role="columnheader">Senior</span>
           <span role="columnheader">Status</span>
           <span role="columnheader">Last 7 days</span>
-          <span role="columnheader">Fondly noticed</span>
+          <span role="columnheader">CareLoop noticed</span>
           <span role="columnheader">Last reply</span>
         </div>
         {shown.map((r) => (

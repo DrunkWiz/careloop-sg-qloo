@@ -1,8 +1,8 @@
 {
   "id": "/care/family",
-  "name": "Fondly Family",
-  "short_name": "Fondly",
-  "description": "Fondly (built on CareLoop SG). Synthetic demo: not real people.",
+  "name": "CareLoop Family",
+  "short_name": "CareLoop",
+  "description": "CareLoop SG. Synthetic demo: not real people.",
   "start_url": "/care/family",
   "scope": "/care/",
   "display": "standalone",

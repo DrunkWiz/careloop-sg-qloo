@@ -1,5 +1,5 @@
 // The senior's phone: what syncs from Apple Health or Health Connect (a Fitbit, an OMRON cuff), when it last
-// synced, and the last days of it. In the demo there is no Fondly phone app yet: the "sync now" buttons
+// synced, and the last days of it. In the demo there is no CareLoop phone app yet: the "sync now" buttons
 // stand in for it, sending what Health Connect or Apple Health would.
 import { useCallback, useEffect, useState } from 'react';
 import type { HealthSyncResult, HealthSyncView } from '../shared/contract';
@@ -75,7 +75,7 @@ export default function HealthApps({ seniorId, contactId, name, compact = false 
       <ol className="hs-flow" aria-label="Where the data comes from">
         <li>{st.apps.join(' + ') || 'Phone'}<small>{st.apps.length > 1 ? 'each writes to' : 'writes to'}</small></li>
         <li>{st.platform_name}<small>{st.platform === 'healthkit' ? 'iPhone' : 'Android'}</small></li>
-        <li>Fondly</li>
+        <li>CareLoop</li>
       </ol>
       <p className="care-muted">
         Sends {st.kinds.join(', ')}. Readings come straight from the devices, so {name} doesn't have to type them in.
@@ -135,10 +135,10 @@ export default function HealthApps({ seniorId, contactId, name, compact = false 
                     .join(', ')}. `
                 : 'Synced: nothing yet today. '}
               {result.skipped ? `${result.skipped} skipped. ` : ''}
-              {result.rung ? `Fondly's decision for today: ${RUNG[result.rung]}.` : ''}
+              {result.rung ? `CareLoop's decision for today: ${RUNG[result.rung]}.` : ''}
             </p>
           )}
-          <p className="care-muted">Simulated: Fondly has no phone app yet. This sends what {st.platform_name} would, from synthetic Fitbit and OMRON data.</p>
+          <p className="care-muted">Simulated: CareLoop has no phone app yet. This sends what {st.platform_name} would, from synthetic Fitbit and OMRON data.</p>
         </div>
       )}
     </section>

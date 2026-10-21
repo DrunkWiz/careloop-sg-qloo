@@ -56,7 +56,7 @@ export function markRedFlagSeen(id: string) {
 // per new alert. Only while CareLoop is open in a tab; there is no push service.
 export function useAlert(title: string | null, body: string) {
   useEffect(() => {
-    const base = 'Fondly';
+    const base = 'CareLoop SG';
     document.title = title ? `(!) ${title} · ${base}` : base;
     if (!title) return;
     const key = `careloop-alerted:${title}`;

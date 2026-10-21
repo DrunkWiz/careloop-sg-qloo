@@ -4,10 +4,10 @@
 // The pairing section has TWO clear cards:
 //
 //   1. "Add a family member" — for bringing a sibling, spouse, or friend into the care of someone
-//      who is ALREADY on Fondly. The pair code creates a NEW caregiver linked to an existing
+//      who is ALREADY on CareLoop. The pair code creates a NEW caregiver linked to an existing
 //      senior.
 //
-//   2. "Add someone new" — for an elderly you look after who is NOT on Fondly yet. A new senior
+//   2. "Add someone new" — for an elderly you look after who is NOT on CareLoop yet. A new senior
 //      is created and linked to the current caregiver.
 //
 // When view is provided (the normal settings tab), the consent and family sections are shown.
@@ -58,7 +58,7 @@ export default function Pairing({ view, caregiver }: { view?: FamilyView; caregi
           <AlertsCard />
 
           <section className="care-card">
-            <h2>Family on Fondly</h2>
+            <h2>Family on CareLoop</h2>
             <ul className="care-digest">
               <li>{view.contact.name} (you)</li>
               {view.other_contacts.map((c) => (
@@ -71,7 +71,7 @@ export default function Pairing({ view, caregiver }: { view?: FamilyView; caregi
       )}
 
       <h2 className="care-section-title">Add a person</h2>
-      <p className="care-muted">Pick the situation. Codes are always entered in Fondly on the senior's phone.</p>
+      <p className="care-muted">Pick the situation. Codes are always entered in CareLoop on the senior's phone.</p>
 
       {existingSeniors.length > 0 && (
         <AddCaregiverCard caregiver={cg} seniors={existingSeniors} />
@@ -120,7 +120,7 @@ function AddCaregiverCard({ caregiver, seniors }: { caregiver: PairingCaregiver;
     return (
       <section className="care-card aac-form">
         <h2>Code for {contactName.trim()}</h2>
-        <p className="care-muted">Enter this code in Fondly on {senior?.senior_name}'s phone. {contactName.trim()} then joins {senior?.senior_name}'s care team. It works once.</p>
+        <p className="care-muted">Enter this code in CareLoop on {senior?.senior_name}'s phone. {contactName.trim()} then joins {senior?.senior_name}'s care team. It works once.</p>
         <p className="care-code" aria-live="polite">
           {result.code.slice(0, 3)} {result.code.slice(3)}
         </p>
@@ -196,7 +196,7 @@ function NewSeniorCard({ caregiver }: { caregiver: PairingCaregiver }) {
     return (
       <section className="care-card aac-form">
         <h2>Code for {form.senior_name.trim()}</h2>
-        <p className="care-muted">Open Fondly on {form.senior_name.trim()}'s phone and enter this code. It works once.</p>
+        <p className="care-muted">Open CareLoop on {form.senior_name.trim()}'s phone and enter this code. It works once.</p>
         <p className="care-code" aria-live="polite">
           {result.code.slice(0, 3)} {result.code.slice(3)}
         </p>
@@ -209,7 +209,7 @@ function NewSeniorCard({ caregiver }: { caregiver: PairingCaregiver }) {
     <section className="care-card aac-form">
       <h2>Add someone new</h2>
       <p className="care-muted">
-        Look after another elderly who isn't on Fondly yet? Set them up here. We'll link them to you
+        Look after another elderly who isn't on CareLoop yet? Set them up here. We'll link them to you
         so you get alerts for them too.
       </p>
       <label>
@@ -243,7 +243,7 @@ function AlertsCard() {
       {!supported ? (
         <p className="care-muted">This browser can't show alerts.</p>
       ) : perm === 'granted' ? (
-        <p className="care-muted">On. While Fondly is open in a tab, you'll get an alert for a red flag or a handover.</p>
+        <p className="care-muted">On. While CareLoop is open in a tab, you'll get an alert for a red flag or a handover.</p>
       ) : perm === 'denied' ? (
         <p className="care-muted">Blocked in this browser's settings.</p>
       ) : (

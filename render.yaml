@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: fondly
+    name: careloop-sg
     runtime: python
     region: singapore
     plan: free
