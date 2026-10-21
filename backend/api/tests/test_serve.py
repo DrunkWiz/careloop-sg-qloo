@@ -34,7 +34,7 @@ class Serve(unittest.TestCase):
         self.assertEqual(self.c.get("/api/meta").json()["version"], "0.1.0")
 
     def test_page_paths_get_the_app(self):
-        for path in ("/", "/senior?senior=tan", "/care/family/health", "/care/aac/programmes"):
+        for path in ("/", "/senior?senior=tan", "/care/family/health", "/care/aac/programmes", "/pitch", "/eval/taste"):
             with self.subTest(path):
                 r = self.c.get(path)
                 self.assertEqual(r.status_code, 200)

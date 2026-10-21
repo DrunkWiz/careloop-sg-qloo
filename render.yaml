@@ -4,7 +4,8 @@ services:
     runtime: python
     region: singapore
     plan: free
-    buildCommand: pip install -r backend/requirements.txt && cd web && npm ci --include=dev && npm run build
+    healthCheckPath: /healthz
+    buildCommand: pip install -r backend/requirements.txt && cd web && npm ci --include=dev && VITE_API_URL=/api npm run build
     startCommand: uvicorn backend.api.serve:site --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
