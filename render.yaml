@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: careloop-sg
+    name: careloop-sg-qloo
     runtime: python
     region: singapore
     plan: free
