@@ -2,25 +2,28 @@
 // Until login exists, the demo people are listed here (all synthetic).
 import { usingMocks } from '../shared/api';
 
-// `mock`: also in the offline mocks (the others need the API's demo, npm run dev:live).
 const FAMILY = [
   { caregiver: 'cg-weiling', name: 'Wei Ling', about: "Mr Tan's daughter", mock: true },
   { caregiver: 'cg-kelvin', name: 'Kelvin', about: "Mr Tan's son, and his own mother's main carer", mock: true },
+  { caregiver: 'cg-jane', name: 'Jane', about: "Mrs Teo's daughter (shares weekly rota with Kelvin)", mock: true },
   { caregiver: 'cg-mei', name: 'Mei', about: "Mdm Wong's daughter", mock: true },
-  { caregiver: 'cg-priya', name: 'Priya', about: "Mdm Kaur's daughter, in London" },
-  { caregiver: 'cg-arjun', name: 'Arjun', about: "Mdm Kaur's son" },
-  { caregiver: 'cg-nur', name: 'Nur', about: "Encik Rahman's daughter" },
-  { caregiver: 'cg-maria', name: 'Maria', about: "Encik Rahman's helper" },
-  { caregiver: 'cg-junjie', name: 'Jun Jie', about: "Mdm Chua's son (sees her weekly summary)" },
-  { caregiver: 'cg-huimin', name: 'Hui Min', about: "Mdm Chua's daughter-in-law" },
+  { caregiver: 'cg-priya', name: 'Priya', about: "Mdm Kaur's daughter, in London", mock: true },
+  { caregiver: 'cg-arjun', name: 'Arjun', about: "Mdm Kaur's son", mock: true },
+  { caregiver: 'cg-nur', name: 'Nur', about: "Encik Rahman's daughter", mock: true },
+  { caregiver: 'cg-maria', name: 'Maria', about: "Encik Rahman's helper", mock: true },
+  { caregiver: 'cg-junjie', name: 'Jun Jie', about: "Mdm Chua's son (sees her weekly summary)", mock: true },
+  { caregiver: 'cg-huimin', name: 'Hui Min', about: "Mdm Chua's daughter-in-law", mock: true },
 ];
 const CENTRE = [
-  { worker: 'aac-siti', name: 'Siti', about: 'Befriender, Tampines centre: 7 seniors', mock: true },
-  { worker: 'aac-farid', name: 'Farid', about: 'Befriender, Ang Mo Kio centre: 2 seniors' },
+  { worker: 'aac-siti', name: 'Siti', about: 'Befriender, Bedok North / Tampines centre: 7 seniors', mock: true },
+  { worker: 'aac-farid', name: 'Farid', about: 'Befriender, Ang Mo Kio centre: 2 seniors', mock: true },
 ];
 
 function go(path: string, extra: Record<string, string>) {
   const q = new URLSearchParams(window.location.search);
+  q.delete('caregiver');
+  q.delete('contact');
+  q.delete('worker');
   Object.entries(extra).forEach(([k, v]) => q.set(k, v));
   window.location.href = `${path}?${q.toString()}`;
 }

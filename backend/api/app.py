@@ -579,6 +579,12 @@ def caregiver_view(caregiver_id: str):
     """A caregiver's linked seniors. Used by the switcher when one caregiver looks after several seniors."""
     cg = store.get("caregiver", caregiver_id)
     if cg is None:
+        # Also allow looking up by contact_id so /care/caregiver/rahman-nur resolves to cg-nur
+        c_match = store.get("contact", caregiver_id)
+        if c_match and c_match.get("caregiver_id"):
+            caregiver_id = c_match["caregiver_id"]
+            cg = store.get("caregiver", caregiver_id)
+    if cg is None:
         raise HTTPException(404, f"no caregiver {caregiver_id}")
     seniors = []
     for c in store.list("contact"):
@@ -668,7 +674,9 @@ def swap_rota(sid: str, body: SwapIn):
     swaps.append({"date": body.date, "contact_id": body.contact_id})
     rota["swaps"] = swaps
     store.put("rota", rota)
-    return rota
+    t = today()
+    duty = on_duty(store, senior, t)
+    return {"rota": rota, "on_duty": ({"id": duty["id"], "name": duty["name"]} if duty else None), **rota}
 
 
 @app.delete("/senior/{sid}/rota")
@@ -774,6 +782,13 @@ def _status(sid: str, t: date) -> str:
 @app.get("/care/family/{contact_id}")
 def family_view(contact_id: str):
     c = store.get("contact", contact_id)
+    if c is None:
+        # Also resolve caregiver_id (e.g. cg-nur, cg-kelvin) to their primary/first family contact
+        cg_contacts = [x for x in store.list("contact") if x.get("caregiver_id") == contact_id and x.get("role") == "family"]
+        if cg_contacts:
+            cg_contacts.sort(key=lambda x: (not x.get("primary", False), x["id"]))
+            c = cg_contacts[0]
+            contact_id = c["id"]
     if c is None or c["role"] != "family":
         raise HTTPException(404, contact_id)
     senior = senior_or_404(c["senior_id"])

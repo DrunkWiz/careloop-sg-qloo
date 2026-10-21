@@ -111,18 +111,25 @@ function CaregiverApp({ caregiverId }: { caregiverId: string }) {
       (v) => {
         setCgView(v);
         setError(null);
-        // Auto-select the first senior if nothing is selected yet.
-        if (v.seniors.length && !selectedContact) {
-          setSelectedContact(v.seniors[0].contact_id);
+        // Auto-select the first senior if nothing (or a senior not linked to this caregiver) is selected.
+        if (v.seniors.length) {
+          setSelectedContact((prev) =>
+            prev && v.seniors.some((s) => s.contact_id === prev) ? prev : v.seniors[0].contact_id,
+          );
         }
       },
       (e: Error) => setError(e.message),
     );
-  }, [caregiverId, selectedContact]);
+  }, [caregiverId]);
   useLive(load);
 
   if (error && !cgView) return <section className="care-card" role="alert"><h1>We couldn't load your seniors</h1><p className="care-error">{error}</p><button className="care-secondary" onClick={load}>Try again</button><a className="care-link" href="/care">Choose a demo family</a></section>;
   if (!cgView) return <p className="care-muted" role="status">Loading your seniors…</p>;
+
+  if (cgView.caregiver.role === 'aac') {
+    const workerId = caregiverId === 'cg-siti' ? 'aac-siti' : caregiverId === 'cg-farid' ? 'aac-farid' : caregiverId;
+    return <AacApp workerId={workerId} />;
+  }
 
   if (!cgView.seniors.length) {
     // A caregiver with no seniors: show the pairing form directly on the settings route,
@@ -148,21 +155,26 @@ function CaregiverApp({ caregiverId }: { caregiverId: string }) {
     );
   }
 
+  const activeContact =
+    selectedContact && cgView.seniors.some((s) => s.contact_id === selectedContact)
+      ? selectedContact
+      : cgView.seniors[0].contact_id;
+
   return (
     <>
       <SeniorSwitcher
         caregiverId={caregiverId}
         caregiverName={cgView.caregiver.name}
         seniors={cgView.seniors}
-        selected={selectedContact ?? cgView.seniors[0].contact_id}
+        selected={activeContact}
         onSelect={setSelectedContact}
       />
-      {selectedContact && <FamilyApp contactId={selectedContact} hideHeader />}
+      <FamilyApp contactId={activeContact} hideHeader />
     </>
   );
 }
 
-function SeniorSwitcher({ caregiverId, caregiverName, seniors, selected, onSelect }: {
+function SeniorSwitcher({ caregiverName, seniors, selected, onSelect }: {
   caregiverId: string;
   caregiverName: string;
   seniors: { contact_id: string; senior_name: string; primary: boolean; status: string }[];
@@ -178,7 +190,7 @@ function SeniorSwitcher({ caregiverId, caregiverName, seniors, selected, onSelec
       <div className="senior-switcher">
         <button className="family-profile" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
           <span className="family-avatar" aria-hidden="true">{caregiverName.charAt(0)}</span>
-          <span>{current?.senior_name ?? 'Select'}<small>{caregiverName} · Switch senior ▾</small></span>
+          <span>{current?.senior_name ?? 'Select'}<small>{caregiverName} · Switch ▾</small></span>
         </button>
         {open && (
           <ul className="switcher-menu" role="menu">
@@ -196,6 +208,11 @@ function SeniorSwitcher({ caregiverId, caregiverName, seniors, selected, onSelec
               <button className="switcher-item" onClick={() => { setOpen(false); navigate('/care/family/you'); }}>
                 + Set up someone new
               </button>
+            </li>
+            <li className="switcher-new" role="menuitem">
+              <a className="switcher-item" href="/care" onClick={() => setOpen(false)}>
+                Switch demo family ↗
+              </a>
             </li>
           </ul>
         )}

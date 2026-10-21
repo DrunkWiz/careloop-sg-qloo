@@ -112,8 +112,11 @@ export function claimHandover(handoverId: string, contactId: string, choice: str
     : mock.claimHandover(handoverId, contactId, choice);
 }
 
+const FAMILY_SENIORS = new Set(['tan', 'wong', 'teo', 'kaur', 'rahman', 'chua']);
+
 export function getBrief(seniorId: string): Promise<BriefData> {
-  return BASE ? http(`/senior/${seniorId}/brief.json`) : mockAac.getBrief(seniorId);
+  if (BASE) return http(`/senior/${seniorId}/brief.json`);
+  return FAMILY_SENIORS.has(seniorId) ? mock.getBrief(seniorId) : mockAac.getBrief(seniorId);
 }
 
 export function briefPdfUrl(seniorId: string): string | null {
@@ -123,7 +126,7 @@ export function briefPdfUrl(seniorId: string): string | null {
 // Added endpoint (needs team OK). Pass the family contact so the senior's consent applies.
 // Returns null when the API doesn't have it.
 export async function getLog(seniorId: string, days = 14, contactId?: string): Promise<LogDay[] | null> {
-  if (!BASE) return seniorId === 'tan' ? mock.getLog(days) : mockAac.getLog(seniorId, days);
+  if (!BASE) return FAMILY_SENIORS.has(seniorId) ? mock.getLog(days, seniorId) : mockAac.getLog(seniorId, days);
   try {
     return await http(`/senior/${seniorId}/log?days=${days}${contactId ? `&contact=${encodeURIComponent(contactId)}` : ''}`);
   } catch (e) {
@@ -181,11 +184,11 @@ export function pair(body: PairIn): Promise<PairOut> {
 
 // Demo only: move the demo clock, or reseed.
 export function demoAdvance(days: number): Promise<{ today: string }> {
-  return BASE ? http('/demo/advance', { method: 'POST', body: JSON.stringify({ days }) }) : Promise.reject(new Error('Demo controls need the API'));
+  return BASE ? http('/demo/advance', { method: 'POST', body: JSON.stringify({ days }) }) : mock.demoAdvanceMock(days);
 }
 
 export function demoReset(): Promise<{ today: string }> {
-  return BASE ? http('/demo/reset', { method: 'POST' }) : Promise.reject(new Error('Demo controls need the API'));
+  return BASE ? http('/demo/reset', { method: 'POST' }) : mock.demoResetMock();
 }
 
 // --- vent space: anonymous caregiver rant room (no caregiver_id or senior_id saved) ----------
@@ -215,14 +218,16 @@ export function getHealthSync(seniorId: string, contactId?: string, days = 7): P
 
 // Demo only: stands in for the senior's phone syncing now, with an optional cuff measurement.
 export function demoHealthSync(seniorId: string, bp?: [number, number]): Promise<HealthSyncResult> {
-  return http(`/demo/health-sync/${seniorId}`, { method: 'POST', body: JSON.stringify(bp ? { bp } : {}) });
+  return BASE
+    ? http(`/demo/health-sync/${seniorId}`, { method: 'POST', body: JSON.stringify(bp ? { bp } : {}) })
+    : mock.demoHealthSyncMock(seniorId, bp);
 }
 
 // Added endpoints (need team OK): import a centre's own calendar (.ics) or spreadsheet (.csv).
 export function importTimetable(aacId: string, body: { text?: string; url?: string; save?: boolean }): Promise<TimetableImport> {
   return BASE
     ? http(`/aac/${aacId}/programmes/import`, { method: 'POST', body: JSON.stringify(body) })
-    : Promise.reject(new ApiError(501, 'Importing needs the API (npm run dev:live).'));
+    : mockAac.importTimetableMock(aacId, body);
 }
 
 export async function getProgrammeFeed(aacId: string): Promise<ProgrammeFeed | null> {
@@ -230,7 +235,7 @@ export async function getProgrammeFeed(aacId: string): Promise<ProgrammeFeed | n
 }
 
 export function stopProgrammeFeed(aacId: string): Promise<null> {
-  return http(`/aac/${aacId}/programmes/feed`, { method: 'DELETE' });
+  return BASE ? http(`/aac/${aacId}/programmes/feed`, { method: 'DELETE' }) : Promise.resolve(null);
 }
 
 // Added endpoints (need team OK): what each medicine is for, and vaccines and check-ups that are due.
@@ -238,11 +243,11 @@ const q = (contactId?: string, lang?: string) =>
   [contactId && `contact=${encodeURIComponent(contactId)}`, lang && `lang=${lang}`].filter(Boolean).join('&');
 
 export function getMedicines(seniorId: string, contactId?: string, lang = 'en'): Promise<MedicinesView> {
-  return BASE ? http(`/senior/${seniorId}/medicines?${q(contactId, lang)}`) : mock.getMedicines();
+  return BASE ? http(`/senior/${seniorId}/medicines?${q(contactId, lang)}`) : mock.getMedicines(seniorId, lang);
 }
 
 export function getPrevention(seniorId: string, contactId?: string, lang = 'en'): Promise<PreventionView> {
-  return BASE ? http(`/senior/${seniorId}/prevention?${q(contactId, lang)}`) : mock.getPrevention();
+  return BASE ? http(`/senior/${seniorId}/prevention?${q(contactId, lang)}`) : mock.getPrevention(seniorId, lang);
 }
 
 export interface TasteSearchResult {
@@ -268,13 +273,13 @@ export function searchTaste(query: string): Promise<{ query: string; mode: strin
   return http(`/taste/search?q=${encodeURIComponent(query)}`);
 }
 
-export function addSeniorTaste(seniorId: string, seed: string): Promise<TastePlan> {
-  if (!BASE) return mockInsights.getActivities(seniorId).then((a) => a.taste_plan!);
-  return http(`/senior/${seniorId}/taste`, { method: 'POST', body: JSON.stringify({ seed }) });
+export function addSeniorTaste(seniorId: string, _seed: string): Promise<TastePlan> {
+  if (!BASE) return mockInsights.getSeniorTasteMock(seniorId);
+  return http(`/senior/${seniorId}/taste`, { method: 'POST', body: JSON.stringify({ seed: _seed }) });
 }
 
 export function getSeniorTaste(seniorId: string, opts?: { psi?: number; rain_mm?: number }): Promise<TastePlan> {
-  if (!BASE) return mockInsights.getActivities(seniorId).then((a) => a.taste_plan!);
+  if (!BASE) return mockInsights.getSeniorTasteMock(seniorId, opts);
   const qs = [
     opts?.psi !== undefined && `psi=${opts.psi}`,
     opts?.rain_mm !== undefined && `rain_mm=${opts.rain_mm}`,
@@ -283,7 +288,7 @@ export function getSeniorTaste(seniorId: string, opts?: { psi?: number; rain_mm?
 }
 
 export function toggleSeniorDietary(seniorId: string, toggle: string, opts?: { psi?: number; rain_mm?: number }): Promise<TastePlan> {
-  if (!BASE) return mockInsights.getActivities(seniorId).then((a) => a.taste_plan!);
+  if (!BASE) return mockInsights.toggleSeniorDietaryMock(seniorId, toggle, opts);
   return http(`/senior/${seniorId}/dietary`, { method: 'PUT', body: JSON.stringify({ toggle, ...opts }) });
 }
 
@@ -720,4 +725,3 @@ export function postSeniorCheckin(
     ],
   });
 }
-

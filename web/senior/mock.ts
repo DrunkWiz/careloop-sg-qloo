@@ -2,12 +2,31 @@
 // Synthetic data only. Its understanding is a toy; the real one is backend/language.
 import type { Lang } from '../shared/i18n';
 import type { BP, CheckInResult, Consent, Facts, KnownFact, Message, PairResult, Today } from './types';
+import { getSeniorTasteMock } from '../care/mockInsights';
 
 const wait = (ms = 250) => new Promise((r) => setTimeout(r, ms));
 const today = new Date().toDateString();
 
+const SENIOR_META: Record<string, { name: string; contact: string; lang: Lang }> = {
+  tan: { name: 'Mr Tan', contact: 'Wei Ling', lang: 'en-SG' },
+  wong: { name: 'Mdm Wong', contact: 'Mei', lang: 'zh' },
+  teo: { name: 'Mrs Teo', contact: 'Kelvin', lang: 'en-SG' },
+  kaur: { name: 'Mdm Kaur', contact: 'Priya', lang: 'en' },
+  rahman: { name: 'Encik Rahman', contact: 'Nur', lang: 'en-SG' },
+  chua: { name: 'Mdm Chua', contact: 'Jun Jie', lang: 'zh' },
+  lee: { name: 'Mdm Lee', contact: 'Siti (AAC)', lang: 'zh' },
+  goh: { name: 'Mr Goh', contact: 'Siti (AAC)', lang: 'en-SG' },
+  ng: { name: 'Mr Ng', contact: 'Siti (AAC)', lang: 'en-SG' },
+  lim: { name: 'Mr Lim', contact: 'Siti (AAC)', lang: 'zh' },
+  chandran: { name: 'Mr Chandran', contact: 'Siti (AAC)', lang: 'en' },
+  yeo: { name: 'Mr Yeo', contact: 'Farid (AAC)', lang: 'en-SG' },
+  osman: { name: 'Encik Osman', contact: 'Farid (AAC)', lang: 'en-SG' },
+  ong: { name: 'Mr Ong', contact: 'Siti (AAC)', lang: 'zh' },
+  aminah: { name: 'Mdm Aminah', contact: 'Siti (AAC)', lang: 'en-SG' },
+};
+
 const state = {
-  name: 'Mdm Tan',
+  name: 'Mr Tan',
   contact: 'Wei Ling',
   lang: 'en' as Lang,
   pillsOn: '',
@@ -39,7 +58,16 @@ function parse(text: string, lang: Lang): Facts {
     const keyed = !/[/]|over|by|除以/.test(m[0]);
     const plausible = sys > dia && sys >= 60 && sys <= 280 && dia >= 30 && dia <= 160;
     const confidence = !plausible ? 0.3 : keyed ? 0.75 : 0.95;
+    const red = sys >= 180 || dia >= 120;
     bp.push({ systolic: sys, diastolic: dia, pulse: null, confidence, span: m[0], plausible, needs_confirmation: confidence < 0.8 || !plausible });
+    if (red) {
+      return {
+        lang, bp, pulse: null,
+        doses: /took my pills|吃了药|medicine already/i.test(text) ? [{ taken: true, medicine: null, span: text }] : [],
+        running_out: [], symptoms: [{ code: 'bp_crisis', words: `${sys}/${dia}`, red_flag: true }],
+        activities: [], mood: null, english: text, source: 'mock', red_flag: true, feeling_unwell: true, social_contact: false,
+      };
+    }
   }
   const red = RED.test(text);
   const words = text.match(RED)?.[0] ?? '';
@@ -52,17 +80,19 @@ function parse(text: string, lang: Lang): Facts {
 }
 
 export const mock = {
-  async today(_id: string): Promise<Today> {
+  async today(id: string): Promise<Today> {
     await wait();
-    const zh = state.lang === 'zh';
+    const meta = SENIOR_META[id] ?? { name: state.name, contact: state.contact, lang: state.lang };
+    const zh = state.lang === 'zh' || meta.lang === 'zh';
     const hour = new Date().getHours();
+    const taste_plan = await getSeniorTasteMock(id);
     return {
-      senior: { id: 'demo-senior', name: state.name, language: state.lang },
+      senior: { id: id || 'tan', name: meta.name, language: state.lang },
       pills_taken: state.pillsOn === today,
       bp_logged: state.bpOn === today,
       feel_logged: state.feelOn === today,
       checkin_due: state.feelOn !== today && hour >= 6 && hour < 12,
-      prompt: msg('1', state.lang, zh ? `${state.name}，今天身体怎么样？` : `${state.name}, how are you feeling today?`),
+      prompt: msg('1', state.lang, zh ? `${meta.name}，今天身体怎么样？` : `${meta.name}, how are you feeling today?`),
       haze: {
         psi: 112,
         band: 'unhealthy',
@@ -75,53 +105,13 @@ export const mock = {
         { id: 's2', place: zh ? 'Ang Mo Kio 民众俱乐部：椅子运动' : 'Ang Mo Kio CC: chair exercise', why_it_fits: zh ? '室内，适合今天' : 'Indoors, good for today', indoor: true, free: true, response: null },
         { id: 's3', place: zh ? '宏茂桥图书馆：健康讲座' : 'Ang Mo Kio Library: health talk', why_it_fits: zh ? '离家近' : 'Near your home', indoor: true, free: true, response: null },
       ].filter((s) => !state.hidden.has(s.id)),
-      taste_plan: {
-        senior_id: 'demo-senior',
-        date: '2026-10-21',
-        qloo_mode: 'fixture',
-        profile: {
-          neighbourhood: 'Ang Mo Kio / Kebun Baru',
-          likes: ['mahjong', 'karaoke'],
-          music_seeds: ['Teresa Teng', 'Fei Yu-ching'],
-          food_seeds: ['Clear fish soup', 'Teochew porridge'],
-          film_seeds: ['1960s Cathay Mandarin classics'],
-          outings: ['Kebun Baru kopitiam', 'Ang Mo Kio library'],
-          summary: 'Enjoys morning kopitiam chats, classic Mandarin songs, and light low-salt Teochew dishes.',
-        },
-        constraints: {
-          indoor_only: true,
-          rain_mm: null,
-          psi: 112,
-          badges: ['Low-sodium options', 'No grapefruit/pomelo (amlodipine)', 'Indoor-only (PSI 112)'],
-          active_rules: [],
-        },
-        recommendations: {
-          places: [
-            { entity_id: 'qloo-kebun-baru-kopitiam', name: 'Kebun Baru Kopitiam & Community Corner', category: 'food_and_social', indoor: true, free: false, affinity: 0.94, matched_seeds: ['Teresa Teng'], fit_badges: ['Indoor', 'Low-sodium available'], why: 'Because you enjoy Teresa Teng and Clear fish soup, Qloo matched this sheltered kopitiam in your area.' },
-          ],
-          music: [
-            { entity_id: 'qloo-artist-fei-yu-ching', name: 'Fei Yu-ching (费玉清)', affinity: 0.96, matched_seeds: ['Teresa Teng'], why: 'Because you enjoy Teresa Teng, Qloo matched this artist for your day.' },
-          ],
-          movies: [
-            { entity_id: 'qloo-movie-cathay-1960s', name: 'Mambo Girl (曼波女郎) — Cathay Classics', affinity: 0.91, matched_seeds: ['Teresa Teng'], why: 'Because you enjoy Teresa Teng, Qloo matched this classic film.' },
-          ],
-        },
-        filtered_out: [
-          { entity_id: 'qloo-pomelo-dessert', name: 'Ah Chew Desserts — Mango Pomelo Sago', rule_id: 'med_amlodipine', reason: 'Medicine leaflet check (amlodipine): avoid grapefruit and pomelo (PLACEHOLDER)' },
-          { entity_id: 'qloo-bishan-amk-park', name: 'Bishan-Ang Mo Kio Park Morning Stroll', rule_id: 'weather_indoor_only', reason: 'Weather/haze check (PSI 112): outdoor place filtered out; indoor-only active' },
-        ],
-        trace: [],
-        guardrail: { passed: true, checked_count: 3, reasons: [] },
-        comparison: {
-          llm_only: { mode: 'llm_only_baseline', prompt_summary: '', generic_picks: [], limitations: [] },
-          careloop_with_qloo: { mode: 'careloop_qloo_fixture', picks: [], filtered_count: 2, filtered_examples: [] },
-        },
-      },
+      taste_plan,
     };
   },
 
-  async checkin(_id: string, text: string, lang: Lang): Promise<CheckInResult> {
+  async checkin(id: string, text: string, lang: Lang): Promise<CheckInResult> {
     await wait(400);
+    const meta = SENIOR_META[id] ?? { name: state.name, contact: state.contact, lang };
     const facts = parse(text, lang);
     if (facts.doses.some((d) => d.taken)) state.pillsOn = today;
     else state.feelOn = today;
@@ -129,10 +119,20 @@ export const mock = {
     let message: Message | null = null;
     if (facts.red_flag) {
       message = msg('R', lang, zh
-        ? `请现在马上打995，或者请身边的人帮您打。您刚才说：“${facts.symptoms[0].words}”。我现在就通知${state.contact}。`
-        : `Please call 995 now, or ask someone near you to call. You told me: "${facts.symptoms[0].words}". I am telling ${state.contact} now.`);
+        ? `请现在马上打995，或者请身边的人帮您打。您刚才说：“${facts.symptoms[0]?.words ?? text}”。我现在就通知${meta.contact}。`
+        : `Please call 995 now, or ask someone near you to call. You told me: "${facts.symptoms[0]?.words ?? text}". I am telling ${meta.contact} now.`);
     }
-    return { checkin_id: `c${Date.now()}`, facts, message };
+    const extracted_tastes: { phrase: string; canonical: string; domain: string }[] = [];
+    if (/ramlee/i.test(text)) extracted_tastes.push({ phrase: 'P. Ramlee', canonical: 'P. Ramlee', domain: 'music' });
+    if (/teresa|邓丽君/i.test(text)) extracted_tastes.push({ phrase: 'Teresa Teng', canonical: 'Teresa Teng', domain: 'music' });
+    if (/fish soup|鱼汤|鱼粥/i.test(text)) extracted_tastes.push({ phrase: 'fish soup', canonical: 'Clear fish soup', domain: 'food' });
+    for (const t of extracted_tastes) {
+      const kid = `taste:${t.domain}:${t.canonical}`;
+      if (!state.knows.some((k) => k.id === kid)) {
+        state.knows.push({ id: kid, kind: 'like', text: `Fond of ${t.domain}: ${t.canonical}` });
+      }
+    }
+    return { checkin_id: `c${Date.now()}`, facts, message, extracted_tastes };
   },
 
   async reading(_id: string, _bp: { systolic: number; diastolic: number }) {
@@ -171,7 +171,7 @@ export const mock = {
     await wait(500);
     if (!/^\d{6}$/.test(code)) throw new Error('bad code');
     state.lang = lang;
-    return { senior_id: 'demo-senior', contact_name: state.contact, contact_id: 'demo-contact' };
+    return { senior_id: 'tan', contact_name: state.contact, contact_id: 'tan-weiling' };
   },
 
   setLang(lang: Lang) {

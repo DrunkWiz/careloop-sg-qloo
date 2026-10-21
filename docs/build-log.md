@@ -2,6 +2,12 @@
 
 What has been built, the decisions behind it, and what is still open. Newest first. Add to it when you finish a piece of work; keep each entry short.
 
+## 22 Oct 2026: CareLink Elderly Care Color Palette & Family Caregiver iOS App UI Redesign
+
+- **CareLink Elderly Care Color Theme** (`web/shared/tokens.css`). Primary medical teal (`#0D736D` / `#0B6B65`), aqua-mint highlights (`#159A92`), soft mint surfaces (`#E3F4F2`, `#DFF3F0`), calm alabaster-mint canvas (`#F2F7F6`) with pure `#FFFFFF` elevated cards and cool-mint hairlines (`#D7E5E3`), high-contrast slate-teal ink (`#0F2926`, 14.8:1 AAA contrast on white), semantic amber/coral status accents, and modern geometric display + tabular UI typography.
+- **Family Caregiver Mobile iOS App Design** (`web/care/care.css`, `web/care/themes.css`, `web/care/refresh.css`). Frosted-glass sticky masthead (`backdrop-filter: saturate(180%) blur(20px)`), floating pill-docked bottom tab bar on mobile (`<= 760px`) and elevated pill sidebar rail on desktop, 24px gradient status hero banners with squircle avatars and iOS segmented controls, and unified iOS card geometry across `RoleChooser.tsx`, `JudgeCommandCenter.tsx`, and `EvalView.tsx`.
+- **Senior App (`/senior`) & Public Welcome (`/`) Redesign** (`web/senior/senior.css`, `web/senior/refresh.css`, `web/welcome.css`). CareLink teal-gradient hero greeting card with date pill and segmented progress bar, 20px-radius tactile check-in cards with 52px squircle icon badges, prominent CareLink teal gradient Hold to Talk button (preserving 48px+ tap targets, 18px+ text, and AAA contrast), and frosted-glass landing page navigation with CareLink teal orbital hero scene.
+
 ## 21 Oct 2026 (Flagship Release): Judge Command Center (`/pitch`), Kopi Kakis Buddy Matcher, Memory Lane Keepsakes, Respite & Burnout Shield, and 38-Persona Qloo Ablation Benchmark (`/eval/taste`)
 
 - **Synchronized Split-Screen "Judge Command Center" (`?judge=1` / `/pitch` Mode)** (`web/care/JudgeCommandCenter.tsx`, routed from `web/main.tsx`, `web/care/CareApp.tsx`, `web/Welcome.tsx`, and `web/care/RoleChooser.tsx`). Renders the **Senior Phone (`Home` / `CheckIn`)** on the left and the **Family Caregiver (`/care`) + AAC (`/care/aac`) + Qloo Trace Inspector** on the right in real time, with a live **Qloo Telemetry Pill** (API mode `live` vs `fixture`, resolved entity URNs, `100%` guardrail pass rate, latency) and 4 one-click **Judge Story Scenarios**:

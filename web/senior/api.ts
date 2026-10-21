@@ -46,10 +46,10 @@ export const api = {
 
   // Added endpoints (Nathan, need team OK): what each medicine is for, and vaccines and check-ups due.
   medicines: (seniorId: string, lang: AppLang): Promise<MedicinesView> =>
-    usingMock ? mockMedicines() : http('GET', `/senior/${seniorId}/medicines?lang=${lang}`),
+    usingMock ? mockMedicines(seniorId, lang) : http('GET', `/senior/${seniorId}/medicines?lang=${lang}`),
 
   prevention: (seniorId: string, lang: AppLang): Promise<PreventionView> =>
-    usingMock ? mockPrevention() : http('GET', `/senior/${seniorId}/prevention?lang=${lang}`),
+    usingMock ? mockPrevention(seniorId, lang) : http('GET', `/senior/${seniorId}/prevention?lang=${lang}`),
 
   forget: (seniorId: string, factId: string): Promise<void> =>
     usingMock ? mock.forget(seniorId, factId) : http('DELETE', `/senior/${seniorId}/knows/${encodeURIComponent(factId)}`),

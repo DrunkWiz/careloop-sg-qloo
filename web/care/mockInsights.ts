@@ -1,11 +1,72 @@
-// Offline mocks for /insights and /activities: real API output from the demo (seed, then +11 days),
-// recorded into fixtures/insights-demo.json. Regenerate it the same way if the shapes change.
-// The two mock-only AAC seniors borrow a demo senior's data: Mr Ong gets Mr Tan's rising BP, Mdm Aminah Mr Ng's quiet week.
+// Offline mocks for /insights, /activities, /senior/{id}/taste, and /senior/{id}/taste/dietary:
+// real API output from the demo (seed, then +11 days), recorded into fixtures/insights-demo.json.
 import type { Activities, Insights, TastePlan } from '../shared/contract';
 import fixtures from './fixtures/insights-demo.json';
 import { delay } from './mock';
 
-const SOURCE: Record<string, string> = { tan: 'tan', lee: 'lee', goh: 'goh', ng: 'ng', ong: 'tan', aminah: 'ng' };
+const SOURCE: Record<string, string> = {
+  tan: 'tan',
+  wong: 'lee',
+  teo: 'goh',
+  kaur: 'goh',
+  rahman: 'tan',
+  chua: 'lee',
+  lee: 'lee',
+  goh: 'goh',
+  ng: 'ng',
+  lim: 'goh',
+  chandran: 'tan',
+  yeo: 'lee',
+  osman: 'ng',
+  ong: 'tan',
+  aminah: 'ng',
+};
+
+const SENIOR_NAMES: Record<string, string> = {
+  tan: 'Mr Tan',
+  wong: 'Mdm Wong',
+  teo: 'Mrs Teo',
+  kaur: 'Mdm Kaur',
+  rahman: 'Encik Rahman',
+  chua: 'Mdm Chua',
+  lee: 'Mdm Lee',
+  goh: 'Mr Goh',
+  ng: 'Mr Ng',
+  lim: 'Mr Lim',
+  chandran: 'Mr Chandran',
+  yeo: 'Mdm Yeo',
+  osman: 'Mr Osman',
+  ong: 'Mr Ong',
+  aminah: 'Mdm Aminah',
+};
+
+const DEFAULT_CONDITIONS: Record<string, string[]> = {
+  tan: ['hypertension', 'amlodipine'],
+  wong: ['hypertension', 'amlodipine'],
+  teo: ['hypertension', 'amlodipine'],
+  kaur: ['hypertension', 'atorvastatin', 'vegetarian'],
+  rahman: ['hypertension', 'diabetes', 'halal', 'amlodipine'],
+  chua: ['hypertension', 'gout'],
+  lee: ['hypertension', 'wheelchair'],
+  goh: ['hypertension', 'gout'],
+  ng: ['hypertension'],
+  lim: ['hypertension'],
+  chandran: ['hypertension', 'amlodipine'],
+  yeo: ['hypertension'],
+  osman: ['hypertension', 'halal'],
+  ong: ['hypertension', 'amlodipine'],
+  aminah: ['hypertension', 'diabetes', 'halal'],
+};
+
+const customConditions = new Map<string, string[]>();
+
+function getConditionsFor(seniorId: string): string[] {
+  if (!customConditions.has(seniorId)) {
+    customConditions.set(seniorId, [...(DEFAULT_CONDITIONS[seniorId] ?? ['hypertension', 'amlodipine'])]);
+  }
+  return customConditions.get(seniorId)!;
+}
+
 const data = fixtures as unknown as { insights: Record<string, Insights>; activities: Record<string, Activities> };
 
 const MOCK_TASTE_PLAN: TastePlan = {
@@ -20,6 +81,7 @@ const MOCK_TASTE_PLAN: TastePlan = {
     film_seeds: ['1960s Cathay Mandarin classics'],
     outings: ['Kebun Baru kopitiam', 'Ang Mo Kio library'],
     summary: 'Enjoys morning kopitiam chats, classic Mandarin songs, and light low-salt Teochew dishes.',
+    conditions: ['hypertension', 'amlodipine'],
   },
   constraints: {
     indoor_only: true,
@@ -187,11 +249,78 @@ const MOCK_TASTE_PLAN: TastePlan = {
   },
 };
 
+function buildMockTastePlan(seniorId: string, opts?: { psi?: number; rain_mm?: number }): TastePlan {
+  const conds = getConditionsFor(seniorId);
+  const name = SENIOR_NAMES[seniorId] ?? 'Mr Tan';
+  const psi = opts?.psi ?? 112;
+  const indoorOnly = psi > 100 || (opts?.rain_mm ?? 0) >= 5;
+  const filtered = [...MOCK_TASTE_PLAN.filtered_out];
+  const badges = ['Low-sodium options', 'No grapefruit/pomelo (amlodipine)'];
+  if (conds.includes('gout')) {
+    badges.push('Low-purine (gout-safe)');
+    filtered.push({
+      entity_id: 'qloo-bak-kut-teh',
+      name: 'Song Fa Style Bak Kut Teh & Organ Broth Stall',
+      rule_id: 'cond.gout',
+      reason: 'Clinical check (Gout): high-purine organ broth filtered out (PLACEHOLDER)',
+    });
+  }
+  if (conds.includes('diabetes')) {
+    badges.push('Siew dai / kosong');
+  }
+  if (conds.includes('halal')) {
+    badges.push('Halal-certified');
+  }
+  if (indoorOnly) {
+    badges.push(`Indoor-only (PSI ${psi})`);
+  }
+  return {
+    ...MOCK_TASTE_PLAN,
+    senior_id: seniorId,
+    profile: {
+      ...MOCK_TASTE_PLAN.profile,
+      conditions: [...conds],
+    },
+    constraints: {
+      ...MOCK_TASTE_PLAN.constraints,
+      indoor_only: indoorOnly,
+      psi,
+      rain_mm: opts?.rain_mm ?? null,
+      badges,
+    },
+    visit_kit: MOCK_TASTE_PLAN.visit_kit
+      ? {
+          ...MOCK_TASTE_PLAN.visit_kit,
+          summary: MOCK_TASTE_PLAN.visit_kit.summary.replace('Mr Tan', name),
+          whatsapp_text: MOCK_TASTE_PLAN.visit_kit.whatsapp_text.replace('Mr Tan', name),
+        }
+      : undefined,
+    filtered_out: filtered,
+  };
+}
+
+export function getSeniorTasteMock(seniorId: string, opts?: { psi?: number; rain_mm?: number; lang?: string }): Promise<TastePlan> {
+  return delay(buildMockTastePlan(seniorId, opts));
+}
+
+export function toggleSeniorDietaryMock(
+  seniorId: string,
+  condition: string,
+  opts?: { psi?: number; rain_mm?: number; lang?: string },
+): Promise<TastePlan> {
+  const conds = getConditionsFor(seniorId);
+  const key = condition.toLowerCase();
+  const idx = conds.indexOf(key);
+  if (idx >= 0) conds.splice(idx, 1);
+  else conds.push(key);
+  return delay(buildMockTastePlan(seniorId, opts));
+}
+
 export function getInsights(seniorId: string): Promise<Insights> {
   return delay(data.insights[SOURCE[seniorId] ?? 'lee']);
 }
 
 export function getActivities(seniorId: string): Promise<Activities> {
   const base = data.activities[SOURCE[seniorId] ?? 'lee'];
-  return delay({ ...base, taste_plan: base.taste_plan ?? MOCK_TASTE_PLAN });
+  return delay({ ...base, taste_plan: buildMockTastePlan(seniorId) });
 }
