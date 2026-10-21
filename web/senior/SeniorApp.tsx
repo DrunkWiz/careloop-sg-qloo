@@ -45,7 +45,7 @@ export default function SeniorApp() {
       if (store.get('seniorId') !== demo) store.remove('lang');
       store.set('seniorId', demo);
     }
-    return forcePair ? null : demo || store.get('seniorId');
+    return forcePair ? null : demo || store.get('seniorId') || 'tan';
   });
   const storedSeniorId = store.get('seniorId');
   const [lang, setLangState] = useState<AppLang>((store.get('lang') as AppLang) || 'en');

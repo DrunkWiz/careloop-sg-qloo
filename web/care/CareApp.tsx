@@ -40,13 +40,18 @@ function remembered(params: URLSearchParams, key: 'contact' | 'worker', fallback
   }
 }
 
+function parseLocation() {
+  return window.location.pathname + window.location.search;
+}
+
 export default function CareApp() {
   const params = new URLSearchParams(window.location.search);
+  useRoute(parseLocation);
   const path = window.location.pathname;
-  if (params.get('judge') === '1' || path === '/care/pitch') {
+  if (params.get('judge') === '1' || path === '/pitch' || path.startsWith('/pitch/') || path === '/care/pitch') {
     return <JudgeCommandCenter />;
   }
-  if (path === '/care/eval' || path.startsWith('/care/eval/')) {
+  if (path === '/eval' || path.startsWith('/eval/') || path === '/care/eval' || path.startsWith('/care/eval/')) {
     return <EvalView />;
   }
   const door = path.startsWith('/care/aac')

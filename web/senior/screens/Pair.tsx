@@ -74,6 +74,7 @@ export function Pair({ lang, setLang, onPaired, seniorId }: { lang: AppLang; set
 
       {bad && <p className="sa-note sa-warn">{t('pair.badCode')}</p>}
       <BigButton tone="primary" label={t('pair.submit')} onClick={submit} disabled={busy || code.length !== 6} />
+      <a className="sa-link" href="/senior?senior=tan">Try Mr Tan’s demo →</a>
     </Screen>
   );
 }
