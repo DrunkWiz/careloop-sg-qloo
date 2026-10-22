@@ -316,8 +316,39 @@ export function toggleSeniorDietaryMock(
   return delay(buildMockTastePlan(seniorId, opts));
 }
 
-export function getInsights(seniorId: string): Promise<Insights> {
-  return delay(data.insights[SOURCE[seniorId] ?? 'lee']);
+export function getInsights(seniorId: string, days = 30): Promise<Insights> {
+  const base = data.insights[SOURCE[seniorId] ?? 'lee'];
+  if (days >= 30 || !base) return delay(base);
+  const bpSeries = base.bp.series.slice(-days);
+  const cal = base.adherence.calendar.slice(-days);
+  const taken = cal.filter((c) => c.pills === 'taken').length;
+  const missed = cal.filter((c) => c.pills === 'missed').length;
+  return delay({
+    ...base,
+    period: {
+      days,
+      from: bpSeries[0]?.date ?? base.period.from,
+      to: base.period.to,
+    },
+    bp: {
+      ...base.bp,
+      series: bpSeries,
+      readings_days: bpSeries.filter((p) => p.systolic != null).length,
+    },
+    adherence: {
+      ...base.adherence,
+      calendar: cal,
+      taken_days: taken,
+      missed_days: missed,
+      reported_days: taken + missed,
+    },
+    activity: base.activity
+      ? {
+          ...base.activity,
+          steps: base.activity.steps.slice(-days),
+        }
+      : null,
+  });
 }
 
 export function getActivities(seniorId: string): Promise<Activities> {

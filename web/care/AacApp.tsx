@@ -182,7 +182,7 @@ export default function AacApp({ workerId }: { workerId: string }) {
             Vent space
           </button>
         </nav>
-        <span className="console-user">{workerName(workerId)}</span>
+        <a className="console-user" href="/care" style={{ textDecoration: 'none' }}>{workerName(workerId)} · Switch ↗</a>
       </header>
       {error && <p className="care-error">Showing the last update. {error}</p>}
       <div className="console-body">{body}</div>

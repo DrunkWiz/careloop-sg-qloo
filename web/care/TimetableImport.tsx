@@ -3,7 +3,7 @@
 // anything is saved. A calendar link is pulled again once a day, so changes reach seniors on their own.
 import { useEffect, useState } from 'react';
 import type { ProgrammeFeed, TimetableImport as Result } from '../shared/contract';
-import { getProgrammeFeed, importTimetable, stopProgrammeFeed, usingMocks } from '../shared/api';
+import { getProgrammeFeed, importTimetable, stopProgrammeFeed } from '../shared/api';
 
 const DAY = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' } as const;
 const TEMPLATE = 'Programme,中文,Days,Time,Indoor/Outdoor,Fee\nMorning exercise,早操,"Mon, Wed, Fri",8:30am,Indoor,Free\nKaraoke,卡拉OK,Sat,10am,Indoor,Free\n';
@@ -81,12 +81,12 @@ export default function TimetableImport({ aacId, onSaved }: { aacId: string; onS
       )}
       {open && (
         <>
-          {usingMocks && <p className="care-notice">Importing needs the API: run npm run dev:live.</p>}
+
           <div className="tti-ways">
             <label className="tti-way">
               <strong>A file</strong>
               <span className="care-muted">Calendar (.ics) or spreadsheet (.csv)</span>
-              <input type="file" accept=".ics,.csv,text/calendar,text/csv" disabled={busy || usingMocks} onChange={(e) => void onFile(e.target.files?.[0])} />
+              <input type="file" accept=".ics,.csv,text/calendar,text/csv" disabled={busy} onChange={(e) => void onFile(e.target.files?.[0])} />
             </label>
             <form
               className="tti-way"
@@ -98,8 +98,8 @@ export default function TimetableImport({ aacId, onSaved }: { aacId: string; onS
               <strong>A calendar link</strong>
               <span className="care-muted">The “public address in iCal format” from Google Calendar, or Outlook's ICS link. Pulled again daily.</span>
               <span className="tti-link">
-                <input type="url" placeholder="https://calendar.google.com/…/basic.ics" value={link} onChange={(e) => setLink(e.target.value)} disabled={busy || usingMocks} />
-                <button className="care-secondary" disabled={busy || usingMocks || !link.trim()}>Check</button>
+                <input type="url" placeholder="https://calendar.google.com/…/basic.ics" value={link} onChange={(e) => setLink(e.target.value)} disabled={busy} />
+                <button className="care-secondary" disabled={busy || !link.trim()}>Check</button>
               </span>
             </form>
           </div>

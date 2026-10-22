@@ -306,7 +306,7 @@ function FamilyApp({ contactId, hideHeader = false }: { contactId: string; hideH
       ) : route.name === 'settings' ? (
         <>
           <TabHeader title="You" senior={view.contact.name} />
-          <LookingAfterYou />
+          <LookingAfterYou seniorId={view.senior.id} seniorName={view.senior.name} />
           <RotaView view={view} />
           <TextSizeCard />
           <InstallCard senior={view.senior.name} />

@@ -180,8 +180,8 @@ export default function HandoverView({ handover: h, senior, contactId, claimerNa
             Open GP brief (PDF)
           </a>
         ) : (
-          <button className="care-secondary" disabled>
-            GP brief needs the API
+          <button type="button" className="care-secondary" onClick={() => window.print()}>
+            Print 1-Page GP Brief
           </button>
         )}
       </section>

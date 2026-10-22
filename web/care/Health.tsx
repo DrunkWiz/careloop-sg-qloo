@@ -1,7 +1,7 @@
 // Health: what CareLoop noticed, and the last 30 days as charts. Shared by the family app and the centre console.
 import { useEffect, useState } from 'react';
 import type { Insights } from '../shared/contract';
-import { ApiError, getInsights, usingMocks } from '../shared/api';
+import { ApiError, getInsights } from '../shared/api';
 import Findings from './Findings';
 import HealthApps from './HealthApps';
 import { useRefreshTick } from './live';
@@ -52,7 +52,7 @@ export default function Health({ seniorId, contactId, name }: { seniorId: string
   return (
     <div className="health-dashboard">
       <div className="health-toolbar"><p>{date(data.period.from)} – {date(data.period.to)} <span>· A picture of their everyday health</span></p>
-        <div className="health-range" role="group" aria-label="Health period">{[14, 30].map((n) => <button key={n} disabled={usingMocks && n !== 30} aria-pressed={days === n} onClick={() => setDays(n)}>{n} days</button>)}</div>
+        <div className="health-range" role="group" aria-label="Health period">{[14, 30].map((n) => <button key={n} aria-pressed={days === n} onClick={() => setDays(n)}>{n} days</button>)}</div>
       </div>
       <div className="health-overview">
         <Stat label="Blood pressure" value={bp.shared && bp.last7_systolic != null ? `${Math.round(bp.last7_systolic)}` : bp.trend === 'unclear' ? '—' : bp.trend} unit={bp.shared && bp.last7_systolic != null ? 'systolic · 7-day average, mmHg' : 'numbers not available'} />

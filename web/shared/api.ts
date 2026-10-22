@@ -139,7 +139,7 @@ export async function getLog(seniorId: string, days = 14, contactId?: string): P
 export function getInsights(seniorId: string, contactId?: string, days = 30): Promise<Insights> {
   return BASE
     ? http(`/senior/${seniorId}/insights?days=${days}${contactId ? `&contact=${encodeURIComponent(contactId)}` : ''}`)
-    : mockInsights.getInsights(seniorId);
+    : mockInsights.getInsights(seniorId, days);
 }
 
 export function getActivities(seniorId: string, contactId?: string, opts?: { psi?: number; rain_mm?: number }): Promise<Activities> {
@@ -503,14 +503,27 @@ const MOCK_RESPITE_PLAN: RespitePlanResponse = {
   guardrail: { passed: true, checked_count: 4, reasons: [] },
 };
 
+const RESPITE_SENIOR_NAMES: Record<string, string> = {
+  tan: 'Mr Tan Ah Kow',
+  wong: 'Mdm Wong Mei Ling',
+  teo: 'Mrs Teo Siew Lan',
+  kaur: 'Mdm Gurmit Kaur',
+  rahman: 'Encik Abdul Rahman',
+  chua: 'Mdm Chua Swee Neo',
+};
+
 export function getSeniorRespite(seniorId: string, streakDays?: number): Promise<RespitePlanResponse> {
   if (BASE) {
     const qs = streakDays !== undefined ? `?streak_days=${streakDays}` : '';
     return http(`/senior/${seniorId}/respite${qs}`);
   }
+  const sName = RESPITE_SENIOR_NAMES[seniorId] ?? 'Mr Tan Ah Kow';
   return Promise.resolve({
     ...MOCK_RESPITE_PLAN,
     senior_id: seniorId,
+    senior_name: sName,
+    summary: MOCK_RESPITE_PLAN.summary.replace('Mr Tan', sName),
+    whatsapp_text: MOCK_RESPITE_PLAN.whatsapp_text.replace('Mr Tan Ah Kow', sName),
     burnout_shield: {
       ...MOCK_RESPITE_PLAN.burnout_shield,
       streak_days: streakDays ?? MOCK_RESPITE_PLAN.burnout_shield.streak_days,

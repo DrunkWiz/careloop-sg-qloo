@@ -3,7 +3,7 @@
 // stand in for it, sending what Health Connect or Apple Health would.
 import { useCallback, useEffect, useState } from 'react';
 import type { HealthSyncResult, HealthSyncView } from '../shared/contract';
-import { demoHealthSync, getHealthSync, usingMocks } from '../shared/api';
+import { demoHealthSync, getHealthSync } from '../shared/api';
 import { REFRESH_EVENT, useLive } from './live';
 
 const day = (d: string) => new Date(d).toLocaleDateString('en-SG', { weekday: 'short', day: 'numeric' });
@@ -102,7 +102,7 @@ export default function HealthApps({ seniorId, contactId, name, compact = false 
       {!v.shares_activity && <p className="care-muted">{name} doesn't share activity, so steps and sleep are hidden.</p>}
       {!v.shares_readings && <p className="care-muted">{name} shares a weekly summary, not readings, so BP numbers are hidden.</p>}
 
-      {!usingMocks && (
+      {(
         <div className="hs-demo">
           <p className="hs-demo-label">Demo: stands in for {name}'s phone</p>
           <div className="hs-demo-actions">

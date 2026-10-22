@@ -73,6 +73,16 @@ export default function SeniorApp() {
 
   // The mock writes its canned text in the senior's language; keep it in step before fetching.
   useEffect(() => { if (usingMock) mock.setLang(apiLang(lang)); }, [lang]);
+  useEffect(() => {
+    const onPop = () => {
+      const p = new URLSearchParams(location.search);
+      if (p.has('pair')) { setSeniorId(null); return; }
+      const demo = p.get('senior');
+      if (demo) { store.set('seniorId', demo); setSeniorId(demo); }
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!seniorId) return;
