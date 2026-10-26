@@ -1,110 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
-
+/* Design tokens — CareLink (#27342041) & Family Caregiver Mobile iOS App (#27740425) theme */
 :root {
-  /* CareLink Elderly Care Palette (Dribbble #27342041)
-     + Family Caregiver Mobile iOS App Design System (Dribbble #27740425) */
-  --cl-bg: #ffffff;
-  --cl-surface: #f2f7f6;
-  --cl-surface-subtle: #e9f2f0;
-  --cl-card: #ffffff;
+  --cl-font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --cl-bg: #f2f7f6;
   --cl-text: #0f2926;
-  --cl-muted: #46635f;
-  --cl-border: #d7e5e3;
-
-  /* Primary CareLink Medical Teal & Aqua Mint */
   --cl-accent: #0d736d;
-  --cl-accent-strong: #095954;
   --cl-accent-bright: #159a92;
-  --cl-accent-soft: #e3f4f2;
+  --cl-alert: #dc2626;
 
-  /* Warm Amber / Apricot for Watch & Handover */
-  --cl-warn: #c86400;
-  --cl-warn-soft: #fef3e2;
-
-  /* Coral-Crimson for Urgent / Red Flag */
-  --cl-alert: #c62828;
-  --cl-alert-soft: #fdeceb;
-
-  /* iOS Card Geometry & Elevation */
-  --cl-radius: 20px;
-  --cl-radius-lg: 24px;
-  --cl-radius-sm: 14px;
-  --cl-shadow-sm: 0 2px 8px -2px rgba(15, 41, 38, 0.05), 0 1px 3px rgba(15, 41, 38, 0.03);
-  --cl-shadow: 0 10px 28px -6px rgba(15, 41, 38, 0.07), 0 2px 6px -1px rgba(15, 41, 38, 0.04);
-  --cl-shadow-lg: 0 18px 40px -10px rgba(13, 115, 109, 0.14), 0 4px 12px -2px rgba(15, 41, 38, 0.05);
-
-  /* Senior & Caregiver Accessibility Sizing */
+  /* Senior app: very large type, high contrast, 48px+ tap targets */
   --cl-senior-text: 20px;
   --cl-senior-tap: 56px;
-  --cl-care-text: 16px;
-  --cl-care-tap: 44px;
 
-  --cl-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-  --cl-serif: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+  /* Caregiver app: calm, dense enough to scan */
+  --cl-care-text: 15px;
+
+  /* Caregiver iOS card palette */
+  --cl-surface: #f2f7f6;
+  --cl-card: #ffffff;
+  --cl-border: #d7e5e3;
+  --cl-muted: #526d69;
+  --cl-accent-soft: #e3f4f2;
+  --cl-warn: #d97706;
+  --cl-warn-soft: #fef3c7;
+  --cl-alert-soft: #fee2e2;
+  --cl-radius: 18px;
+  --cl-shadow: 0 8px 24px -6px rgba(15, 41, 38, 0.06), 0 2px 6px -1px rgba(15, 41, 38, 0.03);
 }
 
-html, body {
+button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid #159a92; outline-offset: 3px; }
+.cl-brand { display: inline-flex; align-items: center; gap: 10px; color: #0d736d; text-decoration: none; font-size: 23px; font-weight: 800; letter-spacing: -.7px; }
+.cl-brand-mark { width: 34px; height: 34px; display: grid; place-items: center; background: linear-gradient(135deg, #0d736d, #159a92); color: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(13, 115, 109, 0.22); }
+.cl-brand-mark svg { width: 22px; height: 22px; }
+.cl-brand-sg { display: inline-block; font-size: 10px; vertical-align: top; letter-spacing: .8px; margin: 4px 0 0 4px; color: #159a92; font-weight: 800; }
+.cl-brand-light { color: white; }
+
+body {
   margin: 0;
-  background: var(--cl-surface);
+  font-family: var(--cl-font);
+  background: var(--cl-bg);
   color: var(--cl-text);
-  font-family: var(--cl-sans);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.cl-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--cl-serif);
-  font-weight: 800;
-  font-size: 21px;
-  letter-spacing: -0.5px;
-  color: #0f2926;
-  text-decoration: none;
-}
-
-.cl-brand-mark {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
-  background: linear-gradient(135deg, #0d736d 0%, #159a92 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(13, 115, 109, 0.25);
-}
-
-.cl-brand-mark svg {
-  width: 22px;
-  height: 22px;
-}
-
-.cl-brand-sg {
-  font-family: var(--cl-sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  color: #0d736d;
-  background: #e3f4f2;
-  border: 1px solid #bfe3df;
-  border-radius: 999px;
-  padding: 2px 8px;
-  margin-left: 6px;
-  vertical-align: middle;
-}
-
-.cl-brand-light {
-  color: #ffffff;
-}
-
-.cl-brand-light .cl-brand-mark {
-  background: rgba(255, 255, 255, 0.18);
-  box-shadow: none;
-}
-
-.cl-brand-light .cl-brand-sg {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.24);
-  color: #d8f3dc;
 }
