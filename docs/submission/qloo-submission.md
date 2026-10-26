@@ -2,10 +2,10 @@
 
 **Tagline:** Quiet between doctor visits. Thoughtful on the days that need a lift — planning good, health-safe days around the food, music, films, and local places each senior is fond of, powered by Qloo Taste AI.
 
-- **Live Hosted App:** `https://careloop-sg.onrender.com`
-- **Judge Command Center (Split-Screen):** `https://careloop-sg.onrender.com/pitch`
-- **Demo Video (3m 05s 1080p MP4):** `https://careloop-sg.onrender.com/careloop-qloo-launch-video.mp4` (local: `docs/submission/careloop-qloo-launch-video.mp4`)
-- **38-Persona Qloo Ablation Benchmark:** `https://careloop-sg.onrender.com/eval/taste`
+- **Live Hosted App:** `https://careloop-sg-qloo.onrender.com`
+- **Judge Command Center (Split-Screen):** `https://careloop-sg-qloo.onrender.com/pitch`
+- **Demo Video (6m 26s 1080p MP4):** `https://careloop-sg-qloo.onrender.com/careloop-qloo-launch-video.mp4` (local: `docs/submission/careloop-qloo-launch-video.mp4`)
+- **38-Persona Qloo Ablation Benchmark:** `https://careloop-sg-qloo.onrender.com/eval/taste`
 - **Open-Source License:** `AGPL-3.0` (`LICENSE`)
 
 ---
@@ -36,9 +36,11 @@ We built a reproducible **3-Architecture Quantitative Ablation Benchmark** (`GET
 
 | Architecture | Clinical / Leaflet / Haze Violation Rate | Cultural Specificity Score (0–100) | `guardrail.py` Pass Rate | Multilingual Coverage (`EN`/`ZH`/`MS`/`TA`) |
 |---|---|---|---|---|
-| **1. Generic LLM Baseline** (prompt-only, no Qloo) | **68.4%** *(unsafe)* | **19.0 / 100** | 0.0% | 25% (`EN` only) |
-| **2. Rule-Filtered LLM** (basic condition prompt, no Qloo entity graph) | **23.7%** *(misses leaflet/haze)* | **22.0 / 100** | 76.3% | 50% (`EN`/`ZH`) |
+| **1. Generic LLM Baseline** (prompt-only, no Qloo) | **100.0%** *(38 / 38 unsafe)* | **19.0 / 100** | 0.0% | 36.8% |
+| **2. Rule-Filtered LLM** (basic condition prompt, no Qloo entity graph) | **55.3%** *(21 / 38; misses leaflet/haze)* | **22.0 / 100** | 44.7% | 52.6% |
 | **3. CareLoop + Qloo Taste AI** (`/search` + `/v2/insights` + deterministic rules + `guardrail.py`) | **0.0%** *(zero violations)* | **82.2 / 100** *(+63.2 pts vs LLM)* | **100.0%** | **100%** (4 languages) |
+
+The two baselines are scripted stand-ins for an LLM (`backend/taste/baseline_llm.py`, `_rule_filtered_llm_simulation`), not live model runs. All 38 personas are synthetic.
 
 Without Qloo:
 1. **No cross-domain entity graph:** A prompt-only LLM cannot resolve *Teresa Teng* (`urn:entity:artist`) and *The Love Eterne* (`urn:entity:movie`) into structured Qloo entity IDs and affinity-scored Singapore venues (`Toa Payoh Central Teochew Fish Porridge`, 95% affinity) or companion artists (`Fong Fei-Fei`, 95% affinity).
@@ -82,6 +84,6 @@ Beyond daily individual suggestions, CareLoop's Qloo Taste Agent powers **10 int
      - **Scenario 3 (4-Language Cultural Shift):** Switch live between **English/Singlish**, **华语**, **Bahasa Melayu** (Encik Rahman — *P. Ramlee*, *Bujang Lapok*, Halal + Diabetes), and **தமிழ்** (Mr Chandran — *Carnatic classical*, Vegetarian).
      - **Scenario 4 (AAC Cohort, Kopi Kakis & Respite):** Inspect the multi-senior AAC group planner, Kopi Kakis buddy matcher, Memory Lane keepsakes, and Caregiver Respite Shield.
 2. **Inspect the 38-Persona Quantitative Ablation Benchmark (`/eval/taste`):**
-   - Compare **Generic LLM (`68.4%` violations)** vs **Rule-Filtered LLM (`23.7%` violations)** vs **CareLoop + Qloo Taste AI (`0.0%` violations, `82.2` specificity)** and filter the 38-persona audit table by condition or language.
+   - Compare **Generic LLM (`100.0%` violations)** vs **Rule-Filtered LLM (`55.3%` violations)** vs **CareLoop + Qloo Taste AI (`0.0%` violations, `82.2` specificity)** and filter the 38-persona audit table by condition or language.
 3. **Explore Individual Surfaces (`/care/family?demo=1`, `/senior`, `/care/aac?demo=1`):**
    - In `/senior`, tap **What CareLoop knows about me** to see Qloo taste seeds and memory capsules with one-tap **Erase**, or tap **Not for me** on any suggestion.

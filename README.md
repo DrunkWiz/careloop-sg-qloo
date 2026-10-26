@@ -8,12 +8,12 @@ or to their Active Ageing Centre (AAC) if they have no family, with the evidence
 
 Built for the Qloo Agentic Hackathon (powered by Qloo Taste AI).
 
-**Try it: https://careloop-sg.onrender.com** (synthetic demo; opens on the video's day, 24 Oct)
-- Senior app: [/senior?senior=tan](https://careloop-sg.onrender.com/senior?senior=tan)
-- Family app: [/care/family?contact=tan-weiling](https://careloop-sg.onrender.com/care/family?contact=tan-weiling)
-- Centre console: [/care/aac?worker=aac-siti](https://careloop-sg.onrender.com/care/aac?worker=aac-siti)
-- **Synchronized Split-Screen Judge Command Center (`/pitch` / `?judge=1`):** [/pitch](https://careloop-sg.onrender.com/pitch)
-- **Quantitative Qloo Ablation Benchmark (`/eval/taste`):** [/eval/taste](https://careloop-sg.onrender.com/eval/taste)
+**Try it: https://careloop-sg-qloo.onrender.com** (synthetic demo; opens on the video's day, 24 Oct)
+- Senior app: [/senior?senior=tan](https://careloop-sg-qloo.onrender.com/senior?senior=tan)
+- Family app: [/care/family?contact=tan-weiling](https://careloop-sg-qloo.onrender.com/care/family?contact=tan-weiling)
+- Centre console: [/care/aac?worker=aac-siti](https://careloop-sg-qloo.onrender.com/care/aac?worker=aac-siti)
+- **Synchronized Split-Screen Judge Command Center (`/pitch` / `?judge=1`):** [/pitch](https://careloop-sg-qloo.onrender.com/pitch)
+- **Quantitative Qloo Ablation Benchmark (`/eval/taste`):** [/eval/taste](https://careloop-sg-qloo.onrender.com/eval/taste)
 - Add `&demo` to a family or centre link for the demo clock (reset, +1 day, +11 days).
 
 The first visit after a quiet spell can take about a minute: the free service sleeps when nobody uses it,

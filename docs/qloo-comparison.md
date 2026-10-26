@@ -14,11 +14,13 @@ Evaluated deterministically across all 13 demo seniors (`backend/api/demo.py`) a
 
 | Metric | 1. Generic LLM Baseline (No Qloo) | 2. Rule-Filtered LLM (No Qloo Graph) | 3. CareLoop + Qloo Taste AI |
 |---|---|---|---|
-| **Clinical / Leaflet / Haze Violation Rate** | **68.4%** (26 / 38 personas violated) | **23.7%** (9 / 38 personas violated) | **0.0%** (0 / 38 personas violated) |
+| **Clinical / Leaflet / Haze Violation Rate** | **100.0%** (38 / 38 personas violated) | **55.3%** (21 / 38 personas violated) | **0.0%** (0 / 38 personas violated) |
 | **Cultural Specificity Score (0–100)** | **19.0 / 100** (generic categories) | **22.0 / 100** (generic low-salt prompts) | **82.2 / 100** (+63.2 pts vs Generic LLM) |
-| **`guardrail.py` Safety Pass Rate** | 0.0% (unverified free text) | 76.3% | **100.0%** (38 / 38 verified) |
-| **Multilingual Coverage (`EN` / `ZH` / `MS` / `TA`)** | 25% (`EN` only) | 50% (`EN` / `ZH`) | **100.0%** (All 4 SG languages) |
-| **Resolved Qloo Entity URNs per Plan** | 0.0 | 0.0 | **4.6 avg** (`/search` + `/v2/insights`) |
+| **`guardrail.py` Safety Pass Rate** | 0.0% (unverified free text) | 44.7% | **100.0%** (38 / 38 verified) |
+| **Multilingual Coverage (`EN` / `ZH` / `MS` / `TA`)** | 36.8% | 52.6% | **100.0%** (All 4 SG languages) |
+| **Resolved Qloo Entity URNs per Plan** | 0.0 | 0.0 | **6.0 avg** (`/search` + `/v2/insights`) |
+
+Numbers from a fresh run of `backend/eval/taste_eval.py`. The two baselines are scripted stand-ins for an LLM, not live model runs. All 38 personas are synthetic.
 
 ### Rule Interceptions Logged Across the 38-Persona Cohort
 - `cond.hypertension` (`diet.hypertension.low_salt`): Blocks salted fish claypot rice and heavy gravies.
