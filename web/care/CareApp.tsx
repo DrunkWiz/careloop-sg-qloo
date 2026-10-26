@@ -136,7 +136,7 @@ function CaregiverApp({ caregiverId }: { caregiverId: string }) {
     // or a "set up someone new" button on other routes.
     if (route.name === 'settings') {
       return (
-        <div className="fam">
+        <div className="care theme-family fam">
           <header className="family-masthead"><Brand /><span className="family-space">FAMILY SPACE</span><a className="family-profile" href="/care" aria-label="Switch demo family"><span className="family-avatar" aria-hidden="true">{cgView.caregiver.name.charAt(0)}</span><span>{cgView.caregiver.name}<small>Switch ↗</small></span></a></header>
           <div className="family-content">
             <Pairing caregiver={{ id: cgView.caregiver.id, name: cgView.caregiver.name, language: cgView.caregiver.language, seniors: cgView.seniors }} />
@@ -145,7 +145,7 @@ function CaregiverApp({ caregiverId }: { caregiverId: string }) {
       );
     }
     return (
-      <div className="fam">
+      <div className="care theme-family fam">
         <header className="family-masthead"><Brand /><span className="family-space">FAMILY SPACE</span><a className="family-profile" href="/care" aria-label="Switch demo family"><span className="family-avatar" aria-hidden="true">{cgView.caregiver.name.charAt(0)}</span><span>{cgView.caregiver.name}<small>Switch ↗</small></span></a></header>
         <div className="family-content">
           <p className="care-muted">No seniors linked to you yet.</p>
@@ -282,7 +282,7 @@ function FamilyApp({ contactId, hideHeader = false }: { contactId: string; hideH
   const openCount = view.handovers.filter((h) => h.status === 'open').length;
 
   return (
-    <div className="fam">
+    <div className="care theme-family fam">
       {!hideHeader && <header className="family-masthead"><Brand /><span className="family-space">FAMILY SPACE</span><a className="family-profile" href="/care" aria-label="Switch demo family"><span className="family-avatar" aria-hidden="true">{view.contact.name.charAt(0)}</span><span>{view.contact.name}<small>Switch family ↗</small></span></a></header>}
       <div className="family-content">
       {error && <p className="care-error">Showing the last update. {error}</p>}

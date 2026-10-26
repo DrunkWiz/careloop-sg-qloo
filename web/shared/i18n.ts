@@ -117,6 +117,14 @@ const en = {
   'suggest.watch': 'Watch',
   'suggest.map': 'Map',
 
+  'lane.title': 'Memory Lane — Today’s Story Prompt',
+  'lane.readPrompt': 'Read prompt aloud',
+  'lane.placeholder': 'Share a favourite memory for your family…',
+  'lane.inputLabel': 'Share a memory',
+  'lane.save': 'Save Story for Family',
+  'lane.saved': 'Saved to your Family Memory Lane Keepsake Book!',
+  'lane.latest': 'Latest saved keepsake:',
+
   'redflag.title': 'Please get help now',
   'redflag.call': 'Call 995',
 
@@ -277,6 +285,14 @@ const zh: Record<StringKey, string> = {
   'suggest.watch': '观看',
   'suggest.map': '地图',
 
+  'lane.title': '今日怀旧故事 (Qloo 记忆回廊)',
+  'lane.readPrompt': '朗读问题',
+  'lane.placeholder': '写下或说出您的当年回忆…',
+  'lane.inputLabel': '分享回忆',
+  'lane.save': '保存到家庭纪念册',
+  'lane.saved': '已存入家庭纪念册！',
+  'lane.latest': '最新保存的故事：',
+
   'redflag.title': '请马上求助',
   'redflag.call': '打 995',
 
@@ -416,6 +432,14 @@ const ms: Partial<Record<StringKey, string>> = {
   'suggest.listen': 'Dengar',
   'suggest.watch': 'Tonton',
   'suggest.map': 'Peta',
+
+  'lane.title': 'Kenangan Hari Ini (Qloo Memory Lane)',
+  'lane.readPrompt': 'Baca soalan dengan kuat',
+  'lane.placeholder': 'Kongsi kenangan kegemaran untuk keluarga anda…',
+  'lane.inputLabel': 'Kongsi kenangan',
+  'lane.save': 'Simpan Cerita Keluarga',
+  'lane.saved': 'Disimpan dalam buku kenangan keluarga!',
+  'lane.latest': 'Kenangan terbaru disimpan:',
   'redflag.title': 'Sila dapatkan bantuan sekarang',
   'redflag.call': 'Telefon 995',
   'knows.title': 'Apa yang CareLoop tahu tentang saya',
@@ -525,6 +549,14 @@ const ta: Partial<Record<StringKey, string>> = {
   'suggest.listen': 'கேள்',
   'suggest.watch': 'பார்',
   'suggest.map': 'வரைபடம்',
+
+  'lane.title': 'இன்றைய நினைவுகள் (Qloo Memory Lane)',
+  'lane.readPrompt': 'கேள்வியைச் சத்தமாகப் படி',
+  'lane.placeholder': 'உங்கள் குடும்பத்திற்காக ஒரு நினைவைப் பகிரவும்…',
+  'lane.inputLabel': 'ஒரு நினைவைப் பகிரவும்',
+  'lane.save': 'குடும்ப நினைவுகளில் சேமி',
+  'lane.saved': 'குடும்ப நினைவுப் புத்தகத்தில் சேமிக்கப்பட்டது!',
+  'lane.latest': 'சமீபத்தில் சேமித்த நினைவு:',
   'redflag.title': 'உடனே உதவி பெறுங்கள்',
   'redflag.call': '995-ஐ அழைக்கவும்',
   'knows.title': 'CareLoop என்னைப் பற்றி அறிந்தவை',
