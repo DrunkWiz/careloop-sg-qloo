@@ -24,7 +24,7 @@ PNG copies for slides: [architecture.png](architecture/architecture.png), [trust
 | Qloo Taste Agent | 4-step suggestion agent (`qloo_search` -> `qloo_insights` -> `check_health_constraints` -> `guardrail_check`) across places, music and films; never touches clinical rungs or alerts | `backend/taste/` |
 | Store | SQLite for the demo, Postgres for a real deployment | `backend/api/store.py` |
 
-It runs as one service (`backend/api/serve.py`) on Render in Singapore: https://careloop-sg.onrender.com.
+It runs as one service (`backend/api/serve.py`) on Render in Singapore: https://careloop-sg-qloo.onrender.com.
 
 ## 2. Trust boundaries
 

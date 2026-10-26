@@ -60,22 +60,22 @@
   <h2>Tested blind: clinical evaluation &amp; 38-persona Qloo ablation</h2>
   <p>Evaluated on a frozen 720-day clinical holdout and a 38-persona multicultural Singapore senior benchmark (EN / ZH / MS / TA) comparing Qloo Taste AI + deterministic filters against an ungrounded LLM:</p>
   <div class="stats">
-    <div class="stat"><b>0.0%</b>clinical, leaflet or haze violations (generic LLM: 68.4%)</div>
+    <div class="stat"><b>0.0%</b>clinical, leaflet or haze violations (scripted generic-LLM baseline: 100%)</div>
     <div class="stat"><b>82.2 / 100</b>cultural specificity with Qloo (generic LLM: 19.0 / 100)</div>
     <div class="stat"><b>5 of 5 · 0</b>red flags caught · 0 false alarms per senior-month</div>
   </div>
 
   <h2>How it's built</h2>
-  <p>Next.js React web app · Python FastAPI backend · live Qloo Taste AI client (<code>hackathon.api.qloo.com</code> <code>/search</code> &amp; <code>/v2/insights</code>) with deterministic offline fallback · single-source clinical rules (<code>thresholds.py</code>, <code>medication_knowledge.py</code>) · live NEA PSI haze &amp; rainfall (<code>data.gov.sg</code>) · 183+ automated tests.</p>
+  <p>React + Vite web app · Python FastAPI backend · live Qloo Taste AI client (<code>hackathon.api.qloo.com</code> <code>/search</code> &amp; <code>/v2/insights</code>) with deterministic offline fallback · single-source clinical rules (<code>thresholds.py</code>, <code>medication_knowledge.py</code>) · live NEA PSI haze &amp; rainfall (<code>data.gov.sg</code>) · 183+ automated tests.</p>
 
   <div class="links">
-    <b>Live demo:</b> <a href="https://careloop-sg.onrender.com">careloop-sg.onrender.com</a> ·
-    <b>Qloo Judge Console:</b> <a href="https://careloop-sg.onrender.com/pitch">/pitch</a> ·
-    <b>Senior app:</b> <a href="https://careloop-sg.onrender.com/senior?senior=tan">/senior?senior=tan</a> ·
-    <b>Family + Activities:</b> <a href="https://careloop-sg.onrender.com/care/family?contact=tan-weiling">/care/family</a> ·
-    <b>Centre + Cohort:</b> <a href="https://careloop-sg.onrender.com/care/aac?worker=aac-siti">/care/aac</a><br>
-    <b>Code:</b> <a href="https://github.com/DrunkWiz/careloop-sg">github.com/DrunkWiz/careloop-sg</a> ·
-    <b>Demo Video:</b> <a href="https://careloop-sg.onrender.com/careloop-qloo-launch-video.mp4">careloop-qloo-launch-video.mp4</a> ·
+    <b>Live demo:</b> <a href="https://careloop-sg-qloo.onrender.com">careloop-sg-qloo.onrender.com</a> ·
+    <b>Qloo Judge Console:</b> <a href="https://careloop-sg-qloo.onrender.com/pitch">/pitch</a> ·
+    <b>Senior app:</b> <a href="https://careloop-sg-qloo.onrender.com/senior?senior=tan">/senior?senior=tan</a> ·
+    <b>Family + Activities:</b> <a href="https://careloop-sg-qloo.onrender.com/care/family?contact=tan-weiling">/care/family</a> ·
+    <b>Centre + Cohort:</b> <a href="https://careloop-sg-qloo.onrender.com/care/aac?worker=aac-siti">/care/aac</a><br>
+    <b>Code:</b> <a href="https://github.com/DrunkWiz/careloop-sg-qloo">github.com/DrunkWiz/careloop-sg-qloo</a> ·
+    <b>Demo Video:</b> <a href="https://careloop-sg-qloo.onrender.com/careloop-qloo-launch-video.mp4">careloop-qloo-launch-video.mp4</a> ·
     <b>Submission:</b> docs/submission/qloo-submission.md · <b>Architecture:</b> docs/architecture.md · <b>Evaluation:</b> docs/evaluation.md (<code>GET /eval/taste</code>)
   </div>
   <p class="small">All people in the demo are synthetic. CareLoop is a prototype, not a medical device, and is not connected to any clinic system. Clinical thresholds, red-flag wording and medicine notes are placeholders until reviewed by a clinician. Author: Nathan.</p>
