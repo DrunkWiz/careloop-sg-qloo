@@ -13,3 +13,6 @@ __pycache__/
 # local database
 careloop.db*
 FONDLY_KICKOFF.md
+
+# Media / Submissables (keep local, do not push to GitHub)
+*.mp4

@@ -353,6 +353,83 @@ class TestTasteAgent(unittest.TestCase):
         self.assertEqual(qloo_arch["guardrail_pass_rate_pct"], 100.0)
         self.assertEqual(len(bench["multilingual_breakdown"]), 4)
 
+    def test_live_qloo_client_parameter_sanitization_and_multilingual_merge(self):
+        """Verify live QlooClient sanitizes /v2/insights params, infers tags, supports 4 languages, and preserves guardrail audit items."""
+        live_client = QlooClient(api_key="test-live-key")
+        captured_calls: list[tuple[str, dict[str, str]]] = []
+
+        def fake_get_json(path: str, params: dict[str, str]) -> dict | None:
+            captured_calls.append((path, dict(params)))
+            if path == "/search":
+                return {
+                    "results": [
+                        {
+                            "entity_id": "F844318B-REAL-QLOO-UUID",
+                            "name": params.get("query", "Teresa Teng"),
+                            "types": ["urn:entity:artist"],
+                            "tags": [
+                                {"id": "urn:tag:genre:mandopop", "name": "Mandopop"},
+                                {"name": "70s Classics"},
+                            ],
+                        }
+                    ]
+                }
+            if path == "/v2/insights":
+                etype = params.get("filter.type", "urn:entity:place")
+                return {
+                    "results": {
+                        "entities": [
+                            {
+                                "entity_id": f"{etype}:real-live-1",
+                                "name": "Tiong Bahru Steamed Fish Porridge & Kopi Stall" if etype == "urn:entity:place" else "Live Qloo Classic Pick",
+                                "affinity": 0.96,
+                                "tags": [{"name": "steamed fish"}, {"name": "kopi"}],
+                            }
+                        ]
+                    }
+                }
+            return None
+
+        live_client._get_json = fake_get_json  # type: ignore[method-assign]
+
+        # 1. Verify /v2/insights strips synthetic :qloo- IDs and free-text tags, keep only real IDs + urn:tag:*
+        ins_place = live_client.insights(
+            "urn:entity:place",
+            signal_entities=["F844318B-REAL-QLOO-UUID", "urn:entity:place:qloo-synthetic"],
+            signal_tags=["kopitiam", "urn:tag:genre:mandopop"],
+            region="central",
+            location="Singapore",
+        )
+        self.assertEqual(ins_place["mode"], "live")
+        place_call = next(params for path, params in captured_calls if path == "/v2/insights" and params.get("filter.type") == "urn:entity:place")
+        self.assertEqual(place_call.get("signal.interests.entities"), "F844318B-REAL-QLOO-UUID")
+        self.assertEqual(place_call.get("signal.interests.tags"), "urn:tag:genre:mandopop")
+        self.assertEqual(place_call.get("filter.location.query"), "Singapore")
+        self.assertEqual(place_call.get("signal.demographics.age"), "55_and_older")
+        self.assertEqual(place_call.get("feature.explainability"), "true")
+
+        # 2. Verify artist/movie queries do not pass venue-only filter.location.query when entity signals exist
+        ins_artist = live_client.insights(
+            "urn:entity:artist",
+            signal_entities=["F844318B-REAL-QLOO-UUID"],
+            signal_tags=["Teresa Teng"],
+        )
+        self.assertEqual(ins_artist["mode"], "live")
+        artist_call = next(params for path, params in captured_calls if path == "/v2/insights" and params.get("filter.type") == "urn:entity:artist")
+        self.assertNotIn("filter.location.query", artist_call)
+        self.assertNotIn("signal.interests.tags", artist_call)
+        self.assertEqual(artist_call.get("signal.demographics.age"), "55_and_older")
+        self.assertEqual(artist_call.get("feature.explainability"), "true")
+
+        # 3. Verify full TasteAgent plan with live_client keeps 4-language support and clinical guardrail interceptions
+        tan = _demo_senior("tan")
+        for lang in ("en", "zh", "ms", "ta"):
+            plan = build_taste_plan({**tan, "language": lang}, DAY, client=live_client)
+            self.assertTrue(plan["guardrail"]["passed"])
+            self.assertGreater(len(plan["filtered_out"]), 0)
+            self.assertEqual(plan["telemetry"]["demographic_signal"], "55_and_older")
+            self.assertTrue(any(p["entity_id"].endswith("real-live-1") for p in plan["recommendations"]["places"]))
+
 
 if __name__ == "__main__":
     unittest.main()

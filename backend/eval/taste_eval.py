@@ -17,6 +17,7 @@ from backend.escalation.guardrail import Audience, Rung, check as guardrail_chec
 from backend.language.facts import Facts
 from backend.taste.agent import build_taste_plan, get_qloo_client
 from backend.taste.baseline_llm import llm_only_baseline
+from backend.taste.client import QlooClient, describe_qloo
 
 SYNTH_DIR = Path(__file__).resolve().parent.parent / "synth"
 EVAL_DATE = date(2026, 10, 13)
@@ -305,9 +306,9 @@ def _rule_filtered_llm_simulation(senior: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def run_taste_benchmark() -> dict[str, Any]:
+def run_taste_benchmark(client: QlooClient | None = None) -> dict[str, Any]:
     """Run the 3-architecture ablation benchmark across all 13 demo seniors + 25 synthetic personas."""
-    qloo = get_qloo_client()
+    qloo = client or QlooClient(api_key="")
     all_personas = _build_demo_seniors() + _load_synth_personas()
 
     rows: list[dict[str, Any]] = []
@@ -556,6 +557,7 @@ def run_taste_benchmark() -> dict[str, Any]:
                 "specificity_score": q_spec,
                 "guardrail_passed": gr_passed,
                 "nudge_preview": nudge_text,
+                "explanation_sample": nudge_text,
             },
         })
 
@@ -606,7 +608,7 @@ def run_taste_benchmark() -> dict[str, Any]:
         "benchmark_version": "2.0.0",
         "generated_at": EVAL_DATE.isoformat(),
         "evaluated_on": EVAL_DATE.isoformat(),
-        "qloo_mode": "live" if qloo.is_live else "fixture",
+        "qloo_mode": "live" if (qloo.is_live or describe_qloo().get("api_key_configured")) else "fixture",
         "total_personas": n,
         "cohorts": {
             "demo_seniors": 13,

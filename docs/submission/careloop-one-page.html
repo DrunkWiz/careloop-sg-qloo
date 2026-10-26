@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>CareLoop SG: one-page description</title>
+<title>CareLoop SG · Powered by Qloo Taste AI: one-page description</title>
 <style>
   @page { size: A4; margin: 13mm 14mm; }
   * { box-sizing: border-box; }
@@ -21,61 +21,62 @@
   .links a { color: #1d4a8a; text-decoration: none; }
   .small { font-size: 8.4pt; color: #5f6660; margin-top: 6px; }
   strong { color: #1d2b24; }
+  code { font-size: 9pt; background: #eef5f0; padding: 0 3px; border-radius: 3px; }
 </style>
 </head>
 <body>
-  <h1>CareLoop SG</h1>
-  <p class="tag">Quiet, AI-assisted support for seniors with high blood pressure, between doctor visits</p>
+  <h1>CareLoop SG · Powered by Qloo Taste AI</h1>
+  <p class="tag">Quiet, culturally grounded support for seniors with high blood pressure, between doctor visits</p>
 
   <h2>The problem</h2>
-  <p>Most of hypertension care happens at home, between visits. Readings drift, pills get missed, a senior feels unwell and says nothing. Families worry from afar, and seniors who live alone may have no one checking at all. Alert apps make it worse: a fixed "BP over 140" alarm fires so often that families stop listening.</p>
+  <p>Most of hypertension care happens at home, between visits. Readings drift, pills get missed, a senior feels unwell or isolated and says nothing. Alert apps fire fixed "BP over 140" alarms so often that families stop listening — while generic AI companions suggest generic salads, loud gyms, or unsafe foods that ignore a senior's cultural roots, medications, and the day's weather.</p>
 
   <h2>What CareLoop does</h2>
-  <p>A short daily check-in, by voice or big buttons, in English, Singlish or Mandarin. CareLoop learns <strong>each senior's own normal</strong> and stays quiet while things are normal for them. When something changes, it steps up gently: it asks, then nudges, then notes it, and only hands over to the family (or to their Active Ageing Centre if they have no family) when a problem persists, with the evidence. <strong>Red flags</strong> (a dangerous reading or a danger symptom) reach the family at once, every time.</p>
+  <p>A short daily check-in, by voice or big buttons, in English, Singlish, Mandarin, Malay or Tamil. CareLoop learns <strong>each senior's own normal</strong>, stays quiet while things are normal, and steps up gently when patterns persist. Between check-ins, <strong>Qloo Taste AI</strong> turns a senior's cultural memories (e.g. Teresa Teng, Teochew porridge, 1960s Shaw Brothers films, P. Ramlee) into safe, nearby meals, nostalgic playlists, and Active Ageing Centre programmes — filtered through deterministic clinical, pharmacist-leaflet, and live Singapore haze rules.</p>
 
   <div class="cols">
     <div>
       <h2>Who uses it</h2>
       <ul>
-        <li><strong>Seniors:</strong> a large-text, low-effort app; it explains what each medicine is for and which vaccines or check-ups are due.</li>
-        <li><strong>Family:</strong> a quiet app with the trends, the evidence when needed, a shared care plan, and a one-page GP brief to print.</li>
-        <li><strong>Centre staff:</strong> a caseload console for seniors who live alone, sorted by who needs a call first.</li>
+        <li><strong>Seniors:</strong> a large-text app with voice check-ins, plain-word medicine guides, Qloo-matched daily activities, and one-tap memory erasure.</li>
+        <li><strong>Family:</strong> quiet trends, evidence-backed handovers, a Qloo <strong>Family Visit Kit</strong> (what to tap/bring on Sunday), and a one-page GP brief.</li>
+        <li><strong>Centre staff:</strong> a caseload console sorted by urgency, plus a <strong>Multi-Senior Qloo Group Intersection</strong> &amp; <strong>Kopi Kakis</strong> buddy matcher.</li>
       </ul>
     </div>
     <div>
-      <h2>Key features</h2>
+      <h2>How Qloo Taste AI + Clinical Rules work together</h2>
       <ul>
-        <li>Personal baselines and context (rain, haze, festivals) before anyone is alerted</li>
-        <li>Handovers that wait for a person to choose a step; CareLoop never calls anyone itself</li>
-        <li>Consent: the senior chooses what family sees</li>
-        <li>Readings from a Fitbit or OMRON cuff via Apple Health / Health Connect (simulated in the demo)</li>
-        <li>Medicine notes in plain words; an unknown medicine goes to the pharmacist, never guessed</li>
+        <li><strong>1. Resolve (<code>qloo_search</code>):</strong> maps cultural seeds to canonical Qloo entity IDs.</li>
+        <li><strong>2. Cross-Domain (<code>qloo_insights</code>):</strong> queries <code>urn:entity:place</code>, <code>artist</code>, <code>movie</code> with <code>signal.demographics.age=55_and_older</code> &amp; Singapore WKT polygons.</li>
+        <li><strong>3. Clinical Filter (<code>check_health_constraints</code>):</strong> blocks high-sodium, gout purine, statin/amlodipine grapefruit-pomelo leaflet clashes, and outdoor walks when PSI &gt; 100.</li>
+        <li><strong>4. Guardrail (<code>guardrail_check</code>):</strong> verifies bilingual wording in EN / ZH / MS / TA.</li>
       </ul>
     </div>
   </div>
 
   <h2>How it uses AI, safely</h2>
-  <p><strong>Rules decide; the AI only reads and writes words.</strong> A large language model reads each check-in to catch what simple rules miss (in a live test, "my chest feel like got elephant sitting on top" became a chest-pain red flag that keyword rules alone had missed), and words the gentler messages in the senior's own language and tone. It never chooses who is told or whether a number is dangerous. Every message passes a guardrail (no diagnosis, no dose changes, no invented numbers) or a fixed template goes out; red flags always use fixed wording. With no model at all, CareLoop still works on rules and templates.</p>
+  <p><strong>Rules decide; AI and Qloo handle language and cultural taste.</strong> A language model reads check-ins to catch what keyword rules miss ("my chest feel like got elephant sitting on top" → chest-pain red flag) and words gentle notes around Qloo's structured entity graph. Neither the LLM nor Qloo ever decides whether a reading is dangerous or overrides a medical/medication/haze filter. Every message passes <code>guardrail.py</code> (no diagnosis, no dose changes, no invented numbers) or falls back to a fixed template.</p>
 
-  <h2>Tested blind</h2>
-  <p>On a frozen, held-out set of synthetic seniors (720 days), compared with the usual "alert above 140" rule:</p>
+  <h2>Tested blind: clinical evaluation &amp; 38-persona Qloo ablation</h2>
+  <p>Evaluated on a frozen 720-day clinical holdout and a 38-persona multicultural Singapore senior benchmark (EN / ZH / MS / TA) comparing Qloo Taste AI + deterministic filters against an ungrounded LLM:</p>
   <div class="stats">
-    <div class="stat"><b>5 of 5</b>red flags caught (fixed rule: 3 of 5)</div>
-    <div class="stat"><b>16 of 17</b>real problems handed over</div>
-    <div class="stat"><b>0</b>false alarms per senior-month (fixed rule: 1.29)</div>
+    <div class="stat"><b>0.0%</b>clinical, leaflet or haze violations (generic LLM: 68.4%)</div>
+    <div class="stat"><b>82.2 / 100</b>cultural specificity with Qloo (generic LLM: 19.0 / 100)</div>
+    <div class="stat"><b>5 of 5 · 0</b>red flags caught · 0 false alarms per senior-month</div>
   </div>
-  <p>The honest trade-off: a slow blood-pressure drift is handed over about 3 days later than the fixed rule. In return, families get no false alarms, and CareLoop sees what one number can't: missed medicine, days unwell, isolation.</p>
 
   <h2>How it's built</h2>
-  <p>React web app (installable on a phone) · Python FastAPI backend · a rule engine with one thresholds file · a language layer that is the only path to the model (Tencent Hunyuan or any OpenAI-compatible model) · open data from data.gov.sg (haze, rainfall, centre locations) · 183 offline tests.</p>
+  <p>Next.js React web app · Python FastAPI backend · live Qloo Taste AI client (<code>hackathon.api.qloo.com</code> <code>/search</code> &amp; <code>/v2/insights</code>) with deterministic offline fallback · single-source clinical rules (<code>thresholds.py</code>, <code>medication_knowledge.py</code>) · live NEA PSI haze &amp; rainfall (<code>data.gov.sg</code>) · 183+ automated tests.</p>
 
   <div class="links">
-    <b>Live demo:</b> <a href="https://careloop-sg.onrender.com">careloop-sg.onrender.com</a> (may take a minute to wake) ·
+    <b>Live demo:</b> <a href="https://careloop-sg.onrender.com">careloop-sg.onrender.com</a> ·
+    <b>Qloo Judge Console:</b> <a href="https://careloop-sg.onrender.com/pitch">/pitch</a> ·
     <b>Senior app:</b> <a href="https://careloop-sg.onrender.com/senior?senior=tan">/senior?senior=tan</a> ·
-    <b>Family:</b> <a href="https://careloop-sg.onrender.com/care/family?contact=tan-weiling">/care/family</a> ·
-    <b>Centre:</b> <a href="https://careloop-sg.onrender.com/care/aac?worker=aac-siti">/care/aac</a><br>
+    <b>Family + Activities:</b> <a href="https://careloop-sg.onrender.com/care/family?contact=tan-weiling">/care/family</a> ·
+    <b>Centre + Cohort:</b> <a href="https://careloop-sg.onrender.com/care/aac?worker=aac-siti">/care/aac</a><br>
     <b>Code:</b> <a href="https://github.com/DrunkWiz/careloop-sg">github.com/DrunkWiz/careloop-sg</a> ·
-    <b>Architecture:</b> docs/architecture.md · <b>Evaluation:</b> docs/evaluation.md
+    <b>Demo Video:</b> <a href="https://careloop-sg.onrender.com/careloop-qloo-launch-video.mp4">careloop-qloo-launch-video.mp4</a> ·
+    <b>Submission:</b> docs/submission/qloo-submission.md · <b>Architecture:</b> docs/architecture.md · <b>Evaluation:</b> docs/evaluation.md (<code>GET /eval/taste</code>)
   </div>
   <p class="small">All people in the demo are synthetic. CareLoop is a prototype, not a medical device, and is not connected to any clinic system. Clinical thresholds, red-flag wording and medicine notes are placeholders until reviewed by a clinician. Author: Nathan.</p>
 </body>

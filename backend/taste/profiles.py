@@ -153,9 +153,9 @@ def build_taste_profile(senior: dict, erased_keys: set[str] | None = None) -> di
         summary_zh = base["summary_zh"]
         neighbourhood = base["neighbourhood"]
 
-    # Combine all query seeds for Qloo /search and /v2/insights
+    # Combine all query seeds for Qloo /search and /v2/insights, prioritizing specific cultural music, film, and food seeds
     all_seeds: list[str] = []
-    for item in [*likes, *music, *[o.split()[0] for o in outings]]:
+    for item in [*music, *films, *food, *likes, *[o.split()[0] for o in outings]]:
         norm = item.strip().lower()
         if norm and norm not in all_seeds:
             all_seeds.append(norm)

@@ -127,15 +127,18 @@ def _build_kitchen_card(
         f"CareLoop Hawker & Kitchen Card for {sname}: order {drink_phrase} and steamed/clear-soup dishes.",
         psi=psi,
     )
+    safe_swaps = [
+        "Steamed fish / clear soup instead of heavy braised gravy",
+        "Kopi-O kosong / plain Chinese tea instead of syrup drinks",
+    ]
     card = {
         "senior_name": sname,
         "drink_order_phrase": drink_phrase,
         "dish_order_phrase": dish_phrase,
+        "stall_suggestion": dish_phrase,
         "avoid_items": avoid_items,
-        "safe_swaps": [
-            "Steamed fish / clear soup instead of heavy braised gravy",
-            "Kopi-O kosong / plain Chinese tea instead of syrup drinks",
-        ],
+        "safe_swaps": safe_swaps,
+        "kitchen_swaps": safe_swaps,
         "copy_text": safe_copy,
     }
     return card, ok, reasons
@@ -197,7 +200,7 @@ def build_taste_plan(
         signal_tags=profile["all_seeds"],
         region=region,
         location="Singapore",
-        limit=2,
+        limit=3,
     )
 
     # --- Step 3: Tool `check_health_constraints` ---
@@ -215,7 +218,7 @@ def build_taste_plan(
 
     # Format music and movie picks in the senior's language
     music_picks = []
-    for a in artist_insights.get("results", [])[:2]:
+    for a in artist_insights.get("results", [])[:3]:
         mseeds = a.get("matched_seeds", [])
         music_picks.append({
             "entity_id": a["entity_id"],
@@ -227,7 +230,7 @@ def build_taste_plan(
         })
 
     movie_picks = []
-    for m in movie_insights.get("results", [])[:2]:
+    for m in movie_insights.get("results", [])[:3]:
         mseeds = m.get("matched_seeds", [])
         movie_picks.append({
             "entity_id": m["entity_id"],
@@ -244,7 +247,7 @@ def build_taste_plan(
     failed_reasons: list[str] = []
 
     safe_places = []
-    for p in kept_places[:3]:
+    for p in kept_places[:4]:
         why_safe, ok, reasons = _safe_text(
             p["why"],
             "根据您的品味档案与今日健康条件推荐。" if zh else "Matched to your taste profile and today's health constraints.",
@@ -467,6 +470,9 @@ def build_taste_plan(
         "resolved_entities": resolved_entities,
         "telemetry": {
             "mode": qloo_mode,
+            "provider": f"Qloo Taste AI ({qloo.base_url})",
+            "demographic_signal": "55_and_older",
+            "explainability": True,
             "resolved_urns": entity_ids,
             "resolved_count": len(entity_ids),
             "guardrail_pass_rate": pass_rate,

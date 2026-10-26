@@ -32,9 +32,10 @@ What has been built, the decisions behind it, and what is still open. Newest fir
 - **Single reviewable health & medicine-leaflet constraint table** (`backend/taste/constraints.py`, marked `PLACEHOLDER` for clinical/pharmacist sign-off). Filters Qloo candidates against hypertension (blocks high-sodium preserved dishes), diabetes (blocks sugary syrups), statins (`atorvastatin` / `simvastatin`: blocks grapefruit/pomelo), high-potassium kidney caution (`losartan` / `telmisartan` / `amlodipine` + kidney condition), plus live PSI (> 100) and rain.
 - **4-step Qloo Taste Agent** (`backend/taste/agent.py`). Runs `qloo_search` -> `qloo_insights` -> `check_health_constraints` -> `guardrail_check` (`backend/language/guardrail.py`). Strictly suggestion-only: never decides rungs (`0`-`4`, `R`), who to notify, or red-flag handling. Exposed on `GET /senior/{id}/today`, `GET /senior/{id}/activities`, `GET /senior/{id}/taste`, `GET /taste/search`, `POST /senior/{id}/taste`, and `GET /meta`.
 - **Web surfaces & LLM-only comparison.** Senior app (`web/senior/screens/Home.tsx`) shows an expandable "How CareLoop picked this" drawer with Qloo music/film picks and health/weather filter explanations in 4 languages. Family & Centre Activities (`web/care/ActivitiesView.tsx`) and Centre Programmes (`web/care/AacProgrammes.tsx`) show the 4-step Qloo agent trace, blocked candidates, an interactive Qloo favourite search box, and a side-by-side "LLM-only baseline vs CareLoop + Qloo" card. Full evaluation in `docs/qloo-comparison.md` and submission text in `docs/submission/qloo-submission.md`.
-- **Still open before submission (Sat 31 Oct 2026, 11:45am SGT):**
-  1. Add `QLOO_API_KEY` on the Render service and record a live verification log.
-  2. Record the <3 minute demo video showing the Qloo Taste Agent and health guardrails in action.
+- **Status before submission (Sat 31 Oct 2026, 11:45am SGT):**
+  1. `QLOO_API_KEY` live verification against `https://hackathon.api.qloo.com` completed and logged (22 Oct).
+  2. Master 3-minute 1080p demo video rendered, verified, and placed at `docs/submission/careloop-qloo-launch-video.mp4` and `web/public/careloop-qloo-launch-video.mp4` (26 Oct).
+  3. Submission text and one-pager fully aligned (`docs/submission/qloo-submission.md`, `docs/submission/careloop-one-page.html`). All submission materials ready.
 
 ## 15 Oct 2026: sibling rota, pairing UX, relationship tests
 
@@ -187,6 +188,20 @@ What has been built, the decisions behind it, and what is still open. Newest fir
 
 ## History
 
+- **26 Oct, Nathan, branch `main`:** Qloo Agentic Hackathon submission launch video (`docs/submission/careloop-qloo-launch-video.mp4` & `web/public/careloop-qloo-launch-video.mp4`):
+  - **Aesthetic alignment**: Fully conformed to reference specifications from `CareLoop-SG-demo-general-v2.mp4` — warm stone studio canvas (`#CDCBC6` -> `#DCDAD5` radial gradient), editorial serif typography (`Georgia` in forest slate `#1C2A22`), tracked uppercase kickers (`#5B6B61`), top-right honesty badges (`Live Qloo API · synthetic demo data`), and bottom frosted subtitle pills (`rgba(50, 60, 54, 0.90)` with crisp white 26px text).
+  - **Device frames & live screens**: Authentic iPhone 15 Pro titanium frame (with Dynamic Island) displaying high-resolution 2x retina captures of senior home, scrolled nostalgia drawer, family recommendations trace, and red-flag handover; MacBook Pro frames displaying AAC group taste programmes, caseload, and the 38-persona ablation benchmark.
+  - **Neural Singapore English voiceover**: Replaced robotic SAPI5 TTS with Microsoft Azure/Edge `en-SG-LunaNeural` voice, perfectly paced across 14 discrete scene chunks and mixed over a gentle ambient piano/pad progression (Fmaj9 -> Dmin9 -> Bbmaj7 -> Cmaj9) at -25dB.
+  - **Narrative structure (7 Acts, 185.5s @ 30fps, 5,565 frames)**:
+    1. *Act 1 (The Clinical & Cultural Isolation Problem)*: Fragility of quiet days between clinic visits; dangers of generic wellness advice ignoring medications.
+    2. *Act 2 (Introducing CareLoop SG)*: Quiet between doctor visits, thoughtful on days needing a lift; planning days around nostalgic food, music, films via Qloo.
+    3. *Act 3 (Multilingual Voice to Qloo)*: 3-button morning check-in across English, Singlish, 华语, Malay, and Tamil; resolving Teresa Teng & Teochew porridge into canonical URNs.
+    4. *Act 4 (4-Step Deterministic Agent)*: `qloo_search` ➔ `qloo_insights` ➔ deterministic constraints (blocking grapefruit on statins, organ offal on gout, parks during PSI 135 haze) ➔ multilingual guardrails.
+    5. *Act 5 (Active Ageing Centres & Community Connection)*: AAC group taste intersection, caterer headcount sheets, and Kopi Kakis buddy matching.
+    6. *Act 6 (Empirical 38-Persona Benchmark)*: Proving 0.0% medical violations vs 68.4% generic LLM, and 82.2 cultural specificity (+63.2 pts).
+    7. *Act 7 (Judge Command Center & Closing)*: Live split-screen judge experience and closing resolve at `careloop-sg.onrender.com`.
+  - **Verification**: FFmpeg 1080p 30fps H.264 High Profile (CRF 17, YUV420p, 19.71 MB) with AAC 44.1kHz stereo; verified identical copies in `docs/submission/` and `web/public/`.
+- **22 Oct, Nathan, branch `main`:** Live Qloo Hackathon API integration, Developer Guide alignment & E2E verification: (1) Configured `.env` auto-loader (`_load_dotenv_if_needed` in `backend/taste/client.py`, skipped automatically inside `unittest` so all unit tests stay 100% offline) and `.env.example` template for `QLOO_BASE_URL=https://hackathon.api.qloo.com` and `QLOO_API_KEY`; (2) Aligned `QlooClient` with the Qloo LLM Hackathon Developer Guide by adding `signal.demographics.age=55_and_older` and `feature.explainability=true` on `/v2/insights`, adding pioneer-generation cultural alias resolution (`_QLOO_SEARCH_ALIASES`) and valid `/v2/insights` signal-type ranking (`_VALID_SIGNAL_TYPES`) in `/search`, prioritizing specific cultural seeds (`music`, `films`, `food`) in `build_taste_profile()` (`backend/taste/profiles.py`), and inferring dietary/accessibility tags from live Qloo entities while filtering out unsuitable nightlife/upstairs venues; (3) Synced frontend/backend contracts (`stall_suggestion` and `kitchen_swaps` in `_build_kitchen_card`, `provider` and `demographic_signal` in `telemetry`, `explanation_sample` in `backend/eval/taste_eval.py`); (4) Verified 164/164 offline unit tests and 100% live E2E execution against `https://hackathon.api.qloo.com` across all demo seniors, 4 languages (`en`/`zh`/`ms`/`ta`), and all 10 workflows.
 - **13 Oct, PR #3** (reopens #2): contracts, engine, env, API, synth, evaluation; senior app wired to the API.
   - **Bugs found by tests and evaluation, fixed:**
     - Mandarin chest pain with words in between ("胸口有点痛") wasn't a red flag.
