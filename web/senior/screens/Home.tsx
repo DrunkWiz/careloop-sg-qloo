@@ -2,7 +2,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { getSeniorMemories, postSeniorMemory } from '../../shared/api';
 import type { MemoryLaneResponse } from '../../shared/contract';
-import { LangContext, dateLocale, speechLang, useT } from '../../shared/i18n';
+import { LangContext, dateLocale, useT } from '../../shared/i18n';
+import { speak } from '../../shared/speak';
 import type { Today } from '../types';
 import { BigButton, Icon, TalkButton } from '../ui';
 
@@ -30,19 +31,7 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
   const complete = [today.pills_taken, today.bp_logged, today.feel_logged].filter(Boolean).length;
   const date = new Date(today.date ? `${today.date}T12:00:00` : Date.now()).toLocaleDateString(dateLocale(lang), { weekday: 'long', day: 'numeric', month: 'long' });
 
-  const speakText = (text: string) => {
-    try {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = speechLang(lang);
-        u.rate = 0.92;
-        window.speechSynthesis.speak(u);
-      }
-    } catch {
-      /* ignore TTS errors on unsupported browsers */
-    }
-  };
+  const speakText = (text: string) => speak(text, lang);
 
   return (
     <div className="sa-home">
@@ -84,20 +73,21 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
           <p className="sa-card-label">{t('suggest.title')}</p>
           <ul className="sa-suggestions">
             {today.suggestions.slice(0, 3).map((s) => (
-              <li key={s.id} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
+              <li key={s.id} className="sa-suggestion">
                 <div>
                   <p className="sa-place">{s.place}</p>
-                  <p className="sa-why">
-                    {s.why_it_fits}
-                    {s.indoor && <span className="sa-tag">{t('suggest.indoor')}</span>}
-                    {s.free && <span className="sa-tag">{t('suggest.free')}</span>}
-                  </p>
+                  <p className="sa-why">{s.why_it_fits}</p>
+                  {(s.indoor || s.free) && (
+                    <p className="sa-tags">
+                      {s.indoor && <span className="sa-tag">{t('suggest.indoor')}</span>}
+                      {s.free && <span className="sa-tag">{t('suggest.free')}</span>}
+                    </p>
+                  )}
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                <div className="sa-actions">
                   <button
                     type="button"
-                    className="sa-notforme"
-                    style={s.response === 'going' ? { background: '#0b6e4f', color: '#fff', borderColor: '#0b6e4f' } : { borderColor: '#0b6e4f', color: '#0b6e4f' }}
+                    className={`sa-notforme sa-going ${s.response === 'going' ? 'is-on' : ''}`}
                     onClick={() => onGoing(s.id)}
                   >
                     {s.response === 'going' ? `✓ ${t('suggest.going')}` : t('suggest.going')}
@@ -111,8 +101,7 @@ export function Home({ today, busy, talkSupported, listening, interim, onPills, 
                     {t('suggest.readAloud')}
                   </button>
                   <a
-                    className="sa-notforme"
-                    style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+                    className="sa-notforme sa-maplink"
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.place + ' Singapore')}`}
                     target="_blank"
                     rel="noreferrer"
@@ -184,6 +173,7 @@ function SeniorReminiscenceCard({
   lang: string;
   onSpeak: (text: string) => void;
 }) {
+  const t = useT();
   const [lane, setLane] = useState<MemoryLaneResponse | null>(null);
   const [story, setStory] = useState('');
   const [saving, setSaving] = useState(false);
@@ -194,24 +184,6 @@ function SeniorReminiscenceCard({
   }, [seniorId, lang]);
 
   if (!lane) return null;
-
-  const titleLabel =
-    lang === 'zh'
-      ? '今日怀旧故事 (Qloo 记忆回廊)'
-      : lang === 'ms'
-        ? 'Kenangan Hari Ini (Qloo Memory Lane)'
-        : lang === 'ta'
-          ? 'இன்றைய நினைவுகள் (Qloo Memory Lane)'
-          : 'Memory Lane — Today’s Story Prompt';
-
-  const saveLabel =
-    lang === 'zh'
-      ? '保存到家庭纪念册'
-      : lang === 'ms'
-        ? 'Simpan Cerita Keluarga'
-        : lang === 'ta'
-          ? 'குடும்ப நினைவுகளில் சேமி'
-          : 'Save Story for Family';
 
   const onSave = async () => {
     if (!story.trim()) return;
@@ -235,71 +207,42 @@ function SeniorReminiscenceCard({
   };
 
   return (
-    <div className="sa-card" style={{ marginTop: 12 }}>
-      <p className="sa-card-label">{titleLabel}</p>
-      <p className="sa-place" style={{ fontSize: '1.02rem', marginBottom: 6 }}>
-        {lane.daily_prompt.prompt}
-      </p>
-      <p className="sa-why" style={{ marginBottom: 8 }}>
-        {lane.daily_prompt.qloo_seed} · {lane.daily_prompt.film_companion}
-      </p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
-        <button
-          type="button"
-          className="sa-notforme"
-          onClick={() => onSpeak(lane.daily_prompt.prompt)}
-        >
-          {lang === 'zh' ? '朗读问题' : 'Read prompt aloud'}
-        </button>
+    <div className="sa-card sa-lane">
+      <p className="sa-card-label">{t('lane.title')}</p>
+      <p className="sa-place">{lane.daily_prompt.prompt}</p>
+      <p className="sa-why">{lane.daily_prompt.qloo_seed} · {lane.daily_prompt.film_companion}</p>
+      <button type="button" className="sa-notforme sa-lane-read" onClick={() => onSpeak(lane.daily_prompt.prompt)}>
+        {t('lane.readPrompt')}
+      </button>
+      <div className="sa-lane-chips">
         {lane.daily_prompt.starter_chips.map((chip, idx) => (
           <button
             key={idx}
             type="button"
-            className="sa-notforme"
+            className="sa-notforme sa-lane-chip"
             onClick={() => setStory((prev) => (prev ? `${prev} ${chip}` : chip))}
           >
             + {chip}
           </button>
         ))}
       </div>
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+      <div className="sa-lane-write">
         <input
           type="text"
           value={story}
           onChange={(e) => setStory(e.target.value)}
-          placeholder={lang === 'zh' ? '写下或说出您的当年回忆…' : 'Share a favourite memory for your family…'}
-          aria-label="Share a memory"
-          style={{
-            flex: 1,
-            minWidth: 180,
-            padding: '0.55rem 0.7rem',
-            borderRadius: 10,
-            border: '1px solid rgba(0,0,0,0.18)',
-            fontSize: '0.96rem',
-          }}
+          placeholder={t('lane.placeholder')}
+          aria-label={t('lane.inputLabel')}
         />
-        <button
-          type="button"
-          className="sa-notforme"
-          disabled={saving || !story.trim()}
-          onClick={() => void onSave()}
-          style={{ background: '#0b6e4f', color: '#fff', borderColor: '#0b6e4f', fontWeight: 600 }}
-        >
-          {saving ? '…' : saveLabel}
+        <button type="button" className="sa-notforme sa-lane-save" disabled={saving || !story.trim()} onClick={() => void onSave()}>
+          {saving ? '…' : t('lane.save')}
         </button>
       </div>
-      {savedBanner && (
-        <p className="sa-why" style={{ color: '#0b6e4f', fontWeight: 600, marginTop: 6 }}>
-          ✓ {lang === 'zh' ? '已存入家庭纪念册！' : 'Saved to your Family Memory Lane Keepsake Book!'}
-        </p>
-      )}
+      {savedBanner && <p className="sa-why sa-lane-saved">✓ {t('lane.saved')}</p>}
       {lane.capsules.length > 0 && (
-        <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px solid rgba(0,0,0,0.08)' }}>
-          <p className="sa-why" style={{ margin: 0 }}>
-            <strong>{lang === 'zh' ? '最新保存的故事：' : 'Latest saved keepsake:'}</strong> “{lane.capsules[0].story_text}”{' '}
-            <span style={{ opacity: 0.75 }}>({lane.capsules[0].date})</span>
-          </p>
-        </div>
+        <p className="sa-why sa-lane-latest">
+          <strong>{t('lane.latest')}</strong> “{lane.capsules[0].story_text}” <span>({lane.capsules[0].date})</span>
+        </p>
       )}
     </div>
   );

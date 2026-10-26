@@ -5,3 +5,24 @@
 .sa-home .sa-big { background: #f6f8f2; border: 1px solid #bdcdb8; padding: 18px; font-size: 20px; min-height: 92px; gap: 14px; }.sa-home .sa-big.sa-done { background: #edf3e6; border-color: #769065; }.sa-home .sa-big-icon { display: grid; place-items: center; background: #e4ecda; border-radius: 12px; width: 48px; height: 48px; font-size: 28px; flex-shrink: 0; }.sa-home .sa-primary { background: var(--sa-accent); color: white; }.sa-home .sa-primary .sa-big-icon { background: transparent; }.sa-check { font-size: 24px; }.sa-talk { min-height: 100px; flex-direction: row; gap: 18px; border-radius: 16px; margin: 20px 0 4px; }.sa-talk-icon { font-size: 30px; }.sa-talk:disabled { opacity: .55; cursor: default; }.sa-type-link { border: 0; background: transparent; color: #24533f; font: inherit; font-size: 18px; text-decoration: underline; text-underline-offset: 4px; min-height: 52px; width: 100%; }
 .sa-beside > .sa-card:first-child { margin-top: 0; }.sa-beside .sa-card { border: 1px solid #dce3d5; padding: 24px; border-radius: 22px; }.sa-beside .sa-card-label { font-size: 22px; margin-bottom: 20px; color: #263e30; }.sa-suggestions { gap: 20px; }.sa-suggestions li { display: block; padding-top: 20px; }.sa-place { font-size: 19px; line-height: 1.5; }.sa-why { margin-top: 6px; line-height: 1.7; }.sa-tag { font-size: 18px; margin: 8px 8px 0 0; padding: 1px 10px; background: #e5eedb; color: #28452e; }.sa-notforme { margin-top: 12px; min-height: 48px; background: white; border-width: 1px; font-size: 18px; }.sa-link { font-size: 18px; line-height: 1.6; }.sa-link svg { flex-shrink: 0; }.sa-screen { max-width: 600px; margin: 32px auto; }.sa-screen-head h1 { font-size: 32px; }.sa-bp { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }.sa-bp .sa-field:last-child { grid-column: 1/-1; }.sa-checkin { background: #f0f4e9; margin: 16px 0; }.sa-checkin .sa-card-label { font-size: 18px; }.sa-prompt { font-size: 22px; }.sa-loading { font-size: 22px; padding: 40px; }
 @media(max-width: 760px) { .sa-app { padding: 16px 18px 40px; }.sa-top { padding-bottom: 12px; }.sa-top .cl-brand { font-size: 24px; }.sa-welcome { padding: 24px; }.sa-greeting { font-size: 30px; max-width: 100%; padding-right: 26px; }.sa-welcome-note { font-size: 18px; max-width: 100%; }.sa-sun { font-size: 40px; right: 16px; top: 22px; }.sa-date { font-size: 18px; padding-right: 36px; }.sa-home-grid { grid-template-columns: 1fr; gap: 22px; }.sa-daily { padding: 20px; }.sa-home .sa-big { font-size: 20px; }.sa-beside .sa-card { padding: 20px; }.sa-screen { margin: 22px 0; }.sa-bp { gap: 12px; }.sa-daily-head { flex-wrap: wrap; }.sa-demo { margin-bottom: 16px; } }
+/* Suggestions and Memory Lane: tags on their own row, buttons that wrap, accent links. */
+.sa-suggestions li.sa-suggestion { display: flex; flex-direction: column; align-items: stretch; gap: 14px; }
+.sa-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+.sa-tags .sa-tag { margin: 0; }
+.sa-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.sa-actions .sa-notforme { margin-top: 0; }
+.sa-going { border-color: var(--sa-accent); color: var(--sa-accent); }
+.sa-going.is-on { background: var(--sa-accent); color: #fff; }
+.sa-maplink { display: inline-flex; align-items: center; color: var(--sa-accent); text-decoration: none; }
+.sa-lane { margin-top: 12px; }
+.sa-lane .sa-place { font-size: 20px; line-height: 1.45; }
+.sa-lane-read { margin: 14px 0 0; }
+.sa-lane-chips { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+.sa-lane-chip { width: 100%; margin-top: 0; padding: 10px 16px; text-align: left; white-space: normal; line-height: 1.4; }
+.sa-lane-write { display: flex; flex-wrap: wrap; gap: 10px; }
+.sa-lane-write input { flex: 1 1 220px; min-width: 0; min-height: 56px; padding: 10px 16px; border-radius: 12px; border: 1px solid var(--sa-line); background: #fff; font-size: 18px; color: var(--sa-ink); }
+.sa-lane-save { margin-top: 0; background: var(--sa-accent); border-color: var(--sa-accent); color: #fff; }
+.sa-lane-save:disabled { opacity: .55; }
+.sa-lane-saved { color: var(--sa-accent); font-weight: 600; margin-top: 8px; }
+.sa-lane-latest { margin-top: 16px; padding-top: 14px; border-top: 1px solid #dce3d5; }
+.sa-lane-latest span { opacity: .8; }

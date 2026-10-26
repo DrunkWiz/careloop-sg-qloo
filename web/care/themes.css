@@ -295,3 +295,13 @@
 .report-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
 .report-actions .care-secondary, .report-actions .care-primary { width: auto; padding: 0 16px; }
 .table-scroll { overflow-x: auto; }
+
+.plan-input { font: inherit; padding: 10px; min-height: 44px; box-sizing: border-box; border: 1px solid var(--cl-border); border-radius: 10px; }
+
+/* Memory Lane keepsake form: same rounded fields as the Plan tab. */
+.keepsake-prompt { margin: 8px 0 12px; padding: 14px 16px; border-radius: 12px; background: var(--bg-soft, #faf8f5); border: 1px solid var(--cl-border); }
+.keepsake-form { display: flex; flex-wrap: wrap; gap: 8px; }
+.keepsake-form input { font: inherit; padding: 10px; min-height: 44px; box-sizing: border-box; border: 1px solid var(--cl-border); border-radius: 10px; background: #fff; min-width: 0; }
+.keepsake-story { flex: 2 1 240px; }
+.keepsake-by { flex: 1 1 150px; }
+.keepsake-form .care-primary { flex: 1 1 100%; }

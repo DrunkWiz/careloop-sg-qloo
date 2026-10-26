@@ -173,14 +173,14 @@ function TodaySoFar({ log, today, name, shared }: { log: LogDay[] | null; today:
       <div className={`today-item ${d?.replied ? 'is-yes' : 'is-no'}`}>
         <span className="today-icon" aria-hidden="true">{d?.replied ? '✓' : '…'}</span>
         <span>
-          <strong>{d?.replied ? 'Checked in' : 'No check-in yet'}</strong>
+          <strong>{d?.replied ? 'Checked in' : 'No check-in yet'}</strong>{' '}
           <span>{first ? sg(new Date(first.time)) : d?.replied ? 'today' : `${name} usually replies in the morning`}</span>
         </span>
       </div>
       <div className={`today-item ${d?.pills === 'taken' ? 'is-yes' : d?.pills === 'missed' ? 'is-warn' : 'is-no'}`}>
         <span className="today-icon" aria-hidden="true">{d?.pills === 'taken' ? '✓' : d?.pills === 'missed' ? '!' : '…'}</span>
         <span>
-          <strong>{d?.pills === 'taken' ? 'Pills taken' : d?.pills === 'missed' ? 'Missed a dose' : 'Pills not reported'}</strong>
+          <strong>{d?.pills === 'taken' ? 'Pills taken' : d?.pills === 'missed' ? 'Missed a dose' : 'Pills not reported'}</strong>{' '}
           <span>{d?.pills === 'missed' ? 'CareLoop asked gently' : 'today'}</span>
         </span>
       </div>
@@ -218,7 +218,7 @@ function PlanPreview({ seniorId, contactId, me, today }: { seniorId: string; con
     <button className="care-card plan-preview" onClick={() => navigate('/care/family/plan')}>
       {next && (
         <span>
-          <strong>Next visit {new Date(next.date).toLocaleDateString('en-SG', { weekday: 'short', day: 'numeric', month: 'short' })}</strong>
+          <strong>Next visit {new Date(next.date).toLocaleDateString('en-SG', { weekday: 'short', day: 'numeric', month: 'short' })}</strong>{' '}
           {next.place && ` · ${next.place}`}
           {questions > 0 && <span className="care-muted"> · {questions} question{questions > 1 ? 's' : ''} for the doctor</span>}
         </span>

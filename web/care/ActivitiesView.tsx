@@ -764,15 +764,7 @@ export function MemoryLaneKeepsakeCard({ seniorId, name }: { seniorId: string; n
       <p className="care-muted">
         Anchored to {name}'s Qloo nostalgia graph (1960s–1980s music artists, classic Cathay / Shaw Brothers / P. Ramlee cinema, and heritage hawker dishes) so grandchildren and family can preserve life stories.
       </p>
-      <div
-        style={{
-          margin: '0.5rem 0 0.75rem',
-          padding: '0.65rem 0.75rem',
-          borderRadius: '8px',
-          background: 'var(--bg-soft, #faf8f5)',
-          border: '1px solid rgba(0,0,0,0.08)',
-        }}
-      >
+      <div className="keepsake-prompt">
         <p style={{ margin: '0 0 0.35rem', fontWeight: 600 }}>
           Today's Qloo Reminiscence Prompt ({data.daily_prompt.qloo_seed}):
         </p>
@@ -784,28 +776,27 @@ export function MemoryLaneKeepsakeCard({ seniorId, name }: { seniorId: string; n
               type="button"
               className="aac-day-chip"
               onClick={() => setStoryText((prev) => (prev ? `${prev} ${chip}` : chip))}
-              style={{ fontSize: '0.76rem', padding: '0.18rem 0.5rem' }}
             >
               + {chip}
             </button>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap' }}>
+        <div className="keepsake-form">
           <input
             type="text"
+            className="keepsake-story"
             value={storyText}
             onChange={(e) => setStoryText(e.target.value)}
             placeholder={`Record ${name}'s memory during your visit or call…`}
             aria-label="Record memory capsule"
-            style={{ flex: 2, minWidth: '210px' }}
           />
           <input
             type="text"
+            className="keepsake-by"
             value={recordedBy}
             onChange={(e) => setRecordedBy(e.target.value)}
             placeholder="Recorded by (e.g. Wei Ling)"
             aria-label="Recorded by"
-            style={{ flex: 1, minWidth: '130px' }}
           />
           <button type="button" className="care-primary" disabled={busy || !storyText.trim()} onClick={() => void onSaveStory()}>
             {busy ? 'Saving…' : 'Save Memory Capsule'}
