@@ -24,3 +24,7 @@ Inputs `assemble.py` expects: the original film at `../ref/ref.mp4` relative to 
 
 - The original narrator's voice is not an Edge voice, so the new lines use the closest one (Jenny). `voice-check.m4a` plays an original line, then a new one.
 - The benchmark baselines are scripted stand-ins, not live model runs, and the video says so on screen. All people are synthetic.
+
+## Gallery images
+
+`gallery.py` and `gallery.html` make the 3:2 screenshots in `../gallery/` (shown in the main README) from the running web app: `python gallery.py ../gallery` while `npm run dev` runs on :5174.

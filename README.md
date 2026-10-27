@@ -21,6 +21,16 @@ and when it wakes the demo starts again from 24 Oct.
 
 **How it's built:** [architecture, trust boundaries and design trade-offs](docs/architecture.md).
 
+### At a glance
+
+Screens from the real app, with synthetic demo data.
+
+| | | |
+|---|---|---|
+| <img src="docs/submission/gallery/01-senior-check-in.jpg" alt="One big button: the senior's check-in with hold to talk" width="280"> | <img src="docs/submission/gallery/02-qloo-good-days.jpg" alt="Good days, planned around him: Qloo picks on a haze day, all indoors" width="280"> | <img src="docs/submission/gallery/03-qloo-health-first.jpg" alt="His health comes first: Qloo picks checked against medicines, conditions and weather" width="280"> |
+| <img src="docs/submission/gallery/04-red-flag.jpg" alt="Some moments can't wait: the family red-flag screen" width="280"> | <img src="docs/submission/gallery/05-his-own-usual.jpg" alt="His own usual, day by day: BP against his own normal" width="280"> | <img src="docs/submission/gallery/06-memory-lane.jpg" alt="Memory Lane: a daily story prompt from his own nostalgia" width="280"> |
+| <img src="docs/submission/gallery/07-centre-caseload.jpg" alt="Centre console caseload, sorted by who needs a look" width="280"> | <img src="docs/submission/gallery/08-taste-benchmark.jpg" alt="The 38-persona taste benchmark" width="280"> | <img src="docs/submission/gallery/09-judge-view.jpg" alt="Judge view: senior phone and family app side by side" width="280"> |
+
 ### What makes CareLoop SG Qloo-powered
 
 Qloo's core rule for the Agentic Hackathon is: **if it would work the same without Qloo, it's the wrong thing.**
