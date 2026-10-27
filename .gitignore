@@ -16,3 +16,6 @@ FONDLY_KICKOFF.md
 
 # Media / Submissables (keep local, do not push to GitHub)
 *.mp4
+# Video build scripts and the Devpost text stay local
+docs/submission/video/
+docs/submission/devpost.md
